@@ -1,14 +1,15 @@
 module example
 
+  use iso_c_binding
   use types, only: dp
   implicit none
   private
   public foo, make_udf, UserDefined
 
-  type UserDefined
-     real(dp) :: buzz
-     real(dp) :: broken
-     integer :: how_many
+  type, bind(c) :: UserDefined
+     real(c_double) :: buzz
+     real(c_double) :: broken
+     integer(c_int) :: how_many
   end type UserDefined
 
 contains
