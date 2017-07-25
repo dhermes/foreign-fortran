@@ -3,7 +3,13 @@ module example
   use types, only: dp
   implicit none
   private
-  public foo
+  public foo, UserDefined
+
+  type UserDefined
+     real(dp) :: buzz
+     real(dp) :: broken
+     integer :: how_many
+  end type UserDefined
 
 contains
 
