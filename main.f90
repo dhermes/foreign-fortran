@@ -1,7 +1,7 @@
 program main
 
   use types, only: dp
-  use example, only: foo, UserDefined
+  use example, only: foo, make_udf, UserDefined
   implicit none
 
   real(dp) :: bar, baz, quux
@@ -11,9 +11,7 @@ program main
   baz = 16.0_dp
   call foo(bar, baz, quux)
 
-  quuz%buzz = 1.25_dp
-  quuz%broken = 5.0_dp
-  quuz%how_many = 1337
+  call make_udf(1.25_dp, 5.0_dp, 1337, quuz)
 
   print *, quux
   print *, quuz
