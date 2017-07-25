@@ -15,7 +15,6 @@ program main
   quuz%broken = 5.0_dp
   quuz%how_many = 1337
 
-  print *, "LIFE"
   print *, quux
   print *, quuz
 
