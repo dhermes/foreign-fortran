@@ -8,8 +8,9 @@ example.o example.mod: example.f90 types.mod
 
 types.mod: types.f90
 	gfortran -c types.f90
+	rm types.o
 
 clean:
-	rm -f example.mod example.o main types.o types.mod
+	rm -f example.mod example.o main types.mod
 
 .PHONY: all clean
