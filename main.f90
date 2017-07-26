@@ -13,7 +13,9 @@ program main
 
   call make_udf(1.25_dp, 5.0_dp, 1337, quuz)
 
-  print *, quux
+  print *, "bar =", bar
+  print *, "baz =", baz
+  print *, "quux =", quux
   print *, quuz
 
 end

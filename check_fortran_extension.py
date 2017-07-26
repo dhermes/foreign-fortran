@@ -12,6 +12,14 @@ def main():
     example = fortran_example.example
     print('fortran_example.example: {}'.format(example))
     print('dir(fortran_example.example): {}'.format(dir(example)))
+    bar = 1.0
+    baz = 16.0
+    msg_foo = 'fortran_example.example.foo      ({}, {}) = {}'.format(
+        bar, baz, fortran_example.example.foo(bar, baz))
+    print(msg_foo)
+    msg_foo_not_c = 'fortran_example.example.foo_not_c({}, {}) = {}'.format(
+        bar, baz, fortran_example.example.foo_not_c(bar, baz))
+    print(msg_foo_not_c)
 
 
 if __name__ == '__main__':
