@@ -45,6 +45,7 @@ $ ./main
         =    1.2500000000000000        5.0000000000000000             1337
 $ ./main_c
 quux = foo(1.000000, 16.000000) = 61.000000
+quuz = make_udf(1.250000, 5.000000, 1337) = UserDefined(1.250000, 5.000000, 1337)
 $ python ctypes_static.py
 <CDLL '.../example.so', handle 16e1440 at 7f2491f75350>
 quux = foo(c_double(1.0), c_double(16.0)) = c_double(61.0)
