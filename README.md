@@ -40,19 +40,17 @@ then run the exact same Fortran code in four different ways:
 
 ```
 $ ./main
- bar =   1.0000000000000000
- baz =   16.000000000000000
- quux =   61.000000000000000
-   1.2500000000000000        5.0000000000000000             1337
+ foo(   1.0000000000000000        16.000000000000000      ) =    61.000000000000000
+ make_udf(   1.2500000000000000        5.0000000000000000             1337 )
+        =    1.2500000000000000        5.0000000000000000             1337
 $ ./main_c
 quux = foo(1.000000, 16.000000) = 61.000000
 $ python ctypes_static.py
 <CDLL '.../example.so', handle 16e1440 at 7f2491f75350>
-bar = c_double(1.0)
-baz = c_double(16.0)
-quux = c_double(61.0)
+quux = foo(c_double(1.0), c_double(16.0)) = c_double(61.0)
+quuz = make_udf(c_double(1.25), c_double(5.0), c_int(1337)) = UserDefined(buzz=1.25, broken=5.0, how_many=1337)
 $ python check_fortran_extension.py
-fortran_example: <module 'fortran_example' from '/home/dhermes/Desktop/fortran-user-defined-types/fortran_example.so'>
+fortran_example: <module 'fortran_example' from '.../fortran_example.so'>
 fortran_example.example: <fortran object>
 dir(fortran_example.example): ['foo', 'foo_not_c']
 fortran_example.example.foo      (1.0, 16.0) = 0.0

@@ -14,7 +14,7 @@ module example
 
 contains
 
-  subroutine foo(bar, baz, quux) bind(c)
+  subroutine foo(bar, baz, quux) bind(c, name='foo')
     real(c_double), intent(in), value :: bar, baz
     real(c_double), intent(out) :: quux
 
@@ -30,9 +30,9 @@ contains
 
   end subroutine foo_not_c
 
-  subroutine make_udf(buzz, broken, how_many, made_it)
-    real(c_double), intent(in) :: buzz, broken
-    integer(c_int), intent(in) :: how_many
+  subroutine make_udf(buzz, broken, how_many, made_it) bind(c, name='make_udf')
+    real(c_double), intent(in), value :: buzz, broken
+    integer(c_int), intent(in), value :: how_many
     type(UserDefined), intent(out) :: made_it
 
     made_it%buzz = buzz
