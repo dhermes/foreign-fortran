@@ -28,7 +28,11 @@ Makefile:7: recipe for target 'fortran_example.so' failed
 make: *** [fortran_example.so] Error 1
 ```
 
+Decently [helpful article][5] and ["pre-article"][6] to that one.
+
 [1]: http://www.mathcs.emory.edu/~cheung/Courses/561/Syllabus/6-Fortran/struct.html
 [2]: https://stackoverflow.com/q/8557244
 [3]: https://mail.scipy.org/pipermail/scipy-user/2008-December/018881.html
 [4]: https://github.com/jameskermode/f90wrap
+[5]: https://maurow.bitbucket.io/notes/calling_fortran_from_python.html
+[6]: https://maurow.bitbucket.io/notes/calling_fortran_from_c.html
