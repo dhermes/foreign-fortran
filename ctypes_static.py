@@ -1,6 +1,8 @@
 import ctypes
 import os
 
+import numpy as np
+
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 SO_FILE = os.path.join(HERE, 'example.so')
@@ -21,6 +23,10 @@ class UserDefined(ctypes.Structure):
         return template.format(self=self)
 
 
+def numpy_pointer(array):
+    return array.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
+
+
 def main():
     lib_example = ctypes.cdll.LoadLibrary(SO_FILE)
     print(lib_example)
@@ -39,6 +45,23 @@ def main():
     msg = 'quuz = make_udf({}, {}, {}) = {}'.format(
         buzz, broken, how_many, quuz)
     print(msg)
+
+    val = np.asfortranarray([
+        [ 3.0, 4.5 ],
+        [ 1.0, 1.25],
+        [ 9.0, 0.0 ],
+        [-1.0, 4.0 ],
+    ])
+    size, _ = val.shape
+    two_val = np.empty((size, 2), order='F')
+    lib_example.foo_array(
+        ctypes.c_int(size),
+        numpy_pointer(val),
+        numpy_pointer(two_val),
+    )
+    print('val =\n{}'.format(val))
+    print('two_val = foo_array({}, val)'.format(size))
+    print('two_val =\n{}'.format(two_val))
 
 
 if __name__ == '__main__':

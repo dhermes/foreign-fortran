@@ -1,13 +1,15 @@
 program main
 
   use types, only: dp
-  use example, only: foo, make_udf, UserDefined
+  use example, only: foo, foo_array, make_udf, UserDefined
   implicit none
 
   real(dp) :: bar, baz, quux
   real(dp) :: buzz, broken
   integer :: how_many
   type(UserDefined) :: quuz
+  integer :: size_
+  real(dp) :: val(4, 2), two_val(4, 2)
 
   bar = 1.0_dp
   baz = 16.0_dp
@@ -18,8 +20,26 @@ program main
   how_many = 1337
   call make_udf(buzz, broken, how_many, quuz)
 
+  val = reshape((/ &
+       3.0_dp, 1.0_dp, 9.0_dp, -1.0_dp, &
+       4.5_dp, 1.25_dp, 0.0_dp, 4.0_dp/), &
+       (/4, 2/))
+  size_ = size(val, 1)
+  call foo_array(size_, val, two_val)
+
   print *, "foo(", bar, baz, ") = ", quux
   print *, "make_udf(", buzz, broken, how_many, ")"
   print *, "       = ", quuz
+  print *, "foo_array("
+  print *, "    ", size_, ","
+  print *, "    [[", val(1, 1), val(1, 2), "],"
+  print *, "     [", val(2, 1), val(2, 2), "],"
+  print *, "     [", val(3, 1), val(3, 2), "],"
+  print *, "     [", val(4, 1), val(4, 2), "]],"
+  print *, ") = "
+  print *, "    [[", two_val(1, 1), two_val(1, 2), "],"
+  print *, "     [", two_val(2, 1), two_val(2, 2), "],"
+  print *, "     [", two_val(3, 1), two_val(3, 2), "],"
+  print *, "     [", two_val(4, 1), two_val(4, 2), "]]"
 
 end

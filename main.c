@@ -21,5 +21,21 @@ int main (void)
          buzz, broken, how_many,
          quuz.buzz, quuz.broken, quuz.how_many);
 
+  int size = 4;
+  double val[8] = {3.0, 1.0, 9.0, -1.0, 4.5, 1.25, 0.0, 4.0};
+  double two_val[8];
+  foo_array(size, &val, &two_val);
+  printf("foo_array(\n");
+  printf("    %d,\n", size);
+  printf("    [[%f, %f],\n", val[0], val[4]);
+  printf("     [%f, %f],\n", val[1], val[5]);
+  printf("     [%f, %f],\n", val[2], val[6]);
+  printf("     [%f, %f]],\n", val[3], val[7]);
+  printf(") =\n");
+  printf("    [[%f, %f],\n", two_val[0], two_val[4]);
+  printf("     [%f, %f],\n", two_val[1], two_val[5]);
+  printf("     [%f, %f],\n", two_val[2], two_val[6]);
+  printf("     [%f, %f]]\n", two_val[3], two_val[7]);
+
   return 0;
 }

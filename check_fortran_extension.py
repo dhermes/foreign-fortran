@@ -1,7 +1,15 @@
-try:
-    import fortran_example
-except ImportError:
-    fortran_example = None
+import numpy as np
+
+import fortran_example
+
+
+MSG_FOO_ARRAY = """\
+fortran_example.example.foo_array(
+    {},
+    {},
+) =
+{}
+"""
 
 
 def main():
@@ -20,6 +28,16 @@ def main():
     msg_foo_not_c = 'fortran_example.example.foo_not_c({}, {}) = {}'.format(
         bar, baz, fortran_example.example.foo_not_c(bar, baz))
     print(msg_foo_not_c)
+
+    val = np.asfortranarray([
+        [ 3.0, 4.5 ],
+        [ 1.0, 1.25],
+        [ 9.0, 0.0 ],
+        [-1.0, 4.0 ],
+    ])
+    size, _ = val.shape
+    two_val = fortran_example.example.foo_array(val)
+    print(MSG_FOO_ARRAY.format(size, val, two_val))
 
 
 if __name__ == '__main__':

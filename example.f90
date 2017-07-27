@@ -4,7 +4,7 @@ module example
   use types, only: dp
   implicit none
   private
-  public foo, foo_not_c, make_udf, UserDefined
+  public foo, foo_array, foo_not_c, make_udf, UserDefined
 
   type, bind(c) :: UserDefined
      real(c_double) :: buzz
@@ -21,6 +21,15 @@ contains
     quux = bar + 3.75_dp * baz
 
   end subroutine foo
+
+  subroutine foo_array(size, val, two_val) bind(c, name='foo_array')
+    integer(c_int), intent(in), value :: size
+    real(c_double), intent(in) :: val(size, 2)
+    real(c_double), intent(out) :: two_val(size, 2)
+
+    two_val = 2.0_dp * val
+
+  end subroutine foo_array
 
   subroutine foo_not_c(bar, baz, quux)
     real(dp), intent(in) :: bar, baz
