@@ -9,6 +9,14 @@ def main():
     quux = cy_example.foo_(bar, baz)
     print('quux = foo({}, {}) = {}'.format(bar, baz, quux))
 
+    buzz = 1.25
+    broken = 5.0
+    how_many = 1337
+    quuz = cy_example.make_udf_(buzz, broken, how_many)
+    msg = 'quuz = make_udf_({}, {}, {}) = {}'.format(
+        buzz, broken, how_many, quuz)
+    print(msg)
+
     val = np.asfortranarray([
         [ 3.0, 4.5 ],
         [ 1.0, 1.25],

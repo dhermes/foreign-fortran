@@ -58,6 +58,7 @@ fortran_example.example.foo      (1.0, 16.0) = 0.0
 fortran_example.example.foo_not_c(1.0, 16.0) = 61.0
 $ python check_cython.py
 quux = foo(1.0, 16.0) = 61.0
+quuz = make_udf_(1.25, 5.0, 1337) = {'broken': 5.0, 'how_many': 1337, 'buzz': 1.25}
 val =
 [[ 3.    4.5 ]
  [ 1.    1.25]

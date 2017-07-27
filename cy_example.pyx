@@ -7,13 +7,26 @@ cimport numpy as np
 
 cdef extern:
     void foo(double bar, double baz, double *quux)
+    void make_udf(double buzz, double broken, int how_many, UserDefined *made_it)
     void foo_array(int size, double *val, double *two_val)
+
+
+cdef struct UserDefined:
+    double buzz
+    double broken
+    int how_many
 
 
 def foo_(double bar, double baz):
     cdef double quux
     foo(bar, baz, &quux)
     return quux
+
+
+def make_udf_(double buzz, double broken, int how_many):
+    cdef UserDefined made_it
+    make_udf(buzz, broken, how_many, &made_it)
+    return made_it
 
 
 @cython.boundscheck(False)
