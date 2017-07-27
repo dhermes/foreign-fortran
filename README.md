@@ -58,6 +58,17 @@ fortran_example.example.foo      (1.0, 16.0) = 0.0
 fortran_example.example.foo_not_c(1.0, 16.0) = 61.0
 $ python check_cython.py
 quux = foo(1.0, 16.0) = 61.0
+val =
+[[ 3.    4.5 ]
+ [ 1.    1.25]
+ [ 9.    0.  ]
+ [-1.    4.  ]]
+two_val = foo_array_(val)
+two_val =
+[[  6.    9. ]
+ [  2.    2.5]
+ [ 18.    0. ]
+ [ -2.    8. ]]
 ```
 
 [1]: http://www.mathcs.emory.edu/~cheung/Courses/561/Syllabus/6-Fortran/struct.html
