@@ -33,7 +33,7 @@ Decently [helpful article][5] and ["pre-article"][6] to that one.
 ## Doing Everything
 
 ```
-$ make main main_c example.so fortran_example.so
+$ make main main_c example.so fortran_example.so cy_example.so
 ```
 
 then run the exact same Fortran code in four different ways:
@@ -56,6 +56,8 @@ fortran_example.example: <fortran object>
 dir(fortran_example.example): ['foo', 'foo_not_c']
 fortran_example.example.foo      (1.0, 16.0) = 0.0
 fortran_example.example.foo_not_c(1.0, 16.0) = 61.0
+$ python check_cython.py
+quux = foo(1.0, 16.0) = 61.0
 ```
 
 [1]: http://www.mathcs.emory.edu/~cheung/Courses/561/Syllabus/6-Fortran/struct.html

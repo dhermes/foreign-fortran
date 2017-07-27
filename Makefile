@@ -9,6 +9,11 @@ main_c: example.f90 main.c types.mod
 	rm main.o
 	rm types.o
 
+cy_example.so: cy_example.pyx example.so types.mod
+	gfortran -shared -fPIC -c example.f90
+	python setup.py build_ext --inplace
+	rm -fr build/ cy_example.c example.mod example.o example.so
+
 example.so: example.f90 types.mod
 	gfortran -shared -fPIC example.f90 -o example.so
 
@@ -24,6 +29,6 @@ types.mod: types.f90
 	rm types.o
 
 clean:
-	rm -f example.mod example.o example.so fortran_example.so main main_c types.mod
+	rm -f cy_example.so example.mod example.o example.so fortran_example.so main main_c types.mod
 
 .PHONY: all clean
