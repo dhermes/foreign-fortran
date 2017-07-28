@@ -37,5 +37,13 @@ int main (void)
   printf("     [%f, %f],\n", two_val[2], two_val[6]);
   printf("     [%f, %f]]\n", two_val[3], two_val[7]);
 
+  struct UserDefined *made_it_ptr;
+  udf_ptr(&made_it_ptr);
+  struct UserDefined made_it = *made_it_ptr;
+  printf("made_it_ptr = %p\n", made_it_ptr);
+  printf("made_it_ptr = %ld\n", made_it_ptr);
+  printf("made_it = UserDefined(%f, %f, %d)\n",
+         made_it.buzz, made_it.broken, made_it.how_many);
+
   return 0;
 }

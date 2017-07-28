@@ -1,7 +1,6 @@
 program main
 
-  use types, only: dp
-  use example, only: foo, foo_array, make_udf, UserDefined
+  use example, only: dp, foo, foo_array, make_udf, UserDefined
   implicit none
 
   real(dp) :: bar, baz, quux

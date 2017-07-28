@@ -1,7 +1,6 @@
 # NOTE: This is **ONLY** for Cython.
 import distutils.core
 import distutils.extension
-import Cython.Build
 import Cython.Distutils
 import numpy
 
