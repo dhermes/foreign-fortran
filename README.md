@@ -72,8 +72,8 @@ foo_array(
      [2.000000, 2.500000],
      [18.000000, 0.000000],
      [-2.000000, 8.000000]]
-made_it_ptr = 0x7ffd3c9a3d30
-made_it_ptr = 140725620194608
+made_it_ptr = 0x1c10370
+made_it_ptr = 29426544
 made_it = UserDefined(3.125000, -10.500000, 101)
 ```
 
@@ -85,7 +85,8 @@ $ make example.so > /dev/null; python check_ctypes.py; make clean > /dev/null
 <CDLL '.../example.so', handle 16e1440 at 7f2491f75350>
 quux = foo(c_double(1.0), c_double(16.0)) = c_double(61.0)
 quuz = make_udf(c_double(1.25), c_double(5.0), c_int(1337)) = UserDefined(buzz=1.25, broken=5.0, how_many=1337)
-address(quuz) = 43429856
+quuz needsfree: True
+address(quuz) = 26217808
 *address(quuz) = UserDefined(buzz=1.25, broken=5.0, how_many=1337)
 val =
 [[ 3.    4.5 ]
@@ -98,10 +99,11 @@ two_val =
  [  2.    2.5]
  [ 18.    0. ]
  [ -2.    8. ]]
-made_it_ptr: <__main__.LP_UserDefined object at 0x7f2b77ee4560>
-address: 140731938143600
-made_it: UserDefined(buzz=1.97626258336e-323, broken=2.15683764813e-317, how_many=2012013104)
-*address = UserDefined(buzz=1.97626258336e-323, broken=2.15683764813e-317, how_many=2012013104)
+made_it_ptr: <__main__.LP_UserDefined object at 0x7f898a7b55f0>
+address: 26228288
+made_it: UserDefined(buzz=3.125, broken=-10.5, how_many=101)
+made_it needsfree: True
+*address = UserDefined(buzz=3.125, broken=-10.5, how_many=101)
 ```
 
 ### Python via `f2py`

@@ -1,6 +1,6 @@
 module example
 
-  use iso_c_binding, only: c_double, c_int, c_ptr, c_loc
+  use iso_c_binding, only: c_double, c_int, c_ptr, c_f_pointer
   implicit none
   private
   public dp, foo, foo_array, foo_not_c, make_udf, udf_ptr, UserDefined
@@ -52,15 +52,15 @@ contains
   end subroutine make_udf
 
   subroutine udf_ptr(made_it_ptr) bind(c, name='udf_ptr')
-    type(c_ptr), intent(out) :: made_it_ptr
+    type(c_ptr), intent(in) :: made_it_ptr
     ! Outside of signature
-    type(UserDefined), target :: made_it
+    type(UserDefined), pointer :: made_it
+
+    call c_f_pointer(made_it_ptr, made_it)
 
     made_it%buzz = 3.125_dp
     made_it%broken = -10.5_dp
     made_it%how_many = 101
-
-    made_it_ptr = c_loc(made_it)
 
   end subroutine udf_ptr
 

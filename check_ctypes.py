@@ -51,6 +51,7 @@ def main():
     msg = 'quuz = make_udf({}, {}, {}) = {}'.format(
         buzz, broken, how_many, quuz)
     print(msg)
+    print('quuz needsfree: {}'.format(bool(quuz._b_needsfree_)))
     quuz_address = ctypes.addressof(quuz)
     print('address(quuz) = {}'.format(quuz_address))
     alt_quuz = UserDefined.from_address(quuz_address)
@@ -78,14 +79,15 @@ def main():
     print('two_val =\n{}'.format(two_val))
 
     # udf_ptr()
-    made_it_ptr = UserDefined_ptr()
+    made_it = UserDefined()
+    made_it_ptr = ctypes.pointer(made_it)
     lib_example.udf_ptr(ctypes.byref(made_it_ptr))
     print('made_it_ptr: {}'.format(made_it_ptr))
     raw_pointer = ctypes.cast(made_it_ptr, ctypes.c_void_p)
     print('address: {}'.format(raw_pointer.value))
 
-    made_it = made_it_ptr[0]
     print('made_it: {}'.format(made_it))
+    print('made_it needsfree: {}'.format(bool(made_it._b_needsfree_)))
     alt_made_it = UserDefined.from_address(raw_pointer.value)
     print('*address = {}'.format(alt_made_it))
 
