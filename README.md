@@ -71,6 +71,8 @@ $ make example.so > /dev/null; python check_ctypes.py; make clean > /dev/null
 <CDLL '.../example.so', handle 16e1440 at 7f2491f75350>
 quux = foo(c_double(1.0), c_double(16.0)) = c_double(61.0)
 quuz = make_udf(c_double(1.25), c_double(5.0), c_int(1337)) = UserDefined(buzz=1.25, broken=5.0, how_many=1337)
+address(quuz) = 43429856
+*address(quuz) = UserDefined(buzz=1.25, broken=5.0, how_many=1337)
 val =
 [[ 3.    4.5 ]
  [ 1.    1.25]
@@ -82,6 +84,10 @@ two_val =
  [  2.    2.5]
  [ 18.    0. ]
  [ -2.    8. ]]
+made_it_ptr: <__main__.LP_UserDefined object at 0x7f2b77ee4560>
+address: 140731938143600
+made_it: UserDefined(buzz=1.97626258336e-323, broken=2.15683764813e-317, how_many=2012013104)
+*address = UserDefined(buzz=1.97626258336e-323, broken=2.15683764813e-317, how_many=2012013104)
 $ make fortran_example.so > /dev/null; python check_fortran_extension.py; make clean > /dev/null
 fortran_example: <module 'fortran_example' from '.../fortran_example.so'>
 fortran_example.example: <fortran object>

@@ -1,5 +1,6 @@
 import ctypes
 import os
+import struct
 
 import numpy as np
 
@@ -23,6 +24,9 @@ class UserDefined(ctypes.Structure):
         return template.format(self=self)
 
 
+UserDefined_ptr = ctypes.POINTER(UserDefined)
+
+
 def numpy_pointer(array):
     return array.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
 
@@ -31,21 +35,28 @@ def main():
     lib_example = ctypes.cdll.LoadLibrary(SO_FILE)
     print(lib_example)
 
+    # foo()
     bar = ctypes.c_double(1.0)
     baz = ctypes.c_double(16.0)
     quux = ctypes.c_double()
-    lib_example.foo(bar, baz, ctypes.pointer(quux))
+    lib_example.foo(bar, baz, ctypes.byref(quux))
     print('quux = foo({}, {}) = {}'.format(bar, baz, quux))
 
+    # make_udf()
     buzz = ctypes.c_double(1.25)
     broken = ctypes.c_double(5.0)
     how_many = ctypes.c_int(1337)
     quuz = UserDefined()
-    lib_example.make_udf(buzz, broken, how_many, ctypes.pointer(quuz))
+    lib_example.make_udf(buzz, broken, how_many, ctypes.byref(quuz))
     msg = 'quuz = make_udf({}, {}, {}) = {}'.format(
         buzz, broken, how_many, quuz)
     print(msg)
+    quuz_address = ctypes.addressof(quuz)
+    print('address(quuz) = {}'.format(quuz_address))
+    alt_quuz = UserDefined.from_address(quuz_address)
+    print('*address(quuz) = {}'.format(alt_quuz))
 
+    # foo_array()
     val = np.asfortranarray([
         [ 3.0, 4.5 ],
         [ 1.0, 1.25],
@@ -58,13 +69,25 @@ def main():
 
     size = ctypes.c_int(size)
     lib_example.foo_array(
-        ctypes.pointer(size),
+        ctypes.byref(size),
         numpy_pointer(val),
         numpy_pointer(two_val),
     )
     print('val =\n{}'.format(val))
     print('two_val = foo_array({}, val)'.format(size))
     print('two_val =\n{}'.format(two_val))
+
+    # udf_ptr()
+    made_it_ptr = UserDefined_ptr()
+    lib_example.udf_ptr(ctypes.byref(made_it_ptr))
+    print('made_it_ptr: {}'.format(made_it_ptr))
+    raw_pointer = ctypes.cast(made_it_ptr, ctypes.c_void_p)
+    print('address: {}'.format(raw_pointer.value))
+
+    made_it = made_it_ptr[0]
+    print('made_it: {}'.format(made_it))
+    alt_made_it = UserDefined.from_address(raw_pointer.value)
+    print('*address = {}'.format(alt_made_it))
 
 
 if __name__ == '__main__':
