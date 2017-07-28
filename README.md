@@ -67,7 +67,7 @@ foo_array(
 made_it_ptr = 0x7ffd3c9a3d30
 made_it_ptr = 140725620194608
 made_it = UserDefined(3.125000, -10.500000, 101)
-$ make example.so > /dev/null; python ctypes_static.py; make clean > /dev/null
+$ make example.so > /dev/null; python check_ctypes.py; make clean > /dev/null
 <CDLL '.../example.so', handle 16e1440 at 7f2491f75350>
 quux = foo(c_double(1.0), c_double(16.0)) = c_double(61.0)
 quuz = make_udf(c_double(1.25), c_double(5.0), c_int(1337)) = UserDefined(buzz=1.25, broken=5.0, how_many=1337)
