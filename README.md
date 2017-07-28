@@ -34,6 +34,8 @@ Decently [helpful article][5] and ["pre-article"][6] to that one.
 
 Run the exact same Fortran code in five different ways:
 
+### Plain Fortran
+
 ```
 $ make main > /dev/null; ./main; make clean > /dev/null
  foo(   1.0000000000000000        16.000000000000000      ) =    61.000000000000000
@@ -50,6 +52,12 @@ $ make main > /dev/null; ./main; make clean > /dev/null
       [   2.0000000000000000        2.5000000000000000      ],
       [   18.000000000000000        0.0000000000000000      ],
       [  -2.0000000000000000        8.0000000000000000      ]]
+```
+
+### Plain C
+
+
+```
 $ make main_c > /dev/null; ./main_c; make clean > /dev/null
 quux = foo(1.000000, 16.000000) = 61.000000
 quuz = make_udf(1.250000, 5.000000, 1337) = UserDefined(1.250000, 5.000000, 1337)
@@ -67,6 +75,12 @@ foo_array(
 made_it_ptr = 0x7ffd3c9a3d30
 made_it_ptr = 140725620194608
 made_it = UserDefined(3.125000, -10.500000, 101)
+```
+
+### Python via `ctypes`
+
+
+```
 $ make example.so > /dev/null; python check_ctypes.py; make clean > /dev/null
 <CDLL '.../example.so', handle 16e1440 at 7f2491f75350>
 quux = foo(c_double(1.0), c_double(16.0)) = c_double(61.0)
@@ -88,6 +102,11 @@ made_it_ptr: <__main__.LP_UserDefined object at 0x7f2b77ee4560>
 address: 140731938143600
 made_it: UserDefined(buzz=1.97626258336e-323, broken=2.15683764813e-317, how_many=2012013104)
 *address = UserDefined(buzz=1.97626258336e-323, broken=2.15683764813e-317, how_many=2012013104)
+```
+
+### Python via `f2py`
+
+```
 $ make fortran_example.so > /dev/null; python check_fortran_extension.py; make clean > /dev/null
 fortran_example: <module 'fortran_example' from '.../fortran_example.so'>
 fortran_example.example: <fortran object>
@@ -106,6 +125,11 @@ two_val =
  [ 18.    0. ]
  [ -2.    8. ]]
 
+```
+
+### Python via Cython
+
+```
 $ make cy_example.so > /dev/null 2>&1; python check_cython.py; make clean > /dev/null
 quux = foo(1.0, 16.0) = 61.0
 quuz = make_udf_(1.25, 5.0, 1337) = {'broken': 5.0, 'how_many': 1337, 'buzz': 1.25}
