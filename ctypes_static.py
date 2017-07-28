@@ -52,10 +52,13 @@ def main():
         [ 9.0, 0.0 ],
         [-1.0, 4.0 ],
     ])
-    size, _ = val.shape
-    two_val = np.empty((size, 2), order='F')
+    shape = val.shape
+    two_val = np.empty(shape, order='F')
+    size, _ = shape
+
+    size = ctypes.c_int(size)
     lib_example.foo_array(
-        ctypes.c_int(size),
+        ctypes.pointer(size),
         numpy_pointer(val),
         numpy_pointer(two_val),
     )

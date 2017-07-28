@@ -24,7 +24,7 @@ int main (void)
   int size = 4;
   double val[8] = {3.0, 1.0, 9.0, -1.0, 4.5, 1.25, 0.0, 4.0};
   double two_val[8];
-  foo_array(size, &val, &two_val);
+  foo_array(&size, &val, &two_val);
   printf("foo_array(\n");
   printf("    %d,\n", size);
   printf("    [[%f, %f],\n", val[0], val[4]);

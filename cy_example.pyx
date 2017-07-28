@@ -8,7 +8,7 @@ cimport numpy as np
 cdef extern:
     void foo(double bar, double baz, double *quux)
     void make_udf(double buzz, double broken, int how_many, UserDefined *made_it)
-    void foo_array(int size, double *val, double *two_val)
+    void foo_array(int *size, double *val, double *two_val)
 
 
 cdef struct UserDefined:
@@ -38,7 +38,7 @@ def foo_array_(np.ndarray[double, ndim=2, mode='fortran'] val not None):
     size = np.shape(val)[0]
     two_val = np.empty_like(val)
     foo_array(
-        size,
+        &size,
         &val[0, 0],
         &two_val[0, 0],
     )

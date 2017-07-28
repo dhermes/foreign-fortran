@@ -23,10 +23,10 @@ contains
 
   end subroutine foo
 
-  subroutine foo_array(size, val, two_val) bind(c, name='foo_array')
-    integer(c_int), intent(in), value :: size
-    real(c_double), intent(in) :: val(size, 2)
-    real(c_double), intent(out) :: two_val(size, 2)
+  subroutine foo_array(size_, val, two_val) bind(c, name='foo_array')
+    integer(c_int), intent(in) :: size_
+    real(c_double), intent(in) :: val(size_, 2)
+    real(c_double), intent(out) :: two_val(size_, 2)
 
     two_val = 2.0_dp * val
 

@@ -4,11 +4,11 @@ import fortran_example
 
 
 MSG_FOO_ARRAY = """\
-fortran_example.example.foo_array(
-    {},
-    {},
-) =
-{}
+val =
+{1}
+two_val = fortran_example.example.foo_array(val, {0})
+two_val =
+{2}
 """
 
 

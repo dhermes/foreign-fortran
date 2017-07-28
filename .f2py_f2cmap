@@ -1,6 +1,10 @@
 # https://stackoverflow.com/questions/12523524/
 {
   "real": {
-    "dp": "double"
+    "dp": "double",
+    "c_double": "double"
+  },
+  "integer": {
+    "c_int": "int"
   }
 }

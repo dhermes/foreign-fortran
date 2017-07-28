@@ -76,19 +76,31 @@ val =
  [ 1.    1.25]
  [ 9.    0.  ]
  [-1.    4.  ]]
-two_val = foo_array(4, val)
+two_val = foo_array(c_int(4), val)
 two_val =
 [[  6.    9. ]
  [  2.    2.5]
  [ 18.    0. ]
  [ -2.    8. ]]
-$ python check_fortran_extension.py
+$ make fortran_example.so > /dev/null; python check_fortran_extension.py; make clean > /dev/null
 fortran_example: <module 'fortran_example' from '.../fortran_example.so'>
 fortran_example.example: <fortran object>
-dir(fortran_example.example): ['foo', 'foo_not_c']
+dir(fortran_example.example): ['foo', 'foo_array', 'foo_not_c']
 fortran_example.example.foo      (1.0, 16.0) = 0.0
 fortran_example.example.foo_not_c(1.0, 16.0) = 61.0
-$ python check_cython.py
+val =
+[[ 3.    4.5 ]
+ [ 1.    1.25]
+ [ 9.    0.  ]
+ [-1.    4.  ]]
+two_val = fortran_example.example.foo_array(val, 4)
+two_val =
+[[  6.    9. ]
+ [  2.    2.5]
+ [ 18.    0. ]
+ [ -2.    8. ]]
+
+$ make cy_example.so > /dev/null 2>&1; python check_cython.py; make clean > /dev/null
 quux = foo(1.0, 16.0) = 61.0
 quuz = make_udf_(1.25, 5.0, 1337) = {'broken': 5.0, 'how_many': 1337, 'buzz': 1.25}
 val =
