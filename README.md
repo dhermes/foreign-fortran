@@ -32,24 +32,56 @@ Decently [helpful article][5] and ["pre-article"][6] to that one.
 
 ## Doing Everything
 
-```
-$ make main main_c example.so fortran_example.so cy_example.so
-```
-
-then run the exact same Fortran code in four different ways:
+Run the exact same Fortran code in five different ways:
 
 ```
-$ ./main
+$ make main > /dev/null; ./main; make clean > /dev/null
  foo(   1.0000000000000000        16.000000000000000      ) =    61.000000000000000
  make_udf(   1.2500000000000000        5.0000000000000000             1337 )
         =    1.2500000000000000        5.0000000000000000             1337
-$ ./main_c
+ foo_array(
+                4 ,
+     [[   3.0000000000000000        4.5000000000000000      ],
+      [   1.0000000000000000        1.2500000000000000      ],
+      [   9.0000000000000000        0.0000000000000000      ],
+      [  -1.0000000000000000        4.0000000000000000      ]],
+ ) =
+     [[   6.0000000000000000        9.0000000000000000      ],
+      [   2.0000000000000000        2.5000000000000000      ],
+      [   18.000000000000000        0.0000000000000000      ],
+      [  -2.0000000000000000        8.0000000000000000      ]]
+$ make main_c > /dev/null; ./main_c; make clean > /dev/null
 quux = foo(1.000000, 16.000000) = 61.000000
 quuz = make_udf(1.250000, 5.000000, 1337) = UserDefined(1.250000, 5.000000, 1337)
-$ python ctypes_static.py
+foo_array(
+    4,
+    [[3.000000, 4.500000],
+     [1.000000, 1.250000],
+     [9.000000, 0.000000],
+     [-1.000000, 4.000000]],
+) =
+    [[6.000000, 9.000000],
+     [2.000000, 2.500000],
+     [18.000000, 0.000000],
+     [-2.000000, 8.000000]]
+made_it_ptr = 0x7ffd3c9a3d30
+made_it_ptr = 140725620194608
+made_it = UserDefined(3.125000, -10.500000, 101)
+$ make example.so > /dev/null; python ctypes_static.py; make clean > /dev/null
 <CDLL '.../example.so', handle 16e1440 at 7f2491f75350>
 quux = foo(c_double(1.0), c_double(16.0)) = c_double(61.0)
 quuz = make_udf(c_double(1.25), c_double(5.0), c_int(1337)) = UserDefined(buzz=1.25, broken=5.0, how_many=1337)
+val =
+[[ 3.    4.5 ]
+ [ 1.    1.25]
+ [ 9.    0.  ]
+ [-1.    4.  ]]
+two_val = foo_array(4, val)
+two_val =
+[[  6.    9. ]
+ [  2.    2.5]
+ [ 18.    0. ]
+ [ -2.    8. ]]
 $ python check_fortran_extension.py
 fortran_example: <module 'fortran_example' from '.../fortran_example.so'>
 fortran_example.example: <fortran object>
