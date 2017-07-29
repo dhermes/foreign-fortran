@@ -1,7 +1,8 @@
 import numpy as np
 
-import fortran_example
 from check_ctypes import prepare_udf
+from check_ctypes import SEPARATOR
+import fortran_example
 
 
 MSG_FOO_ARRAY = """\
@@ -15,7 +16,6 @@ ptr_as_int = address(made_it)  # long
 ptr_as_int = {}
 udf_ptr(ptr_as_int)  # Set memory in ``made_it``
 made_it = {}"""
-SEPARATOR = '-' * 60
 
 
 def main():

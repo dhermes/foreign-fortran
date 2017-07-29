@@ -47,8 +47,7 @@ int main (void)
 
   print_sep();
   struct UserDefined made_it;
-  struct UserDefined *made_it_ptr = &made_it;
-  intptr_t ptr_as_int = (intptr_t) made_it_ptr;
+  intptr_t ptr_as_int = (intptr_t) (&made_it);
   udf_ptr(&ptr_as_int);
   printf("ptr_as_int = %ld (%p)\n", ptr_as_int, ptr_as_int);
   printf("made_it = UserDefined(%f, %f, %d)\n",
