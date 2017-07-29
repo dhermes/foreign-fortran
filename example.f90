@@ -3,7 +3,7 @@ module example
   use iso_c_binding, only: c_double, c_int, c_ptr, c_intptr_t, c_f_pointer
   implicit none
   private
-  public dp, foo, foo_array, foo_not_c, make_udf, udf_ptr, UserDefined
+  public dp, foo, foo_array, foo_by_ref, make_udf, udf_ptr, UserDefined
 
   integer, parameter :: dp=kind(0.d0)
 
@@ -23,6 +23,14 @@ contains
 
   end subroutine foo
 
+  subroutine foo_by_ref(bar, baz, quux)
+    real(dp), intent(in) :: bar, baz
+    real(dp), intent(out) :: quux
+
+    call foo(bar, baz, quux)
+
+  end subroutine foo_by_ref
+
   subroutine foo_array(size_, val, two_val) bind(c, name='foo_array')
     integer(c_int), intent(in) :: size_
     real(c_double), intent(in) :: val(size_, 2)
@@ -31,14 +39,6 @@ contains
     two_val = 2.0_dp * val
 
   end subroutine foo_array
-
-  subroutine foo_not_c(bar, baz, quux)
-    real(dp), intent(in) :: bar, baz
-    real(dp), intent(out) :: quux
-
-    quux = bar + 3.75_dp * baz
-
-  end subroutine foo_not_c
 
   subroutine make_udf(buzz, broken, how_many, made_it) bind(c, name='make_udf')
     real(c_double), intent(in), value :: buzz, broken

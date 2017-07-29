@@ -6,12 +6,12 @@ from check_ctypes import prepare_udf
 
 MSG_FOO_ARRAY = """\
 val =
-{1}
-two_val = fortran_example.example.foo_array(val, {0})
+{}
+two_val = foo_array(val)
 two_val =
-{2}"""
+{}"""
 UDF_PTR_TEMPLATE = """\
-ptr_as_int = address(made_it) -> long
+ptr_as_int = address(made_it)  # long
 ptr_as_int = {}
 udf_ptr(ptr_as_int)  # Set memory in ``made_it``
 made_it = {}"""
@@ -26,12 +26,12 @@ def main():
     print(SEPARATOR)
     bar = 1.0
     baz = 16.0
-    msg_foo = 'fortran_example.example.foo      ({}, {}) = {}'.format(
+    msg_foo = 'foo       ({}, {}) = {}'.format(
         bar, baz, example_ns.foo(bar, baz))
     print(msg_foo)
-    msg_foo_not_c = 'fortran_example.example.foo_not_c({}, {}) = {}'.format(
-        bar, baz, example_ns.foo_not_c(bar, baz))
-    print(msg_foo_not_c)
+    msg_foo_by_ref = 'foo_by_ref({}, {}) = {}'.format(
+        bar, baz, example_ns.foo_by_ref(bar, baz))
+    print(msg_foo_by_ref)
 
     print(SEPARATOR)
     val = np.asfortranarray([
@@ -40,9 +40,8 @@ def main():
         [ 9.0, 0.0 ],
         [-1.0, 4.0 ],
     ])
-    size, _ = val.shape
     two_val = example_ns.foo_array(val)
-    print(MSG_FOO_ARRAY.format(size, val, two_val))
+    print(MSG_FOO_ARRAY.format(val, two_val))
 
     print(SEPARATOR)
     made_it, ptr_as_int = prepare_udf()
