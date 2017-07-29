@@ -2,12 +2,13 @@ import ctypes
 import os
 import struct
 
-import numpy as np
+import cffi  # 1.10.0
+import numpy as np  # 1.13.1
 
 
 HERE = os.path.abspath(os.path.dirname(__file__))
 SO_FILE = os.path.join(HERE, 'example.so')
-
+SEPARATOR = '-' * 60
 
 
 class UserDefined(ctypes.Structure):
@@ -31,6 +32,11 @@ def numpy_pointer(array):
     return array.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
 
 
+def verify_pointer_size():
+    ffi = cffi.FFI()
+    assert ffi.sizeof('intptr_t') == ffi.sizeof('long')
+
+
 def main():
     lib_example = ctypes.cdll.LoadLibrary(SO_FILE)
     print(lib_example)
@@ -42,6 +48,7 @@ def main():
     lib_example.foo(bar, baz, ctypes.byref(quux))
     print('quux = foo({}, {}) = {}'.format(bar, baz, quux))
 
+    print(SEPARATOR)
     # make_udf()
     buzz = ctypes.c_double(1.25)
     broken = ctypes.c_double(5.0)
@@ -57,6 +64,7 @@ def main():
     alt_quuz = UserDefined.from_address(quuz_address)
     print('*address(quuz) = {}'.format(alt_quuz))
 
+    print(SEPARATOR)
     # foo_array()
     val = np.asfortranarray([
         [ 3.0, 4.5 ],
@@ -78,13 +86,16 @@ def main():
     print('two_val = foo_array({}, val)'.format(size))
     print('two_val =\n{}'.format(two_val))
 
+    print(SEPARATOR)
     # udf_ptr()
     made_it = UserDefined()
     made_it_ptr = ctypes.pointer(made_it)
-    lib_example.udf_ptr(ctypes.byref(made_it_ptr))
-    print('made_it_ptr: {}'.format(made_it_ptr))
     raw_pointer = ctypes.cast(made_it_ptr, ctypes.c_void_p)
-    print('address: {}'.format(raw_pointer.value))
+    # Make sure it's "OK" to use a ``long`` here.
+    verify_pointer_size()
+    ptr_as_int = ctypes.c_long(raw_pointer.value)
+    print('ptr_as_int: {}'.format(ptr_as_int))
+    lib_example.udf_ptr(ctypes.byref(ptr_as_int))
 
     print('made_it: {}'.format(made_it))
     print('made_it needsfree: {}'.format(bool(made_it._b_needsfree_)))
