@@ -5,6 +5,7 @@
     "c_double": "double"
   },
   "integer": {
-    "c_int": "int"
+    "c_int": "int",
+    "c_intptr_t": "long"
   }
 }

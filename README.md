@@ -116,10 +116,11 @@ made_it needsfree: True
 ```
 $ make fortran_example.so > /dev/null; python check_fortran_extension.py; make clean > /dev/null
 fortran_example: <module 'fortran_example' from '.../fortran_example.so'>
-fortran_example.example: <fortran object>
-dir(fortran_example.example): ['foo', 'foo_array', 'foo_not_c']
+dir(fortran_example.example): ['foo', 'foo_array', 'foo_not_c', 'udf_ptr']
+------------------------------------------------------------
 fortran_example.example.foo      (1.0, 16.0) = 0.0
 fortran_example.example.foo_not_c(1.0, 16.0) = 61.0
+------------------------------------------------------------
 val =
 [[ 3.    4.5 ]
  [ 1.    1.25]
@@ -131,7 +132,11 @@ two_val =
  [  2.    2.5]
  [ 18.    0. ]
  [ -2.    8. ]]
-
+------------------------------------------------------------
+ptr_as_int = address(made_it) -> long
+ptr_as_int = 43660048
+udf_ptr(ptr_as_int)  # Set memory in ``made_it``
+made_it = UserDefined(buzz=3.125, broken=-10.5, how_many=101)
 ```
 
 ### Python via Cython

@@ -25,9 +25,6 @@ class UserDefined(ctypes.Structure):
         return template.format(self=self)
 
 
-UserDefined_ptr = ctypes.POINTER(UserDefined)
-
-
 def numpy_pointer(array):
     return array.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
 
@@ -35,6 +32,16 @@ def numpy_pointer(array):
 def verify_pointer_size():
     ffi = cffi.FFI()
     assert ffi.sizeof('intptr_t') == ffi.sizeof('long')
+
+
+def prepare_udf():
+    made_it = UserDefined()
+    raw_pointer = ctypes.cast(
+        ctypes.pointer(made_it), ctypes.c_void_p)
+    # Make sure it's "OK" to use a ``long`` here.
+    verify_pointer_size()
+    ptr_as_int = ctypes.c_long(raw_pointer.value)
+    return made_it, ptr_as_int
 
 
 def main():
@@ -88,18 +95,13 @@ def main():
 
     print(SEPARATOR)
     # udf_ptr()
-    made_it = UserDefined()
-    made_it_ptr = ctypes.pointer(made_it)
-    raw_pointer = ctypes.cast(made_it_ptr, ctypes.c_void_p)
-    # Make sure it's "OK" to use a ``long`` here.
-    verify_pointer_size()
-    ptr_as_int = ctypes.c_long(raw_pointer.value)
+    made_it, ptr_as_int = prepare_udf()
     print('ptr_as_int: {}'.format(ptr_as_int))
     lib_example.udf_ptr(ctypes.byref(ptr_as_int))
 
     print('made_it: {}'.format(made_it))
     print('made_it needsfree: {}'.format(bool(made_it._b_needsfree_)))
-    alt_made_it = UserDefined.from_address(raw_pointer.value)
+    alt_made_it = UserDefined.from_address(ptr_as_int.value)
     print('*address = {}'.format(alt_made_it))
 
 

@@ -18,7 +18,7 @@ example.so: example.f90
 
 fortran_example.so: example.f90 .f2py_f2cmap
 	f2py --verbose -c --opt='-O3' -m fortran_example example.f90 \
-	skip: make_udf udf_ptr
+	skip: make_udf
 
 example.o example.mod: example.f90
 	gfortran -c example.f90
