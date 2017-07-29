@@ -31,7 +31,8 @@ def numpy_pointer(array):
 
 def verify_pointer_size():
     ffi = cffi.FFI()
-    assert ffi.sizeof('intptr_t') == ffi.sizeof('long')
+    assert ffi.sizeof('intptr_t') == ffi.sizeof('ssize_t')
+    return ctypes.c_ssize_t
 
 
 def prepare_udf():
@@ -39,8 +40,8 @@ def prepare_udf():
     raw_pointer = ctypes.cast(
         ctypes.pointer(made_it), ctypes.c_void_p)
     # Make sure it's "OK" to use a ``long`` here.
-    verify_pointer_size()
-    ptr_as_int = ctypes.c_long(raw_pointer.value)
+    ptr_type = verify_pointer_size()
+    ptr_as_int = ptr_type(raw_pointer.value)
     return made_it, ptr_as_int
 
 
