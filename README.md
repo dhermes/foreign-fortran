@@ -144,9 +144,9 @@ made_it = UserDefined(buzz=3.125, broken=-10.5, how_many=101)
 
 ```
 $ make cy_example.so > /dev/null 2>&1; python check_cython.py; make clean > /dev/null
-quux = foo_(1.0, 16.0) = 61.0
+quux = foo(1.0, 16.0) = 61.0
 ------------------------------------------------------------
-quuz = make_udf_(1.25, 5.0, 1337)
+quuz = make_udf(1.25, 5.0, 1337)
      = {'broken': 5.0, 'how_many': 1337, 'buzz': 1.25}
 ------------------------------------------------------------
 val =
@@ -154,14 +154,14 @@ val =
  [ 1.    1.25]
  [ 9.    0.  ]
  [-1.    4.  ]]
-two_val = foo_array_(val)
+two_val = foo_array(val)
 two_val =
 [[  6.    9. ]
  [  2.    2.5]
  [ 18.    0. ]
  [ -2.    8. ]]
 ------------------------------------------------------------
-made_it = udf_ptr_()
+made_it = udf_ptr()
         = {'broken': -10.5, 'how_many': 101, 'buzz': 3.125}
 ```
 
