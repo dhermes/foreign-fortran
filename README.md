@@ -144,7 +144,7 @@ made_it = UserDefined(buzz=3.125, broken=-10.5, how_many=101)
 
 ```
 $ make cy_example.so > /dev/null 2>&1; python check_cython.py; make clean > /dev/null
-quux = foo(1.0, 16.0) = 61.0
+quux = foo_(1.0, 16.0) = 61.0
 ------------------------------------------------------------
 quuz = make_udf_(1.25, 5.0, 1337)
      = {'broken': 5.0, 'how_many': 1337, 'buzz': 1.25}
@@ -161,7 +161,8 @@ two_val =
  [ 18.    0. ]
  [ -2.    8. ]]
 ------------------------------------------------------------
-made_it: {'broken': -10.5, 'how_many': 101, 'buzz': 3.125}
+made_it = udf_ptr_()
+        = {'broken': -10.5, 'how_many': 101, 'buzz': 3.125}
 ```
 
 [1]: http://www.mathcs.emory.edu/~cheung/Courses/561/Syllabus/6-Fortran/struct.html

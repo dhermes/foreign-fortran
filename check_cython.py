@@ -9,7 +9,7 @@ def main():
     bar = 1.0
     baz = 16.0
     quux = cy_example.foo_(bar, baz)
-    print('quux = foo({}, {}) = {}'.format(bar, baz, quux))
+    print('quux = foo_({}, {}) = {}'.format(bar, baz, quux))
 
     print(SEPARATOR)
     # make_udf()
@@ -37,7 +37,7 @@ def main():
     print(SEPARATOR)
     # udf_ptr()
     made_it = cy_example.udf_ptr_()
-    print('made_it: {}'.format(made_it))
+    print('made_it = udf_ptr_()\n        = {}'.format(made_it))
 
 
 if __name__ == '__main__':
