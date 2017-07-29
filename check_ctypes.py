@@ -62,7 +62,7 @@ def main():
     how_many = ctypes.c_int(1337)
     quuz = UserDefined()
     lib_example.make_udf(buzz, broken, how_many, ctypes.byref(quuz))
-    msg = 'quuz = make_udf({}, {}, {}) = {}'.format(
+    msg = 'quuz = make_udf({}, {}, {})\n     = {}'.format(
         buzz, broken, how_many, quuz)
     print(msg)
     print('quuz needsfree: {}'.format(bool(quuz._b_needsfree_)))

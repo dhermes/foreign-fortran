@@ -88,7 +88,8 @@ $ make example.so > /dev/null; python check_ctypes.py; make clean > /dev/null
 <CDLL '.../example.so', handle 16e1440 at 7f2491f75350>
 quux = foo(c_double(1.0), c_double(16.0)) = c_double(61.0)
 ------------------------------------------------------------
-quuz = make_udf(c_double(1.25), c_double(5.0), c_int(1337)) = UserDefined(buzz=1.25, broken=5.0, how_many=1337)
+quuz = make_udf(c_double(1.25), c_double(5.0), c_int(1337))
+     = UserDefined(buzz=1.25, broken=5.0, how_many=1337)
 quuz needsfree: True
 address(quuz) = 26217808
 *address(quuz) = UserDefined(buzz=1.25, broken=5.0, how_many=1337)
