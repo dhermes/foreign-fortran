@@ -114,7 +114,7 @@ made_it needsfree: True
 ### Python via `f2py`
 
 ```
-$ make fortran_example.so > /dev/null; python check_fortran_extension.py; make clean > /dev/null
+$ make fortran_example.so > /dev/null; python check_f2py.py; make clean > /dev/null
 fortran_example: <module 'fortran_example' from '.../fortran_example.so'>
 dir(fortran_example.example): ['foo', 'foo_array', 'foo_not_c', 'udf_ptr']
 ------------------------------------------------------------
