@@ -68,7 +68,7 @@ def main():
     msg = 'quuz = make_udf({}, {}, {})\n     = {}'.format(
         buzz, broken, how_many, quuz)
     print(msg)
-    print('quuz needsfree: {}'.format(bool(quuz._b_needsfree_)))
+    print('needsfree(quuz) = {}'.format(bool(quuz._b_needsfree_)))
     quuz_address = ctypes.addressof(quuz)
     print('address(quuz) = {}'.format(quuz_address))
     alt_quuz = UserDefined.from_address(quuz_address)
@@ -99,13 +99,13 @@ def main():
     print(SEPARATOR)
     # udf_ptr()
     made_it, ptr_as_int = prepare_udf()
-    print('ptr_as_int: {}'.format(ptr_as_int))
+    print('ptr_as_int = {0}  # 0x{0.value:x}'.format(ptr_as_int))
     lib_example.udf_ptr(ctypes.byref(ptr_as_int))
 
-    print('made_it: {}'.format(made_it))
-    print('made_it needsfree: {}'.format(bool(made_it._b_needsfree_)))
+    print('made_it = {}'.format(made_it))
+    print('needsfree(made_it) = {}'.format(bool(made_it._b_needsfree_)))
     alt_made_it = UserDefined.from_address(ptr_as_int.value)
-    print('*address = {}'.format(alt_made_it))
+    print('*ptr_as_int = {}'.format(alt_made_it))
 
     print(SEPARATOR)
     # just_print()

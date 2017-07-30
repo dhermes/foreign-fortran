@@ -95,7 +95,7 @@ quux = foo(c_double(1.0), c_double(16.0)) = c_double(61.0)
 ------------------------------------------------------------
 quuz = make_udf(c_double(1.25), c_double(5.0), c_int(1337))
      = UserDefined(buzz=1.25, broken=5.0, how_many=1337)
-quuz needsfree: True
+needsfree(quuz) = True
 address(quuz) = 26217808
 *address(quuz) = UserDefined(buzz=1.25, broken=5.0, how_many=1337)
 ------------------------------------------------------------
@@ -111,10 +111,10 @@ two_val =
  [ 18.    0. ]
  [ -2.    8. ]]
 ------------------------------------------------------------
-ptr_as_int: c_long(26228288)
-made_it: UserDefined(buzz=3.125, broken=-10.5, how_many=101)
-made_it needsfree: True
-*address = UserDefined(buzz=3.125, broken=-10.5, how_many=101)
+ptr_as_int = c_long(26228288)  # 0x1903640
+made_it = UserDefined(buzz=3.125, broken=-10.5, how_many=101)
+needsfree(made_it) = True
+*ptr_as_int = UserDefined(buzz=3.125, broken=-10.5, how_many=101)
 ------------------------------------------------------------
 just_print()
  ======== BEGIN FORTRAN ========
