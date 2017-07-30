@@ -3,7 +3,8 @@ module example
   use iso_c_binding, only: c_double, c_int, c_ptr, c_intptr_t, c_f_pointer
   implicit none
   private
-  public dp, foo, foo_array, foo_by_ref, make_udf, udf_ptr, UserDefined
+  public dp, foo, foo_array, foo_by_ref, make_udf, udf_ptr, &
+         just_print, UserDefined
 
   integer, parameter :: dp=kind(0.d0)
 
@@ -65,5 +66,13 @@ contains
     made_it%how_many = 101
 
   end subroutine udf_ptr
+
+  subroutine just_print() bind(c, name='just_print')
+
+    print *, "======== BEGIN FORTRAN ========"
+    print *, "just_print() was called"
+    print *, "========  END  FORTRAN ========"
+
+  end subroutine just_print
 
 end module example

@@ -12,6 +12,7 @@ cdef extern:
         double buzz, double broken, int how_many, UserDefined *made_it)
     void foo_array_fort "foo_array" (int *size, double *val, double *two_val)
     void udf_ptr_fort "udf_ptr" (intptr_t *ptr_as_int)
+    void just_print_fort "just_print" ()
 
 
 cdef struct UserDefined:
@@ -53,3 +54,7 @@ def udf_ptr():
     cdef intptr_t ptr_as_int = <intptr_t> (&made_it)
     udf_ptr_fort(&ptr_as_int)
     return made_it
+
+
+def just_print():
+    just_print_fort()

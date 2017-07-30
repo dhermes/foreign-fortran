@@ -40,6 +40,11 @@ def main():
     made_it = cy_example.udf_ptr()
     print('made_it = udf_ptr()\n        = {}'.format(made_it))
 
+    print(SEPARATOR)
+    # just_print()
+    print('just_print()')
+    cy_example.just_print()
+
 
 if __name__ == '__main__':
     main()

@@ -110,6 +110,11 @@ ptr_as_int: c_long(26228288)
 made_it: UserDefined(buzz=3.125, broken=-10.5, how_many=101)
 made_it needsfree: True
 *address = UserDefined(buzz=3.125, broken=-10.5, how_many=101)
+------------------------------------------------------------
+just_print()
+ ======== BEGIN FORTRAN ========
+ just_print() was called
+ ========  END  FORTRAN ========
 ```
 
 ### Python via `f2py`
@@ -118,7 +123,7 @@ made_it needsfree: True
 $ make fortran_example.so > /dev/null; python check_f2py.py; make clean > /dev/null
 ------------------------------------------------------------
 fortran_example: <module 'fortran_example' from '.../fortran_example.so'>
-dir(fortran_example.example): ['foo', 'foo_array', 'foo_by_ref', 'udf_ptr']
+dir(fortran_example.example): ['foo', 'foo_array', 'foo_by_ref', 'just_print', 'udf_ptr']
 ------------------------------------------------------------
 foo       (1.0, 16.0) = 0.0
 foo_by_ref(1.0, 16.0) = 61.0
@@ -139,6 +144,11 @@ ptr_as_int = address(made_it)  # long
 ptr_as_int = 43660048
 udf_ptr(ptr_as_int)  # Set memory in ``made_it``
 made_it = UserDefined(buzz=3.125, broken=-10.5, how_many=101)
+------------------------------------------------------------
+just_print()
+ ======== BEGIN FORTRAN ========
+ just_print() was called
+ ========  END  FORTRAN ========
 ```
 
 ### Python via Cython
@@ -165,6 +175,23 @@ two_val =
 ------------------------------------------------------------
 made_it = udf_ptr()
         = {'broken': -10.5, 'how_many': 101, 'buzz': 3.125}
+------------------------------------------------------------
+just_print()
+ ======== BEGIN FORTRAN ========
+ just_print() was called
+ ========  END  FORTRAN ========
+```
+
+However, if `libraries=['gfortran']` is not specified in `setup.py` when
+building the module (`cy_example.so`), then the print statements in
+`just_print` (as defined in in `example.f90`) cause
+
+```
+$ make cy_example.so > /dev/null 2>&1; python check_cython.py; make clean > /dev/null
+Traceback (most recent call last):
+  File "check_cython.py", line 4, in <module>
+    import cy_example
+ImportError: .../cy_example.so: undefined symbol: _gfortran_transfer_character_write
 ```
 
 ## References
@@ -173,7 +200,9 @@ made_it = udf_ptr()
 - StackOverflow [question][2] about user-defined types
 - (Lack of) support [in `f2py`][3] (and possible workaround [`f90wrap`][4])
 - Decently [helpful article][5] and ["pre-article"][6] to that one about
-  using Cython to wrap Fortran (rather than `f2py`)
+  using Cython to wrap Fortran (rather than `f2py`). But this article fails
+  to point out it's approach can leave out some symbols (e.g. the `check_cython`
+  example when `libgfortran` isn't included)
 
 [1]: http://www.mathcs.emory.edu/~cheung/Courses/561/Syllabus/6-Fortran/struct.html
 [2]: https://stackoverflow.com/q/8557244

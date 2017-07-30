@@ -54,6 +54,11 @@ def main():
     msg = UDF_PTR_TEMPLATE.format(ptr_as_int, made_it)
     print(msg)
 
+    print(SEPARATOR)
+    # just_print()
+    print('just_print()')
+    example_ns.just_print()
+
 
 if __name__ == '__main__':
     main()

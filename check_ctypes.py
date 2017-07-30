@@ -107,6 +107,11 @@ def main():
     alt_made_it = UserDefined.from_address(ptr_as_int.value)
     print('*address = {}'.format(alt_made_it))
 
+    print(SEPARATOR)
+    # just_print()
+    print('just_print()')
+    lib_example.just_print()
+
 
 if __name__ == '__main__':
     main()
