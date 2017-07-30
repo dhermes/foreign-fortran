@@ -1,4 +1,4 @@
-# Playing around with "user defined types" in Fortran.
+# Playing around with "user defined types" in Fortran
 
 ## What goes wrong?
 
