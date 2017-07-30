@@ -32,6 +32,7 @@ def numpy_pointer(array):
 def verify_pointer_size():
     ffi = cffi.FFI()
     assert ffi.sizeof('intptr_t') == ffi.sizeof('ssize_t')
+    # NOTE: On many platforms, ``ctypes.c_ssize_t is ctypes.c_long``.
     return ctypes.c_ssize_t
 
 
