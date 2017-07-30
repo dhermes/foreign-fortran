@@ -27,8 +27,6 @@ Makefile:24: recipe for target 'fortran_broken' failed
 make: *** [fortran_broken] Error 1
 ```
 
-Decently [helpful article][5] and ["pre-article"][6] to that one.
-
 ## Doing Everything
 
 Run the exact same Fortran code in five different ways:
@@ -169,6 +167,8 @@ made_it = udf_ptr()
 - [Examples][1]
 - StackOverflow [question][2] about user-defined types
 - (Lack of) support [in `f2py`][3] (and possible workaround [`f90wrap`][4])
+- Decently [helpful article][5] and ["pre-article"][6] to that one about
+  using Cython to wrap Fortran (rather than `f2py`)
 
 [1]: http://www.mathcs.emory.edu/~cheung/Courses/561/Syllabus/6-Fortran/struct.html
 [2]: https://stackoverflow.com/q/8557244
