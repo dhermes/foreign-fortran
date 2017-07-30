@@ -1,14 +1,23 @@
 program main
 
-  use example, only: dp, foo, foo_array, make_udf, just_print, UserDefined
+  use iso_c_binding, only: c_ptr, c_intptr_t, c_loc
+  use example, only: dp, foo, foo_array, make_udf, udf_ptr, &
+                     just_print, UserDefined
   implicit none
 
+  ! For foo()
   real(dp) :: bar, baz, quux
+  ! For make_udf()
   real(dp) :: buzz, broken
   integer :: how_many
   type(UserDefined) :: quuz
+  ! For foo_array()
   integer :: size_
   real(dp) :: val(4, 2), two_val(4, 2)
+  ! For udf_ptr()
+  integer(c_intptr_t) :: ptr_as_int
+  type(c_ptr) :: made_it_ptr
+  type(UserDefined), target :: made_it
 
   call print_sep()
   ! foo()
@@ -45,7 +54,7 @@ program main
   write (*, "(A, F8.6, A, F8.6, A)"), "     [", val(3, 1), ", ", val(3, 2), "],"
   write (*, "(A, F9.6, A, F8.6, A)"), &
        "     [", val(4, 1), ", ", val(4, 2), "]],"
-  write (*, "(A)"), ") = "
+  write (*, "(A)"), ") ="
   write (*, "(A, F8.6, A, F8.6, A)"), &
        "    [[", two_val(1, 1), ", ", two_val(1, 2), "],"
   write (*, "(A, F8.6, A, F8.6, A)"), &
@@ -54,6 +63,17 @@ program main
        "     [", two_val(3, 1), ", ", two_val(3, 2), "],"
   write (*, "(A, F9.6, A, F8.6, A)"), &
        "     [", two_val(4, 1), ", ", two_val(4, 2), "]]"
+
+  call print_sep()
+  ! udf_ptr()
+  made_it_ptr = c_loc(made_it)
+  ptr_as_int = transfer(made_it_ptr, ptr_as_int)
+  call udf_ptr(ptr_as_int)
+  write (*, "(A, I15, A, Z12, A)"), &
+       "ptr_as_int = ", ptr_as_int, " (", ptr_as_int, ")"
+  write (*, "(A, F8.6, A, F10.6, A, I3, A)") &
+       "made_it = UserDefined(", made_it%buzz, ", ", made_it%broken, &
+       ", ", made_it%how_many, ")"
 
   call print_sep()
   ! just_print()
