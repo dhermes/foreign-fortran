@@ -69,8 +69,11 @@ program main
   made_it_ptr = c_loc(made_it)
   ptr_as_int = transfer(made_it_ptr, ptr_as_int)
   call udf_ptr(ptr_as_int)
+  write (*, "(A)"), &
+       "ptr_as_int = c_loc(made_it)  ! integer(c_intptr_t) / integer(kind=8)"
   write (*, "(A, I15, A, Z12, A)"), &
        "ptr_as_int = ", ptr_as_int, " (0x", ptr_as_int, ")"
+  write (*, "(A)"), "udf_ptr(ptr_as_int)  ! Set memory in ``made_it``"
   write (*, "(A, F8.6, A, F10.6, A, I3, A)") &
        "made_it = UserDefined(", made_it%buzz, ", ", made_it%broken, &
        ", ", made_it%how_many, ")"

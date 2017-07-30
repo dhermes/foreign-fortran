@@ -53,7 +53,9 @@ foo_array(
      [18.000000, 0.000000],
      [-2.000000, 8.000000]]
 ------------------------------------------------------------
+ptr_as_int = c_loc(made_it)  ! integer(c_intptr_t) / integer(kind=8)
 ptr_as_int = 140726916390992 (0x7FFD89DCA050)
+udf_ptr(ptr_as_int)  ! Set memory in ``made_it``
 made_it = UserDefined(3.125000, -10.500000, 101)
 ------------------------------------------------------------
 just_print()
@@ -85,7 +87,9 @@ foo_array(
      [18.000000, 0.000000],
      [-2.000000, 8.000000]]
 ------------------------------------------------------------
+ptr_as_int = &made_it  // intptr_t / ssize_t / long
 ptr_as_int = 140734382282800 (0x7fff46dd1830)
+udf_ptr(ptr_as_int)  // Set memory in ``made_it``
 made_it = UserDefined(3.125000, -10.500000, 101)
 ------------------------------------------------------------
 just_print()

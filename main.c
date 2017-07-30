@@ -54,7 +54,9 @@ int main (void)
   struct UserDefined made_it;
   intptr_t ptr_as_int = (intptr_t) (&made_it);
   udf_ptr(&ptr_as_int);
+  printf("ptr_as_int = &made_it  // intptr_t / ssize_t / long\n");
   printf("ptr_as_int = %ld (%p)\n", ptr_as_int, ptr_as_int);
+  printf("udf_ptr(ptr_as_int)  // Set memory in ``made_it``\n");
   printf("made_it = UserDefined(%f, %f, %d)\n",
          made_it.buzz, made_it.broken, made_it.how_many);
 
