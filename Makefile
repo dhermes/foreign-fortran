@@ -20,10 +20,14 @@ fortran_example.so: example.f90 .f2py_f2cmap
 	f2py --verbose -c --opt='-O3' -m fortran_example example.f90 \
 	skip: make_udf
 
+fortran_broken: example.f90 .f2py_f2cmap
+	f2py --verbose -c --opt='-O3' -m fortran_example example.f90 \
+	only: make_udf
+
 example.o example.mod: example.f90
 	gfortran -c example.f90
 
 clean:
 	rm -f cy_example.so example.mod example.o example.so fortran_example.so main main_c
 
-.PHONY: all clean
+.PHONY: all fortran_broken clean
