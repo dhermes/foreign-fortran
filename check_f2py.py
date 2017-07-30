@@ -19,11 +19,13 @@ made_it = {}"""
 
 
 def main():
+    print(SEPARATOR)
     print('fortran_example: {}'.format(fortran_example))
     example_ns = fortran_example.example
     print('dir(fortran_example.example): {}'.format(dir(example_ns)))
 
     print(SEPARATOR)
+    # foo()
     bar = 1.0
     baz = 16.0
     msg_foo = 'foo       ({}, {}) = {}'.format(
@@ -34,6 +36,7 @@ def main():
     print(msg_foo_by_ref)
 
     print(SEPARATOR)
+    # foo_array()
     val = np.asfortranarray([
         [ 3.0, 4.5 ],
         [ 1.0, 1.25],
@@ -44,6 +47,7 @@ def main():
     print(MSG_FOO_ARRAY.format(val, two_val))
 
     print(SEPARATOR)
+    # udf_ptr()
     made_it, ptr_as_int = prepare_udf()
     ptr_as_int = ptr_as_int.value
     example_ns.udf_ptr(ptr_as_int)

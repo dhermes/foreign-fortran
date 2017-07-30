@@ -5,6 +5,7 @@ import cy_example
 
 
 def main():
+    print(SEPARATOR)
     # foo()
     bar = 1.0
     baz = 16.0

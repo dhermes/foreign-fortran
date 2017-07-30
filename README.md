@@ -56,6 +56,7 @@ $ make main > /dev/null; ./main; make clean > /dev/null
 
 ```
 $ make main_c > /dev/null; ./main_c; make clean > /dev/null
+--------------------------------------------------------------
 quux = foo(1.000000, 16.000000) = 61.000000
 --------------------------------------------------------------
 quuz = make_udf(1.250000, 5.000000, 1337)
@@ -82,7 +83,9 @@ made_it = UserDefined(3.125000, -10.500000, 101)
 
 ```
 $ make example.so > /dev/null; python check_ctypes.py; make clean > /dev/null
+------------------------------------------------------------
 <CDLL '.../example.so', handle 16e1440 at 7f2491f75350>
+------------------------------------------------------------
 quux = foo(c_double(1.0), c_double(16.0)) = c_double(61.0)
 ------------------------------------------------------------
 quuz = make_udf(c_double(1.25), c_double(5.0), c_int(1337))
@@ -113,6 +116,7 @@ made_it needsfree: True
 
 ```
 $ make fortran_example.so > /dev/null; python check_f2py.py; make clean > /dev/null
+------------------------------------------------------------
 fortran_example: <module 'fortran_example' from '.../fortran_example.so'>
 dir(fortran_example.example): ['foo', 'foo_array', 'foo_by_ref', 'udf_ptr']
 ------------------------------------------------------------
@@ -141,6 +145,7 @@ made_it = UserDefined(buzz=3.125, broken=-10.5, how_many=101)
 
 ```
 $ make cy_example.so > /dev/null 2>&1; python check_cython.py; make clean > /dev/null
+------------------------------------------------------------
 quux = foo(1.0, 16.0) = 61.0
 ------------------------------------------------------------
 quuz = make_udf(1.25, 5.0, 1337)

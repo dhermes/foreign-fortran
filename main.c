@@ -15,11 +15,14 @@ void print_sep (void)
 
 int main (void)
 {
+  print_sep();
+  // foo()
   double bar = 1.0, baz = 16.0, quux;
   foo(bar, baz, &quux);
   printf("quux = foo(%f, %f) = %f\n", bar, baz, quux);
 
   print_sep();
+  // make_udf()
   double buzz = 1.25, broken = 5.0;
   int how_many = 1337;
   struct UserDefined quuz;
@@ -29,6 +32,7 @@ int main (void)
          quuz.buzz, quuz.broken, quuz.how_many);
 
   print_sep();
+  // foo_array()
   int size = 4;
   double val[8] = {3.0, 1.0, 9.0, -1.0, 4.5, 1.25, 0.0, 4.0};
   double two_val[8];
@@ -46,6 +50,7 @@ int main (void)
   printf("     [%f, %f]]\n", two_val[3], two_val[7]);
 
   print_sep();
+  // udf_ptr()
   struct UserDefined made_it;
   intptr_t ptr_as_int = (intptr_t) (&made_it);
   udf_ptr(&ptr_as_int);

@@ -46,9 +46,11 @@ def prepare_udf():
 
 
 def main():
+    print(SEPARATOR)
     lib_example = ctypes.cdll.LoadLibrary(SO_FILE)
     print(lib_example)
 
+    print(SEPARATOR)
     # foo()
     bar = ctypes.c_double(1.0)
     baz = ctypes.c_double(16.0)
