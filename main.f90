@@ -70,7 +70,8 @@ program main
   ptr_as_int = transfer(made_it_ptr, ptr_as_int)
   call udf_ptr(ptr_as_int)
   write (*, "(A)"), &
-       "ptr_as_int = c_loc(made_it)  ! integer(c_intptr_t) / integer(kind=8)"
+       "ptr_as_int = c_loc(made_it)  ! &
+        &type(c_ptr) / integer(c_intptr_t) / integer(kind=8)"
   write (*, "(A, I15, A, Z12, A)"), &
        "ptr_as_int = ", ptr_as_int, " (0x", ptr_as_int, ")"
   write (*, "(A)"), "udf_ptr(ptr_as_int)  ! Set memory in ``made_it``"
