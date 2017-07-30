@@ -70,7 +70,7 @@ program main
   ptr_as_int = transfer(made_it_ptr, ptr_as_int)
   call udf_ptr(ptr_as_int)
   write (*, "(A, I15, A, Z12, A)"), &
-       "ptr_as_int = ", ptr_as_int, " (", ptr_as_int, ")"
+       "ptr_as_int = ", ptr_as_int, " (0x", ptr_as_int, ")"
   write (*, "(A, F8.6, A, F10.6, A, I3, A)") &
        "made_it = UserDefined(", made_it%buzz, ", ", made_it%broken, &
        ", ", made_it%how_many, ")"

@@ -9,6 +9,11 @@ import numpy as np  # 1.13.1
 HERE = os.path.abspath(os.path.dirname(__file__))
 SO_FILE = os.path.join(HERE, 'example.so')
 SEPARATOR = '-' * 60
+UDF_PTR_TEMPLATE = """\
+ptr_as_int = address(made_it)  # intptr_t / ssize_t / long
+ptr_as_int = {}  # 0x{:x}
+udf_ptr(ptr_as_int)  # Set memory in ``made_it``
+made_it = {}"""
 
 
 class UserDefined(ctypes.Structure):
@@ -71,7 +76,7 @@ def main():
     print(msg)
     print('needsfree(quuz) = {}'.format(bool(quuz._b_needsfree_)))
     quuz_address = ctypes.addressof(quuz)
-    print('address(quuz) = {}'.format(quuz_address))
+    print('address(quuz) = {0}  # 0x{0:x}'.format(quuz_address))
     alt_quuz = UserDefined.from_address(quuz_address)
     print('*address(quuz) = {}'.format(alt_quuz))
 
@@ -100,10 +105,9 @@ def main():
     print(SEPARATOR)
     # udf_ptr()
     made_it, ptr_as_int = prepare_udf()
-    print('ptr_as_int = {0}  # 0x{0.value:x}'.format(ptr_as_int))
     lib_example.udf_ptr(ctypes.byref(ptr_as_int))
-
-    print('made_it = {}'.format(made_it))
+    msg = UDF_PTR_TEMPLATE.format(ptr_as_int, ptr_as_int.value, made_it)
+    print(msg)
     print('needsfree(made_it) = {}'.format(bool(made_it._b_needsfree_)))
     alt_made_it = UserDefined.from_address(ptr_as_int.value)
     print('*ptr_as_int = {}'.format(alt_made_it))

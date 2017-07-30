@@ -53,7 +53,7 @@ foo_array(
      [18.000000, 0.000000],
      [-2.000000, 8.000000]]
 ------------------------------------------------------------
-ptr_as_int = 140726916390992 (7FFD89DCA050)
+ptr_as_int = 140726916390992 (0x7FFD89DCA050)
 made_it = UserDefined(3.125000, -10.500000, 101)
 ------------------------------------------------------------
 just_print()
@@ -107,7 +107,7 @@ quux = foo(c_double(1.0), c_double(16.0)) = c_double(61.0)
 quuz = make_udf(c_double(1.25), c_double(5.0), c_int(1337))
      = UserDefined(buzz=1.25, broken=5.0, how_many=1337)
 needsfree(quuz) = True
-address(quuz) = 26217808
+address(quuz) = 26217808  # 0x1900d50
 *address(quuz) = UserDefined(buzz=1.25, broken=5.0, how_many=1337)
 ------------------------------------------------------------
 val =
@@ -122,7 +122,9 @@ two_val =
  [ 18.    0. ]
  [ -2.    8. ]]
 ------------------------------------------------------------
+ptr_as_int = address(made_it)  # intptr_t / ssize_t / long
 ptr_as_int = c_long(26228288)  # 0x1903640
+udf_ptr(ptr_as_int)  # Set memory in ``made_it``
 made_it = UserDefined(buzz=3.125, broken=-10.5, how_many=101)
 needsfree(made_it) = True
 *ptr_as_int = UserDefined(buzz=3.125, broken=-10.5, how_many=101)
@@ -156,8 +158,8 @@ two_val =
  [ 18.    0. ]
  [ -2.    8. ]]
 ------------------------------------------------------------
-ptr_as_int = address(made_it)  # long
-ptr_as_int = 43660048
+ptr_as_int = address(made_it)  # intptr_t / ssize_t / long
+ptr_as_int = 43660048  # 0x29a3310
 udf_ptr(ptr_as_int)  # Set memory in ``made_it``
 made_it = UserDefined(buzz=3.125, broken=-10.5, how_many=101)
 ------------------------------------------------------------

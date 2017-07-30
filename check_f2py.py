@@ -2,6 +2,7 @@ import numpy as np
 
 from check_ctypes import prepare_udf
 from check_ctypes import SEPARATOR
+from check_ctypes import UDF_PTR_TEMPLATE
 import fortran_example
 
 
@@ -11,11 +12,6 @@ val =
 two_val = foo_array(val)
 two_val =
 {}"""
-UDF_PTR_TEMPLATE = """\
-ptr_as_int = address(made_it)  # long
-ptr_as_int = {}
-udf_ptr(ptr_as_int)  # Set memory in ``made_it``
-made_it = {}"""
 
 
 def main():
@@ -51,7 +47,7 @@ def main():
     made_it, ptr_as_int = prepare_udf()
     ptr_as_int = ptr_as_int.value
     example_ns.udf_ptr(ptr_as_int)
-    msg = UDF_PTR_TEMPLATE.format(ptr_as_int, made_it)
+    msg = UDF_PTR_TEMPLATE.format(ptr_as_int, ptr_as_int, made_it)
     print(msg)
 
     print(SEPARATOR)
