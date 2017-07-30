@@ -58,5 +58,10 @@ int main (void)
   printf("made_it = UserDefined(%f, %f, %d)\n",
          made_it.buzz, made_it.broken, made_it.how_many);
 
+  print_sep();
+  // just_print()
+  printf("just_print()\n");
+  just_print();
+
   return 0;
 }
