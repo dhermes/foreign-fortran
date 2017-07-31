@@ -7,6 +7,7 @@ import numpy as np  # 1.13.1
 
 from check_ctypes import FOO_ARRAY_TEMPLATE
 from check_ctypes import SEPARATOR
+from check_ctypes import UDF_PTR_TEMPLATE
 
 
 HERE = os.path.abspath(os.path.dirname(__file__))
@@ -22,15 +23,15 @@ MAKE_UDF_DEF = """\
 void make_udf(double buzz, double broken,
               int how_many, struct UserDefined *quux);
 """
-MAKE_UDF_TEMPLATE = """\
-quuz = make_udf({0}, {1}, {2})
-     = UserDefined({3.buzz}, {3.broken}, {3.how_many})
-"""
 
 
 def numpy_pointer(array, ffi):
     assert array.dtype == np.float64
     return ffi.cast('double *', array.ctypes.data)
+
+
+def udf_str(udf):
+    return 'UserDefined({0.buzz}, {0.broken}, {0.how_many})'.format(udf)
 
 
 def main():
@@ -39,6 +40,7 @@ def main():
     ffi.cdef(STRUCT_CDEF)
     ffi.cdef(MAKE_UDF_DEF)
     ffi.cdef('void foo_array(int *size, double *val, double *two_val);')
+    ffi.cdef('void udf_ptr(intptr_t *ptr_as_int);')
     lib_example = ffi.dlopen(SO_FILE)
 
     print(SEPARATOR)
@@ -58,8 +60,9 @@ def main():
     quuz_ptr = ffi.new('struct UserDefined *')
     lib_example.make_udf(buzz, broken, how_many, quuz_ptr)
     quuz = quuz_ptr[0]
-    msg = MAKE_UDF_TEMPLATE.format(buzz, broken, how_many, quuz)
-    print(msg, end='')
+    msg = 'quuz = make_udf({}, {}, {})\n     = {}'.format(
+        buzz, broken, how_many, udf_str(quuz))
+    print(msg)
 
     print(SEPARATOR)
     # foo_array()
@@ -80,6 +83,17 @@ def main():
         numpy_pointer(two_val, ffi),
     )
     msg = FOO_ARRAY_TEMPLATE.format(val, size_ptr[0], two_val)
+    print(msg, end='')
+
+    print(SEPARATOR)
+    # udf_ptr()
+    made_it_ptr = ffi.new('struct UserDefined *')
+    ptr_as_int_ptr = ffi.new('intptr_t *')
+    ptr_as_int_ptr[0] = ffi.cast('intptr_t', made_it_ptr)
+    lib_example.udf_ptr(ptr_as_int_ptr)
+    made_it = made_it_ptr[0]
+    ptr_as_int = ptr_as_int_ptr[0]
+    msg = UDF_PTR_TEMPLATE.format(ptr_as_int, ptr_as_int, udf_str(made_it))
     print(msg, end='')
 
 
