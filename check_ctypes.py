@@ -1,6 +1,5 @@
 import ctypes
 import os
-import struct
 
 import cffi  # 1.10.0
 import numpy as np  # 1.13.1

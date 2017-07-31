@@ -29,7 +29,7 @@ make: *** [fortran_broken] Error 1
 
 ## Doing Everything
 
-Run the exact same Fortran code in five different ways:
+Run the exact same Fortran code in six different ways:
 
 ### Plain Fortran
 
@@ -137,6 +137,14 @@ just_print()
  ======== BEGIN FORTRAN ========
  just_print() was called
  ========  END  FORTRAN ========
+```
+
+### Python via `cffi`
+
+```
+$ make example.so > /dev/null; python check_cffi.py; make clean > /dev/null
+------------------------------------------------------------
+quux = foo(1.0, 16.0) = 61.0
 ```
 
 ### Python via `f2py`
