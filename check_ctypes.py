@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import ctypes
 import os
 
@@ -12,7 +14,15 @@ UDF_PTR_TEMPLATE = """\
 ptr_as_int = address(made_it)  # intptr_t / ssize_t / long
 ptr_as_int = {}  # 0x{:x}
 udf_ptr(ptr_as_int)  # Set memory in ``made_it``
-made_it = {}"""
+made_it = {}
+"""
+FOO_ARRAY_TEMPLATE = """\
+val =
+{}
+two_val = foo_array({}, val)
+two_val =
+{}
+"""
 
 
 class UserDefined(ctypes.Structure):
@@ -97,16 +107,15 @@ def main():
         numpy_pointer(val),
         numpy_pointer(two_val),
     )
-    print('val =\n{}'.format(val))
-    print('two_val = foo_array({}, val)'.format(size))
-    print('two_val =\n{}'.format(two_val))
+    msg = FOO_ARRAY_TEMPLATE.format(val, size, two_val)
+    print(msg, end='')
 
     print(SEPARATOR)
     # udf_ptr()
     made_it, ptr_as_int = prepare_udf()
     lib_example.udf_ptr(ctypes.byref(ptr_as_int))
     msg = UDF_PTR_TEMPLATE.format(ptr_as_int, ptr_as_int.value, made_it)
-    print(msg)
+    print(msg, end='')
     print('needsfree(made_it) = {}'.format(bool(made_it._b_needsfree_)))
     alt_made_it = UserDefined.from_address(ptr_as_int.value)
     print('*ptr_as_int = {}'.format(alt_made_it))

@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import numpy as np
 
 from check_ctypes import prepare_udf
@@ -48,7 +50,7 @@ def main():
     ptr_as_int = ptr_as_int.value
     example_ns.udf_ptr(ptr_as_int)
     msg = UDF_PTR_TEMPLATE.format(ptr_as_int, ptr_as_int, made_it)
-    print(msg)
+    print(msg, end='')
 
     print(SEPARATOR)
     # just_print()

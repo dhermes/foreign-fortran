@@ -3,7 +3,9 @@ from __future__ import print_function
 import os
 
 import cffi  # 1.10.0
+import numpy as np  # 1.13.1
 
+from check_ctypes import FOO_ARRAY_TEMPLATE
 from check_ctypes import SEPARATOR
 
 
@@ -26,11 +28,17 @@ quuz = make_udf({0}, {1}, {2})
 """
 
 
+def numpy_pointer(array, ffi):
+    assert array.dtype == np.float64
+    return ffi.cast('double *', array.ctypes.data)
+
+
 def main():
     ffi = cffi.FFI()
     ffi.cdef('void foo(double bar, double baz, double *quux);')
     ffi.cdef(STRUCT_CDEF)
     ffi.cdef(MAKE_UDF_DEF)
+    ffi.cdef('void foo_array(int *size, double *val, double *two_val);')
     lib_example = ffi.dlopen(SO_FILE)
 
     print(SEPARATOR)
@@ -51,6 +59,27 @@ def main():
     lib_example.make_udf(buzz, broken, how_many, quuz_ptr)
     quuz = quuz_ptr[0]
     msg = MAKE_UDF_TEMPLATE.format(buzz, broken, how_many, quuz)
+    print(msg, end='')
+
+    print(SEPARATOR)
+    # foo_array()
+    val = np.asfortranarray([
+        [ 3.0, 4.5 ],
+        [ 1.0, 1.25],
+        [ 9.0, 0.0 ],
+        [-1.0, 4.0 ],
+    ])
+    shape = val.shape
+    two_val = np.empty(shape, order='F')
+    size_ptr = ffi.new('int *')
+    size_ptr[0], _ = shape
+
+    lib_example.foo_array(
+        size_ptr,
+        numpy_pointer(val, ffi),
+        numpy_pointer(two_val, ffi),
+    )
+    msg = FOO_ARRAY_TEMPLATE.format(val, size_ptr[0], two_val)
     print(msg, end='')
 
 
