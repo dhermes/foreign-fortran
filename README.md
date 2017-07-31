@@ -145,6 +145,9 @@ just_print()
 $ make example.so > /dev/null; python check_cffi.py; make clean > /dev/null
 ------------------------------------------------------------
 quux = foo(1.0, 16.0) = 61.0
+------------------------------------------------------------
+quuz = make_udf(1.25, 5.0, 1337)
+     = UserDefined(1.25, 5.0, 1337)
 ```
 
 ### Python via `f2py`
