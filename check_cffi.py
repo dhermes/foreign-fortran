@@ -41,6 +41,7 @@ def main():
     ffi.cdef(MAKE_UDF_DEF)
     ffi.cdef('void foo_array(int *size, double *val, double *two_val);')
     ffi.cdef('void udf_ptr(intptr_t *ptr_as_int);')
+    ffi.cdef('void just_print();')
     lib_example = ffi.dlopen(SO_FILE)
 
     print(SEPARATOR)
@@ -95,6 +96,11 @@ def main():
     ptr_as_int = ptr_as_int_ptr[0]
     msg = UDF_PTR_TEMPLATE.format(ptr_as_int, ptr_as_int, udf_str(made_it))
     print(msg, end='')
+
+    print(SEPARATOR)
+    # just_print()
+    print('just_print()')
+    lib_example.just_print()
 
 
 if __name__ == '__main__':

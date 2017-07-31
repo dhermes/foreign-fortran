@@ -165,6 +165,11 @@ ptr_as_int = address(made_it)  # intptr_t / ssize_t / long
 ptr_as_int = 32091392  # 0x1e9ad00
 udf_ptr(ptr_as_int)  # Set memory in ``made_it``
 made_it = UserDefined(3.125, -10.5, 101)
+------------------------------------------------------------
+just_print()
+ ======== BEGIN FORTRAN ========
+ just_print() was called
+ ========  END  FORTRAN ========
 ```
 
 ### Python via `f2py`
