@@ -9,7 +9,7 @@ struct UserDefined {
 };
 
 struct DataContainer {
-  double *data;
+  double data[8];
 };
 
 void print_sep (void)
@@ -80,6 +80,9 @@ int main (void)
   printf("   [%f, %f],\n", container.data[1], container.data[5]);
   printf("   [%f, %f],\n", container.data[2], container.data[6]);
   printf("   [%f, %f]]\n", container.data[3], container.data[7]);
+  printf("&contained      = %ld (%p)\n", contained, contained);
+  printf("&container      = %ld (%p)\n", &container, &container);
+  printf("&container.data = %ld (%p)\n", container.data, container.data);
 
   print_sep();
   // just_print()

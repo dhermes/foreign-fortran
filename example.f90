@@ -1,7 +1,6 @@
 module example
 
-  use iso_c_binding, only: c_double, c_int, c_ptr, c_intptr_t, &
-                           c_f_pointer, c_loc
+  use iso_c_binding, only: c_double, c_int, c_ptr, c_intptr_t, c_f_pointer
   implicit none
   private
   public dp, foo, foo_array, foo_by_ref, make_udf, udf_ptr, &
@@ -16,7 +15,7 @@ module example
   end type UserDefined
 
   type, bind(c) :: DataContainer
-     type(c_ptr) :: data
+     real(c_double) :: data(4, 2)
   end type DataContainer
 
 contains
@@ -74,10 +73,10 @@ contains
 
   subroutine make_container(contained, container) &
        bind(c, name='make_container')
-    real(c_double), intent(in), target :: contained(4, 2)
+    real(c_double), intent(in) :: contained(4, 2)
     type(DataContainer), intent(out) :: container
 
-    container%data = c_loc(contained)
+    container%data = contained
 
   end subroutine make_container
 
