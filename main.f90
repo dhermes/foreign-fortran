@@ -84,7 +84,7 @@ program main
   write (*, "(A)"), "just_print()"
   call just_print()
 
-end program
+end program main
 
 subroutine print_sep()
 
