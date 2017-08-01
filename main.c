@@ -8,6 +8,10 @@ struct UserDefined {
   int how_many;
 };
 
+struct DataContainer {
+  double *data;
+};
+
 void print_sep (void)
 {
   printf("------------------------------------------------------------\n");
@@ -59,6 +63,23 @@ int main (void)
   printf("udf_ptr(ptr_as_int)  // Set memory in ``made_it``\n");
   printf("made_it = UserDefined(%f, %f, %d)\n",
          made_it.buzz, made_it.broken, made_it.how_many);
+
+  print_sep();
+  // make_container()
+  double contained[8] = {0.0, 1.0, 1.0, 3.0, 4.0, 9.0, 2.0, 1.0};
+  struct DataContainer container;
+  printf("contained = \n");
+  printf("  [[%f, %f],\n", contained[0], contained[4]);
+  printf("   [%f, %f],\n", contained[1], contained[5]);
+  printf("   [%f, %f],\n", contained[2], contained[6]);
+  printf("   [%f, %f]]\n", contained[3], contained[7]);
+  make_container(&contained, &container);
+  printf("container = make_container(contained)\n");
+  printf("container.data = \n");
+  printf("  [[%f, %f],\n", container.data[0], container.data[4]);
+  printf("   [%f, %f],\n", container.data[1], container.data[5]);
+  printf("   [%f, %f],\n", container.data[2], container.data[6]);
+  printf("   [%f, %f]]\n", container.data[3], container.data[7]);
 
   print_sep();
   // just_print()

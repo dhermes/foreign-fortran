@@ -39,6 +39,16 @@ class UserDefined(ctypes.Structure):
         return template.format(self=self)
 
 
+class DataContainer(ctypes.Structure):
+    _fields_ = [
+        ('data', ctypes.POINTER(ctypes.c_double)),
+    ]
+
+    @property
+    def data_array(self):
+        return np.ctypeslib.as_array(self.data, shape=(2, 4)).T
+
+
 def numpy_pointer(array):
     return array.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
 
@@ -119,6 +129,26 @@ def main():
     print('needsfree(made_it) = {}'.format(bool(made_it._b_needsfree_)))
     alt_made_it = UserDefined.from_address(ptr_as_int.value)
     print('*ptr_as_int = {}'.format(alt_made_it))
+
+    print(SEPARATOR)
+    # make_container()
+    contained = np.asfortranarray([
+        [0.0, 4.0],
+        [1.0, 9.0],
+        [1.0, 2.0],
+        [3.0, 1.0],
+    ])
+    container = DataContainer()
+    lib_example.make_container(
+        numpy_pointer(contained),
+        ctypes.byref(container),
+    )
+    print('contained =\n{}'.format(contained))
+    print('address(contained) = {0}  # 0x{0:x}'.format(contained.ctypes.data))
+    print('container = make_container(contained)')
+    print('container.data =\n{}'.format(container.data_array))
+    addr = ctypes.cast(container.data, ctypes.c_void_p)
+    print('address(container.data) = {0}  # 0x{0:x}'.format(addr.value))
 
     print(SEPARATOR)
     # just_print()

@@ -1,6 +1,7 @@
 module example
 
-  use iso_c_binding, only: c_double, c_int, c_ptr, c_intptr_t, c_f_pointer
+  use iso_c_binding, only: c_double, c_int, c_ptr, c_intptr_t, &
+                           c_f_pointer, c_loc
   implicit none
   private
   public dp, foo, foo_array, foo_by_ref, make_udf, udf_ptr, &
@@ -13,6 +14,10 @@ module example
      real(c_double) :: broken
      integer(c_int) :: how_many
   end type UserDefined
+
+  type, bind(c) :: DataContainer
+     type(c_ptr) :: data
+  end type DataContainer
 
 contains
 
@@ -66,6 +71,15 @@ contains
     made_it%how_many = 101
 
   end subroutine udf_ptr
+
+  subroutine make_container(contained, container) &
+       bind(c, name='make_container')
+    real(c_double), intent(in), target :: contained(4, 2)
+    type(DataContainer), intent(out) :: container
+
+    container%data = c_loc(contained)
+
+  end subroutine make_container
 
   subroutine just_print() bind(c, name='just_print')
 
