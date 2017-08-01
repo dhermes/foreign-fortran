@@ -41,10 +41,10 @@ program main
 
   call print_sep()
   ! foo_array()
-  val = reshape((/ &
+  val = reshape([ &
        3.0_dp, 1.0_dp, 9.0_dp, -1.0_dp, &
-       4.5_dp, 1.25_dp, 0.0_dp, 4.0_dp/), &
-       (/4, 2/))
+       4.5_dp, 1.25_dp, 0.0_dp, 4.0_dp], &
+       shape=[4, 2])
   size_ = size(val, 1)
   call foo_array(size_, val, two_val)
   write (*, "(A)"), "foo_array("
