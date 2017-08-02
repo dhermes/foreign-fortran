@@ -62,6 +62,9 @@ just_print()
  ======== BEGIN FORTRAN ========
  just_print() was called
  ========  END  FORTRAN ========
+------------------------------------------------------------
+harmonic = simple_func(4)
+harmonic = [1.000000, 0.500000, 0.333333, 0.250000]
 ```
 
 ### Plain C

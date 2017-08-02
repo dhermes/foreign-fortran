@@ -4,7 +4,7 @@ module example
   implicit none
   private
   public dp, foo, foo_array, foo_by_ref, make_udf, udf_ptr, &
-         just_print, UserDefined
+         just_print, simple_func, UserDefined
 
   integer, parameter :: dp=kind(0.d0)
 
@@ -87,5 +87,16 @@ contains
     print *, "========  END  FORTRAN ========"
 
   end subroutine just_print
+
+  function simple_func(num_vals) result(harmonic)
+    integer, intent(in) :: num_vals
+    real(dp) :: harmonic(num_vals)
+    integer :: index_
+
+    do index_ = 1, num_vals
+       harmonic(index_) = 1.0_dp / index_
+    end do
+
+  end function simple_func
 
 end module example

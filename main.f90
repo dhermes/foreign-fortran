@@ -2,7 +2,7 @@ program main
 
   use iso_c_binding, only: c_ptr, c_intptr_t, c_loc
   use example, only: dp, foo, foo_array, make_udf, udf_ptr, &
-                     just_print, UserDefined
+                     just_print, simple_func, UserDefined
   implicit none
 
   ! For foo()
@@ -18,6 +18,8 @@ program main
   integer(c_intptr_t) :: ptr_as_int
   type(c_ptr) :: made_it_ptr
   type(UserDefined), target :: made_it
+  ! For simple_func()
+  real(dp) :: harmonic(4)
 
   call print_sep()
   ! foo()
@@ -72,8 +74,8 @@ program main
   write (*, "(A)"), &
        "ptr_as_int = c_loc(made_it)  ! &
         &type(c_ptr) / integer(c_intptr_t) / integer(kind=8)"
-  write (*, "(A, I15, A, Z12, A)"), &
-       "ptr_as_int = ", ptr_as_int, " (0x", ptr_as_int, ")"
+  write (*, "(A, I15, A, Z12)"), &
+       "ptr_as_int = ", ptr_as_int, "  ! 0x", ptr_as_int
   write (*, "(A)"), "udf_ptr(ptr_as_int)  ! Set memory in ``made_it``"
   write (*, "(A, F8.6, A, F10.6, A, I3, A)") &
        "made_it = UserDefined(", made_it%buzz, ", ", made_it%broken, &
@@ -83,6 +85,14 @@ program main
   ! just_print()
   write (*, "(A)"), "just_print()"
   call just_print()
+
+  call print_sep()
+  ! simple_func()
+  harmonic = simple_func(4)
+  write (*, "(A)"), "harmonic = simple_func(4)"
+  write (*, "(A F8.6 A F8.6 A F8.6 A F8.6 A)"), &
+       "harmonic = [", harmonic(1), ", ", harmonic(2), ", ", &
+       harmonic(3), ", ", harmonic(4), "]"
 
 end program main
 
