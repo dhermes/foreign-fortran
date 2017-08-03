@@ -1,6 +1,7 @@
 module example
 
-  use iso_c_binding, only: c_double, c_int, c_ptr, c_intptr_t, c_f_pointer
+  use iso_c_binding, only: c_double, c_int, c_ptr, c_intptr_t, &
+                           c_char, c_f_pointer
   implicit none
   private
   public dp, foo, foo_array, foo_by_ref, make_udf, udf_ptr, &
@@ -9,6 +10,7 @@ module example
   integer, parameter :: dp=kind(0.d0)
 
   type, bind(c) :: UserDefined
+     ! sequence NOT NEEDED since bind(c) is used.
      real(c_double) :: buzz
      real(c_double) :: broken
      integer(c_int) :: how_many
@@ -45,14 +47,19 @@ contains
 
   end subroutine foo_array
 
-  subroutine make_udf(buzz, broken, how_many, made_it) bind(c, name='make_udf')
-    real(c_double), intent(in), value :: buzz, broken
-    integer(c_int), intent(in), value :: how_many
-    type(UserDefined), intent(out) :: made_it
+  subroutine make_udf(buzz, broken, how_many, as_bytes) bind(c, name='make_udf')
+    real(c_double), intent(in) :: buzz, broken
+    integer(c_int), intent(in) :: how_many
+    character(c_char), intent(out) :: as_bytes(24)
+    ! Outside of signature
+    type(UserDefined), target :: made_it
 
     made_it%buzz = buzz
     made_it%broken = broken
     made_it%how_many = how_many
+
+    ! NOTE: We need ``sizeof(as_bytes) == sizeof(made_it)``
+    as_bytes = transfer(made_it, as_bytes)
 
   end subroutine make_udf
 

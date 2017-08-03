@@ -1,6 +1,6 @@
 program main
 
-  use iso_c_binding, only: c_ptr, c_intptr_t, c_loc
+  use iso_c_binding, only: c_ptr, c_intptr_t, c_char, c_loc
   use example, only: dp, foo, foo_array, make_udf, udf_ptr, &
                      just_print, UserDefined
   implicit none
@@ -10,6 +10,7 @@ program main
   ! For make_udf()
   real(dp) :: buzz, broken
   integer :: how_many
+  character(c_char) :: quuz_as_bytes(24)
   type(UserDefined) :: quuz
   ! For foo_array()
   integer :: size_
@@ -32,7 +33,8 @@ program main
   buzz = 1.25_dp
   broken = 5.0_dp
   how_many = 1337
-  call make_udf(buzz, broken, how_many, quuz)
+  call make_udf(buzz, broken, how_many, quuz_as_bytes)
+  quuz = transfer(quuz_as_bytes, quuz)
   write (*, "(A, F8.6, A, F8.6, A, I4, A)") &
        "quuz = make_udf(", buzz, ", ", broken, ", ", how_many, ")"
   write (*, "(A, F8.6, A, F8.6, A, I4, A)") &
@@ -72,8 +74,8 @@ program main
   write (*, "(A)"), &
        "ptr_as_int = c_loc(made_it)  ! &
         &type(c_ptr) / integer(c_intptr_t) / integer(kind=8)"
-  write (*, "(A, I15, A, Z12, A)"), &
-       "ptr_as_int = ", ptr_as_int, " (0x", ptr_as_int, ")"
+  write (*, "(A, I15, A, Z12)"), &
+       "ptr_as_int = ", ptr_as_int, "  ! 0x", ptr_as_int
   write (*, "(A)"), "udf_ptr(ptr_as_int)  ! Set memory in ``made_it``"
   write (*, "(A, F8.6, A, F10.6, A, I3, A)") &
        "made_it = UserDefined(", made_it%buzz, ", ", made_it%broken, &

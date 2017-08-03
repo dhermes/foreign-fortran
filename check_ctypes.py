@@ -10,6 +10,10 @@ import numpy as np  # 1.13.1
 HERE = os.path.abspath(os.path.dirname(__file__))
 SO_FILE = os.path.join(HERE, 'example.so')
 SEPARATOR = '-' * 60
+MAKE_UDF_TEMPLATE = """\
+quuz = make_udf({}, {}, {})
+     = {}
+"""
 UDF_PTR_TEMPLATE = """\
 ptr_as_int = address(made_it)  # intptr_t / ssize_t / long
 ptr_as_int = {}  # 0x{:x}
@@ -90,10 +94,14 @@ def main():
     broken = ctypes.c_double(5.0)
     how_many = ctypes.c_int(1337)
     quuz = UserDefined()
-    lib_example.make_udf(buzz, broken, how_many, ctypes.byref(quuz))
-    msg = 'quuz = make_udf({}, {}, {})\n     = {}'.format(
-        buzz, broken, how_many, quuz)
-    print(msg)
+    lib_example.make_udf(
+        ctypes.byref(buzz),
+        ctypes.byref(broken),
+        ctypes.byref(how_many),
+        ctypes.byref(quuz),
+    )
+    msg = MAKE_UDF_TEMPLATE.format(buzz, broken, how_many, quuz)
+    print(msg, end='')
     print('needsfree(quuz) = {}'.format(bool(quuz._b_needsfree_)))
     quuz_address = ctypes.addressof(quuz)
     print('address(quuz) = {0}  # 0x{0:x}'.format(quuz_address))

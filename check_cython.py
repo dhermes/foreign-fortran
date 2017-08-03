@@ -1,5 +1,8 @@
+from __future__ import print_function
+
 import numpy as np
 
+from check_ctypes import MAKE_UDF_TEMPLATE
 from check_ctypes import SEPARATOR
 import cy_example
 
@@ -18,9 +21,8 @@ def main():
     broken = 5.0
     how_many = 1337
     quuz = cy_example.make_udf(buzz, broken, how_many)
-    msg = 'quuz = make_udf({}, {}, {})\n     = {}'.format(
-        buzz, broken, how_many, quuz)
-    print(msg)
+    msg = MAKE_UDF_TEMPLATE.format(buzz, broken, how_many, quuz)
+    print(msg, end='')
 
     print(SEPARATOR)
     # foo_array()

@@ -2,9 +2,11 @@ from __future__ import print_function
 
 import numpy as np
 
+from check_ctypes import MAKE_UDF_TEMPLATE
 from check_ctypes import prepare_udf
 from check_ctypes import SEPARATOR
 from check_ctypes import UDF_PTR_TEMPLATE
+from check_ctypes import UserDefined
 import fortran_example
 
 
@@ -14,6 +16,12 @@ val =
 two_val = foo_array(val)
 two_val =
 {}"""
+
+
+def np_to_udf(arr):
+    assert arr.dtype == np.dtype('S1')
+    address = arr.ctypes.data
+    return UserDefined.from_address(address)
 
 
 def main():
@@ -32,6 +40,16 @@ def main():
     msg_foo_by_ref = 'foo_by_ref({}, {}) = {}'.format(
         bar, baz, example_ns.foo_by_ref(bar, baz))
     print(msg_foo_by_ref)
+
+    print(SEPARATOR)
+    # make_udf()
+    buzz = 1.25
+    broken = 5.0
+    how_many = 1337
+    quuz_as_bytes = example_ns.make_udf(buzz, broken, how_many)
+    quuz = np_to_udf(quuz_as_bytes)
+    msg = MAKE_UDF_TEMPLATE.format(buzz, broken, how_many, quuz)
+    print(msg, end='')
 
     print(SEPARATOR)
     # foo_array()

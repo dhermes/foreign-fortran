@@ -20,8 +20,8 @@ struct UserDefined {
 };
 """
 MAKE_UDF_DEF = """\
-void make_udf(double buzz, double broken,
-              int how_many, struct UserDefined *quux);
+void make_udf(double *buzz, double *broken,
+              int *how_many, struct UserDefined *quux);
 """
 
 
@@ -56,10 +56,16 @@ def main():
     print(SEPARATOR)
     # make_udf()
     buzz = 1.25
+    buzz_ptr = ffi.new('double *')
+    buzz_ptr[0] = buzz
     broken = 5.0
+    broken_ptr = ffi.new('double *')
+    broken_ptr[0] = broken
     how_many = 1337
+    how_many_ptr = ffi.new('int *')
+    how_many_ptr[0] = how_many
     quuz_ptr = ffi.new('struct UserDefined *')
-    lib_example.make_udf(buzz, broken, how_many, quuz_ptr)
+    lib_example.make_udf(buzz_ptr, broken_ptr, how_many_ptr, quuz_ptr)
     quuz = quuz_ptr[0]
     msg = 'quuz = make_udf({}, {}, {})\n     = {}'.format(
         buzz, broken, how_many, udf_str(quuz))

@@ -9,7 +9,7 @@ cimport numpy as np
 cdef extern:
     void foo_fort "foo" (double bar, double baz, double *quux)
     void make_udf_fort "make_udf" (
-        double buzz, double broken, int how_many, UserDefined *made_it)
+        double *buzz, double *broken, int *how_many, UserDefined *made_it)
     void foo_array_fort "foo_array" (int *size, double *val, double *two_val)
     void udf_ptr_fort "udf_ptr" (intptr_t *ptr_as_int)
     void just_print_fort "just_print" ()
@@ -29,7 +29,7 @@ def foo(double bar, double baz):
 
 def make_udf(double buzz, double broken, int how_many):
     cdef UserDefined made_it
-    make_udf_fort(buzz, broken, how_many, &made_it)
+    make_udf_fort(&buzz, &broken, &how_many, &made_it)
     return made_it
 
 

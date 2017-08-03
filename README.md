@@ -14,7 +14,8 @@ Building modules...
         Building module "fortran_example"...
                 Constructing F90 module support for "example"...
 Skipping type unknown_type
-                        Constructing wrapper function "example.make_udf"...
+Skipping type unknown_type
+                        Constructing wrapper function "example.make_container"...
 getctype: No C-type found in "{'attrspec': [], 'typename': 'userdefined', 'intent': ['out'], 'typespec': 'type'}", assuming void.
 getctype: No C-type found in "{'attrspec': [], 'typename': 'userdefined', 'intent': ['out'], 'typespec': 'type'}", assuming void.
 getctype: No C-type found in "{'attrspec': [], 'typename': 'userdefined', 'intent': ['out'], 'typespec': 'type'}", assuming void.
@@ -54,7 +55,7 @@ foo_array(
      [-2.000000, 8.000000]]
 ------------------------------------------------------------
 ptr_as_int = c_loc(made_it)  ! type(c_ptr) / integer(c_intptr_t) / integer(kind=8)
-ptr_as_int = 140726916390992 (0x7FFD89DCA050)
+ptr_as_int = 140726916390992  ! 0x7FFD89DCA050
 udf_ptr(ptr_as_int)  ! Set memory in ``made_it``
 made_it = UserDefined(3.125000, -10.500000, 101)
 ------------------------------------------------------------
@@ -88,9 +89,24 @@ foo_array(
      [-2.000000, 8.000000]]
 ------------------------------------------------------------
 ptr_as_int = &made_it  // intptr_t / ssize_t / long
-ptr_as_int = 140734382282800 (0x7fff46dd1830)
+ptr_as_int = 140734382282800  // 0x7fff46dd1830
 udf_ptr(ptr_as_int)  // Set memory in ``made_it``
 made_it = UserDefined(3.125000, -10.500000, 101)
+------------------------------------------------------------
+contained =
+  [[0.000000, 4.000000],
+   [1.000000, 9.000000],
+   [1.000000, 2.000000],
+   [3.000000, 1.000000]]
+container = make_container(contained)
+container.data =
+  [[0.000000, 4.000000],
+   [1.000000, 9.000000],
+   [1.000000, 2.000000],
+   [3.000000, 1.000000]]
+&contained      = 140730691542256  // 0x7ffe6ae0dcf0
+&container      = 140730691542192  // 0x7ffe6ae0dcb0
+&container.data = 140730691542192  // 0x7ffe6ae0dcb0
 ------------------------------------------------------------
 just_print()
  ======== BEGIN FORTRAN ========
@@ -132,6 +148,21 @@ udf_ptr(ptr_as_int)  # Set memory in ``made_it``
 made_it = UserDefined(buzz=3.125, broken=-10.5, how_many=101)
 needsfree(made_it) = True
 *ptr_as_int = UserDefined(buzz=3.125, broken=-10.5, how_many=101)
+------------------------------------------------------------
+contained =
+[[ 0.  4.]
+ [ 1.  9.]
+ [ 1.  2.]
+ [ 3.  1.]]
+container = make_container(contained)
+container.data =
+[[ 0.  4.]
+ [ 1.  9.]
+ [ 1.  2.]
+ [ 3.  1.]]
+address(contained)      = 20427856  # 0x137b450
+address(container)      = 25372080  # 0x18325b0
+address(container.data) = 25372080  # 0x18325b0
 ------------------------------------------------------------
 just_print()
  ======== BEGIN FORTRAN ========
@@ -175,13 +206,16 @@ just_print()
 ### Python via `f2py`
 
 ```
-$ make fortran_example.so > /dev/null; python check_f2py.py; make clean > /dev/null
+$ make fortran_example.so > /dev/null 2>&1; python check_f2py.py; make clean > /dev/null
 ------------------------------------------------------------
 fortran_example: <module 'fortran_example' from '.../fortran_example.so'>
-dir(fortran_example.example): ['foo', 'foo_array', 'foo_by_ref', 'just_print', 'udf_ptr']
+dir(fortran_example.example): ['foo', 'foo_array', 'foo_by_ref', 'just_print', 'make_udf', 'udf_ptr']
 ------------------------------------------------------------
 foo       (1.0, 16.0) = 0.0
 foo_by_ref(1.0, 16.0) = 61.0
+------------------------------------------------------------
+quuz = make_udf(1.25, 5.0, 1337)
+     = UserDefined(buzz=1.25, broken=5.0, how_many=1337)
 ------------------------------------------------------------
 val =
 [[ 3.    4.5 ]
