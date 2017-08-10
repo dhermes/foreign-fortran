@@ -4,7 +4,7 @@ main: example.mod example.o main.f90
 	gfortran -o main main.f90 example.o
 
 main_c: example.f90 main.c
-	gcc -c main.c example.f90
+	gcc -c main.c
 	gfortran main.o example.f90 -o main_c
 	rm main.o
 
