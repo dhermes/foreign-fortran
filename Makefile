@@ -4,9 +4,11 @@ main: example.mod example.o main.f90
 	gfortran -o main main.f90 example.o
 
 main_c: example.f90 main.c
-	gcc -c main.c
-	gfortran main.o example.f90 -o main_c
-	rm main.o
+	gcc -c main.c -o main.o
+	gfortran -c example.f90 -o example.o
+	gfortran main.o example.o -o main_c
+	# OR: gcc main.o example.o -o main_c -lgfortran
+	rm -f main.o example.o
 
 cy_example.so: cy_example.pyx example.so
 	gfortran -shared -fPIC -c example.f90
