@@ -292,6 +292,7 @@ ImportError: .../cy_example.so: undefined symbol: _gfortran_transfer_character_w
   using Cython to wrap Fortran (rather than `f2py`). But this article fails
   to point out it's approach can leave out some symbols (e.g. the `check_cython`
   example when `libgfortran` isn't included)
+- Description on the uber-useful `fortran90.org` on [how to interface with C][7]
 
 [1]: http://www.mathcs.emory.edu/~cheung/Courses/561/Syllabus/6-Fortran/struct.html
 [2]: https://stackoverflow.com/q/8557244
@@ -299,3 +300,4 @@ ImportError: .../cy_example.so: undefined symbol: _gfortran_transfer_character_w
 [4]: https://github.com/jameskermode/f90wrap
 [5]: https://maurow.bitbucket.io/notes/calling_fortran_from_python.html
 [6]: https://maurow.bitbucket.io/notes/calling_fortran_from_c.html
+[7]: http://www.fortran90.org/src/best-practices.html#interfacing-with-c
