@@ -28,7 +28,9 @@ def main():
     print(SEPARATOR)
     print('fortran_example: {}'.format(fortran_example))
     example_ns = fortran_example.example
-    print('dir(fortran_example.example): {}'.format(dir(example_ns)))
+    exported_names = [name for name in dir(example_ns)
+                      if not (name.startswith('__') and name.endswith('__'))]
+    print('dir(fortran_example.example): {}'.format(exported_names))
 
     print(SEPARATOR)
     # foo()
