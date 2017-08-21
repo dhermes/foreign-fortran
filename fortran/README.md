@@ -2,7 +2,7 @@ This is the most vanilla example of all. We are simply
 calling the Fortran `example` module from a Fortran program:
 
 ```
-$ make run-fortran
+$ cd .. && make run-fortran
 ------------------------------------------------------------
 quux = foo(1.000000, 16.000000) = 61.000000
 ------------------------------------------------------------
