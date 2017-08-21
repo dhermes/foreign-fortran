@@ -3,7 +3,6 @@ import distutils.core
 import distutils.extension
 import os
 
-import Cython.Distutils
 import numpy.distutils.core
 import numpy.distutils.fcompiler
 import numpy as np
@@ -52,21 +51,18 @@ def compile_fortran():
 def main():
     obj_file, libraries = compile_fortran()
     npy_include_dir = np.get_include()
-    ext_modules = [
-        distutils.extension.Extension(
-            'example',
-            ['example.pyx'],
-            include_dirs=[npy_include_dir],
-            libraries=libraries,
-            extra_objects=[
-                obj_file,
-            ],
-        ),
-    ]
+    cython_extension = distutils.extension.Extension(
+        'example',
+        ['example.c'],
+        include_dirs=[npy_include_dir],
+        libraries=libraries,
+        extra_objects=[
+            obj_file,
+        ],
+    )
     distutils.core.setup(
         name='Cython Example calling Fortran',
-        cmdclass={'build_ext': Cython.Distutils.build_ext},
-        ext_modules=ext_modules,
+        ext_modules=[cython_extension],
    )
 
 

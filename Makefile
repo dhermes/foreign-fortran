@@ -75,14 +75,18 @@ broken-f2py: fortran/example.f90 f2py/.f2py_f2cmap
 	    ../fortran/example.f90 \
 	    only: make_container
 
-cython/example$(EXT_SUFFIX): cython/setup.py cython/example.pyx
+cython/example.c: cython/example.pyx
+	cd cython/ && \
+	  cython example.pyx
+
+cython/example$(EXT_SUFFIX): cython/setup.py cython/example.c
 	cd cython/ && \
 	  $(PYTHON) setup.py build_ext --inplace
 
 run-cython: cython/check_cython.py cython/example$(EXT_SUFFIX)
 	@$(PYTHON) cython/check_cython.py
 
-broken-cython: cython/setup.py cython/example.pyx
+broken-cython: cython/setup.py cython/example.c
 	cd cython/ && \
 	  IGNORE_LIBRARIES=true $(PYTHON) setup.py build_ext --inplace && \
 	  $(PYTHON) -c 'import example'
