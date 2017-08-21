@@ -54,7 +54,7 @@ utilizes a `fortranobject` C library to create CPython C extensions:
 
 ```python
 >>> import os
->>> import numpy.f2py.src
+>>> import numpy.f2py
 >>>
 >>> f2py_dir = os.path.dirname(numpy.f2py.__file__)
 >>> f2py_dir
