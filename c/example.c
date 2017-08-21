@@ -2,15 +2,7 @@
 #include <stdio.h>
 #include <math.h>
 
-struct UserDefined {
-  double buzz;
-  double broken;
-  int how_many;
-};
-
-struct DataContainer {
-  double data[8];
-};
+#include "example.h"
 
 void print_sep (void)
 {
@@ -40,7 +32,7 @@ int main (void)
   int size = 4;
   double val[8] = {3.0, 1.0, 9.0, -1.0, 4.5, 1.25, 0.0, 4.0};
   double two_val[8];
-  foo_array(&size, &val, &two_val);
+  foo_array(&size, val, two_val);
   printf("foo_array(\n");
   printf("    %d,\n", size);
   printf("    [[%f, %f],\n", val[0], val[4]);
@@ -73,7 +65,7 @@ int main (void)
   printf("   [%f, %f],\n", contained[1], contained[5]);
   printf("   [%f, %f],\n", contained[2], contained[6]);
   printf("   [%f, %f]]\n", contained[3], contained[7]);
-  make_container(&contained, &container);
+  make_container(contained, &container);
   printf("container = make_container(contained)\n");
   printf("container.data =\n");
   printf("  [[%f, %f],\n", container.data[0], container.data[4]);

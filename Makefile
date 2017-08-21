@@ -1,3 +1,4 @@
+CC          = gcc
 FC          = gfortran
 MODULES_DIR = -J
 FORTRAN_LIB = -lgfortran
@@ -23,11 +24,12 @@ fortran_example: fortran/example.mod fortran/example.o fortran/main.f90
 run-fortran: fortran_example
 	@./fortran_example
 
-c_example: c/example.c fortran/example.o
-	gcc \
+c_example: c/example.c c/example.h fortran/example.o
+	$(CC) \
+	  -I. \
 	  -c c/example.c \
 	  -o c/example.o
-	gcc \
+	$(CC) \
 	  c/example.o \
 	  fortran/example.o \
 	  -o c_example \
