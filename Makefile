@@ -6,6 +6,7 @@ PYTHON      = python
 PIC         = -shared -fPIC
 F2PY        = f2py
 EXT_SUFFIX  = $(shell $(PYTHON) -c 'import distutils.sysconfig as DS; print(DS.get_config_var("EXT_SUFFIX"))')
+ROOT_DIR   := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 all: fortran_example
 
@@ -91,6 +92,9 @@ broken-cython: cython/setup.py cython/example.c
 	  IGNORE_LIBRARIES=true $(PYTHON) setup.py build_ext --inplace && \
 	  $(PYTHON) -c 'import example'
 
+run-golang: golang/main.go golang/src/example/example.go c/example.h fortran/example.f90
+	@GOPATH=$(ROOT_DIR)/golang go run golang/main.go
+
 clean:
 	rm -f \
 	  c/example.o \
@@ -103,6 +107,7 @@ clean:
 	  fortran/example.mod \
 	  fortran/example.o \
 	  fortran_example \
+	  golang/src/example/example.mod \
 	  python/example.so
 	rm -fr \
 	  cython/__pycache__/ \
@@ -110,4 +115,4 @@ clean:
 	  f2py/__pycache__/ \
 	  python/__pycache__/
 
-.PHONY: all run-fortran run-c run-ctypes run-cffi run-f2py broken-f2py run-cython broken-cython clean
+.PHONY: all run-fortran run-c run-ctypes run-cffi run-f2py broken-f2py run-cython broken-cython run-golang clean
