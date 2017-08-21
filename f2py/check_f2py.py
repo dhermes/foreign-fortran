@@ -7,7 +7,7 @@ from check_ctypes import prepare_udf
 from check_ctypes import SEPARATOR
 from check_ctypes import UDF_PTR_TEMPLATE
 from check_ctypes import UserDefined
-import fortran_example
+import example
 
 
 MSG_FOO_ARRAY = """\
@@ -26,11 +26,13 @@ def np_to_udf(arr):
 
 def main():
     print(SEPARATOR)
-    print('fortran_example: {}'.format(fortran_example))
-    example_ns = fortran_example.example
-    exported_names = [name for name in dir(example_ns)
-                      if not (name.startswith('__') and name.endswith('__'))]
-    print('dir(fortran_example.example): {}'.format(exported_names))
+    print('example: {}'.format(example))
+    example_ns = example.example
+    exported_names = [
+        name for name in dir(example_ns)
+        if not (name.startswith('__') and name.endswith('__'))
+    ]
+    print('dir(example.example): {}'.format(', '.join(exported_names)))
 
     print(SEPARATOR)
     # foo()

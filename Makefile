@@ -3,6 +3,8 @@ MODULES_DIR = -J
 FORTRAN_LIB = -lgfortran
 PYTHON      = python
 PIC         = -shared -fPIC
+F2PY        = f2py
+EXT_SUFFIX  = $(shell $(PYTHON) -c 'import distutils.sysconfig as DS; print(DS.get_config_var("EXT_SUFFIX"))')
 
 all: fortran_example
 
@@ -48,15 +50,30 @@ run-ctypes: python/check_ctypes.py python/example.so
 run-cffi: python/check_cffi.py python/example.so
 	@$(PYTHON) python/check_cffi.py
 
+f2py/example$(EXT_SUFFIX): fortran/example.f90 f2py/.f2py_f2cmap
+	cd f2py/ && \
+	  $(F2PY) \
+	    --verbose \
+	    -c \
+	    --opt='-O3' \
+	    -m example \
+	    ../fortran/example.f90 \
+	    skip: make_container
+
+run-f2py: f2py/check_f2py.py f2py/example$(EXT_SUFFIX)
+	@$(PYTHON) f2py/check_f2py.py
+
 clean:
 	rm -f \
 	  c/example.o \
 	  c_example \
+	  f2py/example$(EXT_SUFFIX) \
 	  fortran/example.mod \
 	  fortran/example.o \
 	  fortran_example \
 	  python/example.so
 	rm -fr \
+	  f2py/__pycache__/ \
 	  python/__pycache__/
 
-.PHONY: all run-fortran run-c run-ctypes run-cffi clean
+.PHONY: all run-fortran run-c run-ctypes run-cffi run-f2py clean

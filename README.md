@@ -206,10 +206,10 @@ just_print()
 ### Python via `f2py`
 
 ```
-$ make fortran_example.so > /dev/null 2>&1; python check_f2py.py; make clean > /dev/null
+$ make run-f2py
 ------------------------------------------------------------
-fortran_example: <module 'fortran_example' from '.../fortran_example.so'>
-dir(fortran_example.example): ['foo', 'foo_array', 'foo_by_ref', 'just_print', 'make_udf', 'udf_ptr']
+example: <module 'example' from '.../f2py/example...so'>
+dir(example.example): foo, foo_array, foo_by_ref, just_print, make_udf, udf_ptr
 ------------------------------------------------------------
 foo       (1.0, 16.0) = 0.0
 foo_by_ref(1.0, 16.0) = 61.0
@@ -230,7 +230,7 @@ two_val =
  [ -2.    8. ]]
 ------------------------------------------------------------
 ptr_as_int = address(made_it)  # intptr_t / ssize_t / long
-ptr_as_int = 43660048  # 0x29a3310
+ptr_as_int = 139859191412464  # 0x7f33816c36f0
 udf_ptr(ptr_as_int)  # Set memory in ``made_it``
 made_it = UserDefined(buzz=3.125, broken=-10.5, how_many=101)
 ------------------------------------------------------------
