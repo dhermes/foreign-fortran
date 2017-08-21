@@ -118,16 +118,16 @@ just_print()
 
 
 ```
-$ make example.so > /dev/null; python check_ctypes.py; make clean > /dev/null
+$ make run-ctypes
 ------------------------------------------------------------
-<CDLL '.../example.so', handle 16e1440 at 7f2491f75350>
+<CDLL '.../python/example.so', handle e757b0 at 0x7ff4d3effb38>
 ------------------------------------------------------------
 quux = foo(c_double(1.0), c_double(16.0)) = c_double(61.0)
 ------------------------------------------------------------
 quuz = make_udf(c_double(1.25), c_double(5.0), c_int(1337))
      = UserDefined(buzz=1.25, broken=5.0, how_many=1337)
 needsfree(quuz) = True
-address(quuz) = 26217808  # 0x1900d50
+address(quuz) = 140689106863712  # 0x7ff4bc3d0660
 *address(quuz) = UserDefined(buzz=1.25, broken=5.0, how_many=1337)
 ------------------------------------------------------------
 val =
@@ -143,7 +143,7 @@ two_val =
  [ -2.    8. ]]
 ------------------------------------------------------------
 ptr_as_int = address(made_it)  # intptr_t / ssize_t / long
-ptr_as_int = c_long(26228288)  # 0x1903640
+ptr_as_int = c_long(140689106863736)  # 0x7ff4bc3d0678
 udf_ptr(ptr_as_int)  # Set memory in ``made_it``
 made_it = UserDefined(buzz=3.125, broken=-10.5, how_many=101)
 needsfree(made_it) = True
@@ -160,9 +160,9 @@ container.data =
  [ 1.  9.]
  [ 1.  2.]
  [ 3.  1.]]
-address(contained)      = 20427856  # 0x137b450
-address(container)      = 25372080  # 0x18325b0
-address(container.data) = 25372080  # 0x18325b0
+address(contained)      = 15107312  # 0xe684f0
+address(container)      = 140689100733808  # 0x7ff4bbdf7d70
+address(container.data) = 140689100733808  # 0x7ff4bbdf7d70
 ------------------------------------------------------------
 just_print()
  ======== BEGIN FORTRAN ========
