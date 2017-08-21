@@ -26,7 +26,7 @@ run-fortran: fortran_example
 
 c_example: c/example.c c/example.h fortran/example.o
 	$(CC) \
-	  -I. \
+	  -I c/ \
 	  -c c/example.c \
 	  -o c/example.o
 	$(CC) \
