@@ -1,35 +1,20 @@
-all: main
+FC = gfortran
 
-main: example.mod example.o main.f90
-	gfortran -o main main.f90 example.o
+all: fortran_example
 
-main_c: example.f90 main.c
-	gcc -c main.c -o main.o
-	gfortran -c example.f90 -o example.o
-	gfortran main.o example.o -o main_c
-	# OR: gcc main.o example.o -o main_c -lgfortran
-	rm -f main.o example.o
+fortran_example: fortran/example.mod fortran/example.o fortran/main.f90
+	$(FC) -o fortran_example fortran/main.f90 fortran/example.o
 
-cy_example.so: cy_example.pyx example.so
-	gfortran -shared -fPIC -c example.f90
-	python setup.py build_ext --inplace
-	rm -fr build/ cy_example.c example.mod example.o example.so
+run-fortran: fortran_example
+	./fortran_example
 
-example.so: example.f90
-	gfortran -shared -fPIC example.f90 -o example.so
-
-fortran_example.so: example.f90 .f2py_f2cmap
-	f2py --verbose -c --opt='-O3' -m fortran_example example.f90 \
-	skip: make_container
-
-fortran_broken: example.f90 .f2py_f2cmap
-	f2py --verbose -c --opt='-O3' -m fortran_example example.f90 \
-	only: make_container
-
-example.o example.mod: example.f90
-	gfortran -c example.f90
+fortran/example.o fortran/example.mod: fortran/example.f90
+	$(FC) -J fortran/ -c fortran/example.f90 -o fortran/example.o
 
 clean:
-	rm -f cy_example.so example.mod example.o example.so fortran_example.so main main_c
+	rm -f \
+	  fortran/example.mod \
+	  fortran/example.o \
+	  fortran_example
 
-.PHONY: all fortran_broken clean
+.PHONY: all clean

@@ -35,7 +35,7 @@ Run the exact same Fortran code in six different ways:
 ### Plain Fortran
 
 ```
-$ make main > /dev/null; ./main; make clean > /dev/null
+$ make run-fortran
 ------------------------------------------------------------
 quux = foo(1.000000, 16.000000) = 61.000000
 ------------------------------------------------------------
