@@ -75,21 +75,14 @@ broken-f2py: fortran/example.f90 f2py/.f2py_f2cmap
 	    ../fortran/example.f90 \
 	    only: make_container
 
-cython/example.o: fortran/example.f90
-	$(FC) \
-	  $(PIC) \
-	  $(MODULES_DIR) fortran/ \
-	  -c fortran/example.f90 \
-	  -o cython/example.o
-
-cython/example$(EXT_SUFFIX): cython/setup.py cython/example.pyx cython/example.o
+cython/example$(EXT_SUFFIX): cython/setup.py cython/example.pyx
 	cd cython/ && \
 	  $(PYTHON) setup.py build_ext --inplace
 
 run-cython: cython/check_cython.py cython/example$(EXT_SUFFIX)
 	@$(PYTHON) cython/check_cython.py
 
-broken-cython: cython/setup.py cython/example.pyx cython/example.o
+broken-cython: cython/setup.py cython/example.pyx
 	cd cython/ && \
 	  IGNORE_LIBRARIES=true $(PYTHON) setup.py build_ext --inplace && \
 	  $(PYTHON) -c 'import example'
@@ -99,6 +92,7 @@ clean:
 	  c/example.o \
 	  c_example \
 	  cython/example.c \
+	  cython/example.mod \
 	  cython/example.o \
 	  cython/example$(EXT_SUFFIX) \
 	  f2py/example$(EXT_SUFFIX) \
