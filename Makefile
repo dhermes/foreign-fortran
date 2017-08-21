@@ -65,6 +65,16 @@ f2py/example$(EXT_SUFFIX): fortran/example.f90 f2py/.f2py_f2cmap
 run-f2py: f2py/check_f2py.py f2py/example$(EXT_SUFFIX)
 	@$(PYTHON) f2py/check_f2py.py
 
+broken-f2py: fortran/example.f90 f2py/.f2py_f2cmap
+	cd f2py/ && \
+	  $(F2PY) \
+	    --verbose \
+	    -c \
+	    --opt='-O3' \
+	    -m example \
+	    ../fortran/example.f90 \
+	    only: make_container
+
 cython/example$(EXT_SUFFIX): cython/setup.py cython/example.pyx python/example.so
 	$(FC) \
 	  $(PIC) \
@@ -95,4 +105,4 @@ clean:
 	  f2py/__pycache__/ \
 	  python/__pycache__/
 
-.PHONY: all run-fortran run-c run-ctypes run-cffi run-f2py run-cython clean
+.PHONY: all run-fortran run-c run-ctypes run-cffi run-f2py broken-f2py run-cython clean

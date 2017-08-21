@@ -6,9 +6,15 @@ When trying to convert a Fortran subroutine to Python via `f2py`, a
 problem occurs if the subroutine uses a user-defined type:
 
 ```
-$ make fortran_broken
-f2py --verbose -c --opt='-O3' -m fortran_example example.f90 \
-only: make_udf
+$ make broken-f2py
+cd f2py/ && \
+  f2py \
+    --verbose \
+    -c \
+    --opt='-O3' \
+    -m example \
+    ../fortran/example.f90 \
+    only: make_container
 ...
 Building modules...
         Building module "fortran_example"...
@@ -21,11 +27,11 @@ getctype: No C-type found in "{'attrspec': [], 'typename': 'userdefined', 'inten
 getctype: No C-type found in "{'attrspec': [], 'typename': 'userdefined', 'intent': ['out'], 'typespec': 'type'}", assuming void.
 Traceback (most recent call last):
 ...
-  File ".../numpy/f2py/capi_maps.py", line 412, in getpydocsign
+  File ".../numpy/f2py/capi_maps.py", line 417, in getpydocsign
     sig = '%s : %s %s%s' % (a, opt, c2py_map[ctype], init)
 KeyError: 'void'
-Makefile:24: recipe for target 'fortran_broken' failed
-make: *** [fortran_broken] Error 1
+Makefile:69: recipe for target 'broken-f2py' failed
+make: *** [broken-f2py] Error 1
 ```
 
 ## Doing Everything
