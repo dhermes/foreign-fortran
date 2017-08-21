@@ -45,12 +45,17 @@ building the CPython C extension module (`example.so`), then the print
 statements in `just_print` (as defined in in `example.f90`) cause
 
 ```
-$ (cd .. && make run-cython)
-...
+$ (cd .. && make broken-cython)
+cd cython/ && \
+  IGNORE_LIBRARIES=true python setup.py build_ext --inplace && \
+  python -c 'import example'
+running build_ext
+skipping 'example.c' Cython extension (up-to-date)
 Traceback (most recent call last):
-  File "check_cython.py", line 4, in <module>
-    import example
-ImportError: .../example.so: undefined symbol: _gfortran_transfer_character_write
+  File "<string>", line 1, in <module>
+ImportError: .../cython/example...so: undefined symbol: _gfortran_transfer_character_write
+Makefile:93: recipe for target 'broken-cython' failed
+make: *** [broken-cython] Error 1
 ```
 
 ## References

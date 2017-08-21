@@ -1,7 +1,15 @@
 import distutils.core
 import distutils.extension
+import os
+
 import Cython.Distutils
 import numpy as np
+
+
+if 'IGNORE_LIBRARIES' in os.environ:
+    LIBRARIES = []
+else:
+    LIBRARIES = ['gfortran']
 
 
 def main():
@@ -11,7 +19,7 @@ def main():
             'example',
             ['example.pyx'],
             include_dirs=[npy_include_dir],
-            libraries=['gfortran'],
+            libraries=LIBRARIES,
             extra_objects=[
                 'example.o',
             ],
