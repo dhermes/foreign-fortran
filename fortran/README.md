@@ -31,3 +31,11 @@ just_print()
  just_print() was called
  ========  END  FORTRAN ========
 ```
+
+## References
+
+- [Examples][1] of user-defined types
+- StackOverflow [question][2] about user-defined types
+
+[1]: http://www.mathcs.emory.edu/~cheung/Courses/561/Syllabus/6-Fortran/struct.html
+[2]: https://stackoverflow.com/q/8557244

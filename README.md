@@ -216,8 +216,6 @@ ImportError: .../example.so: undefined symbol: _gfortran_transfer_character_writ
 
 ## References
 
-- [Examples][1]
-- StackOverflow [question][2] about user-defined types
 - (Lack of) support [in `f2py`][3] (and possible workaround [`f90wrap`][4])
 - Decently [helpful article][5] and ["pre-article"][6] to that one about
   using Cython to wrap Fortran (rather than `f2py`). But this article fails
@@ -225,8 +223,6 @@ ImportError: .../example.so: undefined symbol: _gfortran_transfer_character_writ
   example when `libgfortran` isn't included)
 - Description on the uber-useful `fortran90.org` on [how to interface with C][7]
 
-[1]: http://www.mathcs.emory.edu/~cheung/Courses/561/Syllabus/6-Fortran/struct.html
-[2]: https://stackoverflow.com/q/8557244
 [3]: https://mail.scipy.org/pipermail/scipy-user/2008-December/018881.html
 [4]: https://github.com/jameskermode/f90wrap
 [5]: https://maurow.bitbucket.io/notes/calling_fortran_from_python.html
