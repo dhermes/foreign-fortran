@@ -47,6 +47,40 @@ just_print()
  ========  END  FORTRAN ========
 ```
 
+## What is Happening?
+
+`f2py` actually generates a wrapped `{modname}module.c` file and
+utilizes a `fortranobject` C library to create CPython C extensions:
+
+```python
+>>> import os
+>>> import numpy.f2py.src
+>>>
+>>> f2py_dir = os.path.dirname(numpy.f2py.__file__)
+>>> f2py_dir
+'.../lib/python3.6/site-packages/numpy/f2py'
+>>> os.listdir(os.path.join(f2py_dir, 'src'))
+['fortranobject.c', 'fortranobject.h']
+```
+
+It uses a C compiler with flags determined by `distutils` to
+link against NumPy and Python headers when compiling `{modname}module.c`
+and `fortranobject.c` and uses a Fortran compiler for `{modname}.f90`.
+Then it uses the Fortran compiler as linker:
+
+```
+gfortran \
+  -Wall \
+  -g \
+  -shared \
+  ${TEMPDIR}/.../{modname}module.o \
+  ${TEMPDIR}/.../fortranobject.o \
+  ${TEMPDIR}/{modname}.o \
+  -lgfortran \
+  -o \
+  ./{modname}.so
+```
+
 ## Failure
 
 When trying to convert a Fortran subroutine to Python via `f2py`, a
