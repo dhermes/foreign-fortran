@@ -4,7 +4,7 @@ import numpy as np
 
 from check_ctypes import MAKE_UDF_TEMPLATE
 from check_ctypes import SEPARATOR
-import cy_example
+import example
 
 
 def main():
@@ -12,7 +12,7 @@ def main():
     # foo()
     bar = 1.0
     baz = 16.0
-    quux = cy_example.foo(bar, baz)
+    quux = example.foo(bar, baz)
     print('quux = foo({}, {}) = {}'.format(bar, baz, quux))
 
     print(SEPARATOR)
@@ -20,7 +20,7 @@ def main():
     buzz = 1.25
     broken = 5.0
     how_many = 1337
-    quuz = cy_example.make_udf(buzz, broken, how_many)
+    quuz = example.make_udf(buzz, broken, how_many)
     msg = MAKE_UDF_TEMPLATE.format(buzz, broken, how_many, quuz)
     print(msg, end='')
 
@@ -32,20 +32,20 @@ def main():
         [ 9.0, 0.0 ],
         [-1.0, 4.0 ],
     ])
-    two_val = cy_example.foo_array(val)
+    two_val = example.foo_array(val)
     print('val =\n{}'.format(val))
     print('two_val = foo_array(val)')
     print('two_val =\n{}'.format(two_val))
 
     print(SEPARATOR)
     # udf_ptr()
-    made_it = cy_example.udf_ptr()
+    made_it = example.udf_ptr()
     print('made_it = udf_ptr()\n        = {}'.format(made_it))
 
     print(SEPARATOR)
     # just_print()
     print('just_print()')
-    cy_example.just_print()
+    example.just_print()
 
 
 if __name__ == '__main__':

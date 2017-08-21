@@ -243,7 +243,7 @@ just_print()
 ### Python via Cython
 
 ```
-$ make cy_example.so > /dev/null 2>&1; python check_cython.py; make clean > /dev/null
+$ make run-cython
 ------------------------------------------------------------
 quux = foo(1.0, 16.0) = 61.0
 ------------------------------------------------------------
@@ -272,15 +272,15 @@ just_print()
 ```
 
 However, if `libraries=['gfortran']` is not specified in `setup.py` when
-building the module (`cy_example.so`), then the print statements in
+building the module (`example.so`), then the print statements in
 `just_print` (as defined in in `example.f90`) cause
 
 ```
-$ make cy_example.so > /dev/null 2>&1; python check_cython.py; make clean > /dev/null
+$ make example.so > /dev/null 2>&1; python check_cython.py; make clean > /dev/null
 Traceback (most recent call last):
   File "check_cython.py", line 4, in <module>
-    import cy_example
-ImportError: .../cy_example.so: undefined symbol: _gfortran_transfer_character_write
+    import example
+ImportError: .../example.so: undefined symbol: _gfortran_transfer_character_write
 ```
 
 ## References

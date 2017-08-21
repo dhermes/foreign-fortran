@@ -63,17 +63,34 @@ f2py/example$(EXT_SUFFIX): fortran/example.f90 f2py/.f2py_f2cmap
 run-f2py: f2py/check_f2py.py f2py/example$(EXT_SUFFIX)
 	@$(PYTHON) f2py/check_f2py.py
 
+cython/example$(EXT_SUFFIX): cython/setup.py cython/example.pyx python/example.so
+	$(FC) \
+	  $(PIC) \
+	  $(MODULES_DIR) fortran/ \
+	  -c fortran/example.f90 \
+	  -o cython/example.o
+	cd cython/ && \
+	  $(PYTHON) setup.py build_ext --inplace
+
+run-cython: cython/check_cython.py cython/example$(EXT_SUFFIX)
+	@$(PYTHON) cython/check_cython.py
+
 clean:
 	rm -f \
 	  c/example.o \
 	  c_example \
+	  cython/example.c \
+	  cython/example.o \
+	  cython/example$(EXT_SUFFIX) \
 	  f2py/example$(EXT_SUFFIX) \
 	  fortran/example.mod \
 	  fortran/example.o \
 	  fortran_example \
 	  python/example.so
 	rm -fr \
+	  cython/__pycache__/ \
+	  cython/build/ \
 	  f2py/__pycache__/ \
 	  python/__pycache__/
 
-.PHONY: all run-fortran run-c run-ctypes run-cffi run-f2py clean
+.PHONY: all run-fortran run-c run-ctypes run-cffi run-f2py run-cython clean

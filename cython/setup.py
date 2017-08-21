@@ -1,16 +1,15 @@
-# NOTE: This is **ONLY** for Cython.
 import distutils.core
 import distutils.extension
 import Cython.Distutils
-import numpy
+import numpy as np
 
 
 def main():
-    npy_include_dir = numpy.get_include()
+    npy_include_dir = np.get_include()
     ext_modules = [
         distutils.extension.Extension(
-            'cy_example',
-            ['cy_example.pyx'],
+            'example',
+            ['example.pyx'],
             include_dirs=[npy_include_dir],
             libraries=['gfortran'],
             extra_objects=[
