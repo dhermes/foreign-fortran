@@ -173,7 +173,7 @@ just_print()
 ### Python via `cffi`
 
 ```
-$ make example.so > /dev/null; python check_cffi.py; make clean > /dev/null
+$ make run-cffi
 ------------------------------------------------------------
 quux = foo(1.0, 16.0) = 61.0
 ------------------------------------------------------------

@@ -19,7 +19,7 @@ fortran_example: fortran/example.mod fortran/example.o fortran/main.f90
 	  fortran/example.o
 
 run-fortran: fortran_example
-	./fortran_example
+	@./fortran_example
 
 c_example: c/example.c fortran/example.o
 	gcc \
@@ -33,7 +33,7 @@ c_example: c/example.c fortran/example.o
 	# OR: gfortran c/example.o fortran/example.o -o c_example
 
 run-c: c_example
-	./c_example
+	@./c_example
 
 python/example.so: fortran/example.f90
 	$(FC) \
@@ -43,7 +43,10 @@ python/example.so: fortran/example.f90
 	  -o python/example.so
 
 run-ctypes: python/check_ctypes.py python/example.so
-	$(PYTHON) python/check_ctypes.py
+	@$(PYTHON) python/check_ctypes.py
+
+run-cffi: python/check_cffi.py python/example.so
+	@$(PYTHON) python/check_cffi.py
 
 clean:
 	rm -f \
@@ -53,5 +56,7 @@ clean:
 	  fortran/example.o \
 	  fortran_example \
 	  python/example.so
+	rm -fr \
+	  python/__pycache__/
 
-.PHONY: all run-fortran run-c run-ctypes clean
+.PHONY: all run-fortran run-c run-ctypes run-cffi clean
