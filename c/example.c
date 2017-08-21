@@ -1,6 +1,5 @@
 #include <stdint.h>
 #include <stdio.h>
-#include <math.h>
 
 #include "example.h"
 
