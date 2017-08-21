@@ -9,7 +9,9 @@ with the `example` package.
 To see our `example` Fortran module in action:
 
 ```
-$ make run-golang
+$ (cd .. && make run-golang)
+------------------------------------------------------------
+quux = foo(1.000000, 16.000000) = 61.000000
 ------------------------------------------------------------
 just_print()
  ======== BEGIN FORTRAN ========
