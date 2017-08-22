@@ -107,9 +107,9 @@ clean:
 	rm -f \
 	  c/example.o \
 	  c_example \
-	  cython/example.mod \
-	  cython/example/example.o \
-	  cython/example/fast$(EXT_SUFFIX) \
+	  cython/package/example.mod \
+	  cython/package/example/example.o \
+	  cython/package/example/fast$(EXT_SUFFIX) \
 	  f2py/example$(EXT_SUFFIX) \
 	  fortran/example.mod \
 	  fortran/example.o \
@@ -118,9 +118,9 @@ clean:
 	  python/example.so
 	rm -fr \
 	  cython/__pycache__/ \
-	  cython/build/ \
-	  cython/example/__pycache__/ \
-	  cython/venv \
+	  cython/package/build/ \
+	  cython/package/example/__pycache__/ \
+	  cython/venv/ \
 	  f2py/__pycache__/ \
 	  python/__pycache__/
 
