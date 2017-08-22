@@ -15,3 +15,7 @@ just_print = fast.just_print
 
 def get_include():
     return os.path.join(PACKAGE_ROOT, 'include')
+
+
+def get_lib():
+    return os.path.join(PACKAGE_ROOT, '.lib')

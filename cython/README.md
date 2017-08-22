@@ -48,8 +48,6 @@ contains the following:
 
 ```
 $ (cd .. && make inspect-cython-sdist)
-...
-
 .
 ├── example-0.0.1
 │   ├── example
@@ -70,18 +68,18 @@ Once this gets installed, the following files are present:
 
 ```
 $ (cd .. && make inspect-cython-installed)
-...
-
 .
 ├── example_fortran.pxd
 ├── fast.cpython-36m-x86_64-linux-gnu.so
 ├── include
 │   └── example.h
 ├── __init__.py
+├── .lib
+│   └── libexample.so
 └── __pycache__
     └── __init__.cpython-36.pyc
 
-2 directories, 5 files
+3 directories, 6 files
 ```
 
 ## `cimport`-ing this library
@@ -94,17 +92,39 @@ worry about the Python layer:
 cimport example.example_fortran
 ```
 
-Currently `cython/use_cimport/wrapper.pyx` is failing because
-the Fortran library is not (yet) available:
+In this case, the library referenced in `example_fortran.pxd`
+is made available in the `example` package:
+
+```python
+>>> import os
+>>> import example
+>>>
+>>> include_dir = example.get_include()
+>>> include_dir
+'.../foreign-fortran/cython/venv/lib/python.../site-packages/example/include'
+>>> os.listdir(include_dir)
+['example.h']
+>>>
+>>> lib_dir = example.get_lib()
+>>> lib_dir
+'.../foreign-fortran/cython/venv/lib/python.../site-packages/example/.lib'
+>>> os.listdir(lib_dir)
+['libexample.so']
+```
+
+It's important to use **both** `library_dirs` and `runtime_library_dirs`
+(e.g. in `cython/use_cimport/setup.py`) to make the library available
+at import time:
 
 ```
 $ (cd .. && make wrap-cython)
-...
-Traceback (most recent call last):
-  File "check_wrapper.py", line 1, in <module>
-    import wrapper
-ImportError: .../foreign-fortran/cython/use_cimport/wrapper....so: undefined symbol: just_print
+>>> wrapper.morp()
+ ======== BEGIN FORTRAN ========
+ just_print() was called
+ ========  END  FORTRAN ========
 ```
+
+Though this still [may not be enough][8].
 
 ## Gotcha
 
@@ -142,3 +162,4 @@ make: *** [broken-cython] Error 1
 [5]: https://maurow.bitbucket.io/notes/calling_fortran_from_python.html
 [6]: https://maurow.bitbucket.io/notes/calling_fortran_from_c.html
 [7]: http://www.fortran90.org/src/best-practices.html#interfacing-with-c
+[8]: https://stackoverflow.com/q/19123623/1068170

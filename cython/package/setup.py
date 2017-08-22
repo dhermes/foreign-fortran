@@ -10,6 +10,15 @@ import numpy as np
 
 VERSION = '0.0.1'
 LOCAL_INCLUDE = os.path.join('example', 'include')
+LOCAL_LIB = os.path.join('example', '.lib')
+# NOTE: We prefer the relative path below over the absolute path
+#           source_file = os.path.abspath(os.path.join(
+#               os.path.dirname(__file__),
+#               'example.f90',
+#           ))
+#       because ``compile()`` will create the entire subdirectory
+#       path matching it.
+SOURCE_FILE = os.path.join('example', 'example.f90')
 
 
 def get_f90_compiler():
@@ -25,18 +34,9 @@ def get_f90_compiler():
     return f90_compiler
 
 
-def compile_fortran():
-    # NOTE: We prefer the relative path below over the absolute path
-    #           source_file = os.path.abspath(os.path.join(
-    #               os.path.dirname(__file__),
-    #               'example.f90',
-    #           ))
-    #       because ``compile()`` will create the entire subdirectory
-    #       path matching it.
-    source_file = os.path.join('example', 'example.f90')
-    f90_compiler = get_f90_compiler()
+def compile_fortran_obj_file(f90_compiler):
     obj_file, = f90_compiler.compile(
-        [source_file],
+        [SOURCE_FILE],
         output_dir=None,
         macros=[],
         include_dirs=[],
@@ -52,8 +52,24 @@ def compile_fortran():
     return obj_file, libraries
 
 
+def compile_fortran_so_file(f90_compiler, obj_file):
+    objects = [obj_file]
+    # NOTE: It's unclear why we need to specify 'libexample' rather than
+    #       'example'. I.e. I expect the tooling to add `lib` when appropriate
+    #       based on the `shared_lib` in the name.
+    output_libname = 'libexample'
+    f90_compiler.link_shared_lib(
+        objects,
+        output_libname,
+        output_dir=LOCAL_LIB,
+    )
+
+
 def main():
-    obj_file, libraries = compile_fortran()
+    f90_compiler = get_f90_compiler()
+    obj_file, libraries = compile_fortran_obj_file(f90_compiler)
+    compile_fortran_so_file(f90_compiler, obj_file)
+
     npy_include_dir = np.get_include()
     cython_extension = distutils.extension.Extension(
         'example.fast',
@@ -79,7 +95,8 @@ def main():
         package_data = {
             'example': [
                 'example_fortran.pxd',
-                os.path.join('include', 'example.h'),
+                os.path.join('include', '*.h'),
+                os.path.join('.lib', '*.so'),
             ],
         },
     )

@@ -1,4 +1,5 @@
 import distutils.core
+import distutils.extension
 
 import Cython.Build
 
@@ -6,12 +7,20 @@ import example
 
 
 def main():
-    ext_modules = Cython.Build.cythonize('wrapper.pyx')
     example_include = example.get_include()
+    example_lib = example.get_lib()
+
+    ext_module = distutils.extension.Extension(
+        'wrapper',
+        ['wrapper.pyx'],
+        include_dirs=[example_include],
+        libraries=['example'],
+        library_dirs=[example_lib],
+        runtime_library_dirs=[example_lib],
+    )
     distutils.core.setup(
         name='cimport-ing example module interface',
-        ext_modules=ext_modules,
-        include_dirs=[example_include],
+        ext_modules=Cython.Build.cythonize([ext_module]),
     )
 
 

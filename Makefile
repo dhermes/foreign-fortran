@@ -3,10 +3,11 @@ FC          = gfortran
 MODULES_DIR = -J
 FORTRAN_LIB = -lgfortran
 PYTHON      = python
+PYTHON_FULL = $(shell $(PYTHON) -c 'import sys; print("python{}.{}".format(*sys.version_info[:2]))')
 PIC         = -shared -fPIC
 F2PY        = f2py
 EXT_SUFFIX  = $(shell $(PYTHON) -c 'import distutils.sysconfig as DS; print(DS.get_config_var("EXT_SUFFIX"))')
-ROOT_DIR   := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+ROOT_DIR    = $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 all: fortran_example
 
@@ -85,14 +86,14 @@ cython/venv:
 	  virtualenv venv && \
 	  venv/bin/pip install cffi numpy Cython
 
-cython-install: cython/maybe_install.py cython/venv cython/package/setup.py cython/package/example/fast.c c/example.h fortran/example.f90
-	@# Make sure our copied files are as expected. We use copies
-	@# instead of symlinks because MANIFEST.in copies the **symlinks**.
-	@diff --brief c/example.h cython/package/example/include/example.h
-	@diff --brief fortran/example.f90 cython/package/example/example.f90
-	@cython/venv/bin/python cython/maybe_install.py
+cython/venv/lib/$(PYTHON_FULL)/site-packages/example: cython/venv cython/package/setup.py cython/package/example/fast.c c/example.h fortran/example.f90
+	# Make sure our copied files are as expected. We use copies
+	# instead of symlinks because MANIFEST.in copies the **symlinks**.
+	diff --brief c/example.h cython/package/example/include/example.h
+	diff --brief fortran/example.f90 cython/package/example/example.f90
+	cython/venv/bin/pip install cython/package/
 
-run-cython: cython-install cython/check_cython.py
+run-cython: cython/venv/lib/$(PYTHON_FULL)/site-packages/example cython/check_cython.py
 	@cython/venv/bin/python cython/check_cython.py
 
 broken-cython: cython/package/setup.py cython/package/example/fast.c
@@ -100,24 +101,28 @@ broken-cython: cython/package/setup.py cython/package/example/fast.c
 	  IGNORE_LIBRARIES=true $(PYTHON) setup.py build_ext --inplace && \
 	  $(PYTHON) -c 'import example'
 
-inspect-cython-sdist: cython-install
+cython/package/dist/example-0.0.1.tar.gz: cython/venv/lib/$(PYTHON_FULL)/site-packages/example
 	cd cython/package/ && \
 	  ../venv/bin/python setup.py sdist
-	cd cython/package/dist/ && \
-	  tar xzvf example-0.0.1.tar.gz && \
-	  tree .
 
-inspect-cython-installed: cython-install
-	cd $(shell cython/venv/bin/python \
+inspect-cython-sdist: cython/package/dist/example-0.0.1.tar.gz
+	@tar xzf \
+	  cython/package/dist/example-0.0.1.tar.gz \
+	  -C cython/package/dist/
+	@cd cython/package/dist/ && \
+	  tree -a .
+
+inspect-cython-installed: cython/venv/lib/$(PYTHON_FULL)/site-packages/example
+	@cd $(shell cython/venv/bin/python \
 	  -c 'import example, os; print(os.path.dirname(example.__file__))') && \
-	  tree .
+	  tree -a .
 
-cython/use_cimport/wrapper$(EXT_SUFFIX): cython-install cython/use_cimport/setup.py
+cython/use_cimport/wrapper$(EXT_SUFFIX): cython/venv/lib/$(PYTHON_FULL)/site-packages/example cython/use_cimport/setup.py
 	cd cython/use_cimport && \
 	  ../venv/bin/python setup.py build_ext --inplace
 
 wrap-cython: cython/use_cimport/wrapper$(EXT_SUFFIX) cython/use_cimport/check_wrapper.py
-	cd cython/use_cimport && \
+	@cd cython/use_cimport && \
 	  ../venv/bin/python check_wrapper.py
 
 run-golang: golang/main.go golang/src/example/example.go c/example.h fortran/example.f90
@@ -144,9 +149,10 @@ clean:
 	  cython/package/build/ \
 	  cython/package/dist/ \
 	  cython/package/example/__pycache__/ \
+	  cython/package/example/.lib/ \
 	  cython/use_cimport/build/ \
 	  cython/venv/ \
 	  f2py/__pycache__/ \
 	  python/__pycache__/
 
-.PHONY: all run-fortran run-c run-ctypes run-cffi run-f2py broken-f2py cython-install run-cython broken-cython inspect-cython-sdist inspect-cython-installed wrap-cython run-golang clean
+.PHONY: all run-fortran run-c run-ctypes run-cffi run-f2py broken-f2py run-cython broken-cython inspect-cython-sdist inspect-cython-installed wrap-cython run-golang clean
