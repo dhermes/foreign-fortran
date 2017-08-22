@@ -14,6 +14,10 @@ type UserDefined struct {
 	HowMany int32
 }
 
+type DataContainer struct {
+	Data [8]float64
+}
+
 func (udf *UserDefined) String() string {
 	return fmt.Sprintf(
 		"%T(%f, %f, %d)",
@@ -68,4 +72,14 @@ func UDFPtr(ptrAsInt *uintptr) {
 	C.udf_ptr(
 		(*C.intptr_t)(unsafe.Pointer(ptrAsInt)),
 	)
+}
+
+func MakeContainer(contained [8]float64) *DataContainer {
+	var container C.struct_DataContainer
+	C.make_container(
+		(*C.double)(&contained[0]),
+		&container,
+	)
+	data := *(*[8]float64)(unsafe.Pointer(&container.data))
+	return &DataContainer{data}
 }
