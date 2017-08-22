@@ -36,6 +36,9 @@ just_print()
  ======== BEGIN FORTRAN ========
  just_print() was called
  ========  END  FORTRAN ========
+------------------------------------------------------------
+example.get_include() =
+.../foreign-fortran/cython/venv/lib/python.../site-packages/example/include
 ```
 
 ## Gotcha

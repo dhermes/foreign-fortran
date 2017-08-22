@@ -77,7 +77,10 @@ def main():
         packages=['example'],
         ext_modules=[cython_extension],
         package_data = {
-            'example': ['example_fortran.pxd'],
+            'example': [
+                'example_fortran.pxd',
+                os.path.join('include', 'example.h'),
+            ],
         },
     )
 

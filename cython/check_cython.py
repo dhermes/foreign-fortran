@@ -47,6 +47,12 @@ def main():
     print('just_print()')
     example.just_print()
 
+    print(SEPARATOR)
+    # get_include()
+    include_dir = example.get_include()
+    msg = 'example.get_include() =\n{}'.format(include_dir)
+    print(msg)
+
 
 if __name__ == '__main__':
     main()
