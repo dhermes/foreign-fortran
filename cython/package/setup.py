@@ -8,6 +8,10 @@ import numpy.distutils.fcompiler
 import numpy as np
 
 
+VERSION = '0.0.1'
+LOCAL_INCLUDE = os.path.join('example', 'include')
+
+
 def get_f90_compiler():
     c_compiler = distutils.ccompiler.new_compiler()
     c_compiler.verbose = 2
@@ -29,7 +33,7 @@ def compile_fortran():
     #           ))
     #       because ``compile()`` will create the entire subdirectory
     #       path matching it.
-    source_file = 'example.f90'
+    source_file = os.path.join('example', 'example.f90')
     f90_compiler = get_f90_compiler()
     obj_file, = f90_compiler.compile(
         [source_file],
@@ -52,21 +56,30 @@ def main():
     obj_file, libraries = compile_fortran()
     npy_include_dir = np.get_include()
     cython_extension = distutils.extension.Extension(
-        'example',
-        ['example.c'],
-        include_dirs=[npy_include_dir],
+        'example.fast',
+        [os.path.join('example', 'fast.c')],
+        include_dirs=[
+            npy_include_dir,
+            LOCAL_INCLUDE,
+        ],
         libraries=libraries,
         extra_objects=[
             obj_file,
         ],
     )
     distutils.core.setup(
-        name='Cython Example calling Fortran',
+        name='example',
+        version=VERSION,
+        description='Cython Example calling Fortran',
+        author='Danny Hermes',
+        author_email='daniel.j.hermes@gmail.com',
+        url='https://github.com/dhermes/foreign-fortran',
+        packages=['example'],
         ext_modules=[cython_extension],
         package_data = {
-            'example': ['example.pxd'],
+            'example': ['example_fortran.pxd'],
         },
-   )
+    )
 
 
 if __name__ == '__main__':

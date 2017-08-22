@@ -1,0 +1,7 @@
+include README.md
+recursive-include example *
+global-exclude *.c
+global-exclude *.o
+global-exclude *.pyc __pycache__
+global-exclude *.pyx
+global-exclude *.so

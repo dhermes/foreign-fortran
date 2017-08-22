@@ -76,19 +76,27 @@ broken-f2py: fortran/example.f90 f2py/.f2py_f2cmap
 	    ../fortran/example.f90 \
 	    only: make_container
 
-cython/example.c: cython/example.pyx
-	cd cython/ && \
-	  cython example.pyx
+cython/package/example/fast.c: cython/package/example/fast.pyx
+	cd cython/package/example/ && \
+	  cython fast.pyx
 
-cython/example$(EXT_SUFFIX): cython/setup.py cython/example.c
-	cd cython/ && \
-	  $(PYTHON) setup.py build_ext --inplace
+cython/venv:
+	cd cython && \
+	  virtualenv venv && \
+	  venv/bin/pip install cffi numpy Cython
 
-run-cython: cython/check_cython.py cython/example$(EXT_SUFFIX)
-	@$(PYTHON) cython/check_cython.py
+cython-install: cython/maybe_install.py cython/venv cython/package/setup.py cython/package/example/fast.c c/example.h fortran/example.f90
+	@# Make sure our copied files are as expected. We use copies
+	@# instead of symlinks because MANIFEST.in copies the **symlinks**.
+	@diff --brief c/example.h cython/package/example/include/example.h
+	@diff --brief fortran/example.f90 cython/package/example/example.f90
+	@cython/venv/bin/python cython/maybe_install.py
 
-broken-cython: cython/setup.py cython/example.c
-	cd cython/ && \
+run-cython: cython-install cython/check_cython.py
+	@cython/venv/bin/python cython/check_cython.py
+
+broken-cython: cython/package/setup.py cython/package/example/fast.c
+	cd cython/package/ && \
 	  IGNORE_LIBRARIES=true $(PYTHON) setup.py build_ext --inplace && \
 	  $(PYTHON) -c 'import example'
 
@@ -99,10 +107,9 @@ clean:
 	rm -f \
 	  c/example.o \
 	  c_example \
-	  cython/example.c \
 	  cython/example.mod \
-	  cython/example.o \
-	  cython/example$(EXT_SUFFIX) \
+	  cython/example/example.o \
+	  cython/example/fast$(EXT_SUFFIX) \
 	  f2py/example$(EXT_SUFFIX) \
 	  fortran/example.mod \
 	  fortran/example.o \
@@ -112,7 +119,9 @@ clean:
 	rm -fr \
 	  cython/__pycache__/ \
 	  cython/build/ \
+	  cython/example/__pycache__/ \
+	  cython/venv \
 	  f2py/__pycache__/ \
 	  python/__pycache__/
 
-.PHONY: all run-fortran run-c run-ctypes run-cffi run-f2py broken-f2py run-cython broken-cython run-golang clean
+.PHONY: all run-fortran run-c run-ctypes run-cffi run-f2py broken-f2py cython-install run-cython broken-cython run-golang clean
