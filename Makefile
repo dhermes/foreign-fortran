@@ -100,6 +100,18 @@ broken-cython: cython/package/setup.py cython/package/example/fast.c
 	  IGNORE_LIBRARIES=true $(PYTHON) setup.py build_ext --inplace && \
 	  $(PYTHON) -c 'import example'
 
+inspect-cython-sdist: cython-install
+	cd cython/package/ && \
+	  ../venv/bin/python setup.py sdist
+	cd cython/package/dist/ && \
+	  tar xzvf example-0.0.1.tar.gz && \
+	  tree .
+
+inspect-cython-installed: cython-install
+	cd $(shell cython/venv/bin/python \
+	  -c 'import example, os; print(os.path.dirname(example.__file__))') && \
+	  tree .
+
 run-golang: golang/main.go golang/src/example/example.go c/example.h fortran/example.f90
 	@GOPATH=$(ROOT_DIR)/golang go run golang/main.go
 
@@ -110,6 +122,7 @@ clean:
 	  cython/package/example.mod \
 	  cython/package/example/example.o \
 	  cython/package/example/fast$(EXT_SUFFIX) \
+	  cython/package/MANIFEST \
 	  f2py/example$(EXT_SUFFIX) \
 	  fortran/example.mod \
 	  fortran/example.o \
@@ -119,9 +132,10 @@ clean:
 	rm -fr \
 	  cython/__pycache__/ \
 	  cython/package/build/ \
+	  cython/package/dist/ \
 	  cython/package/example/__pycache__/ \
 	  cython/venv/ \
 	  f2py/__pycache__/ \
 	  python/__pycache__/
 
-.PHONY: all run-fortran run-c run-ctypes run-cffi run-f2py broken-f2py cython-install run-cython broken-cython run-golang clean
+.PHONY: all run-fortran run-c run-ctypes run-cffi run-f2py broken-f2py cython-install run-cython broken-cython inspect-cython-sdist inspect-cython-installed run-golang clean

@@ -41,6 +41,49 @@ example.get_include() =
 .../foreign-fortran/cython/venv/lib/python.../site-packages/example/include
 ```
 
+## `sdist` and installed files
+
+On a standard CPython install on a Linux install, a source dist (`sdist`)
+contains the following:
+
+```
+$ (cd .. && make inspect-cython-sdist)
+...
+
+.
+├── example-0.0.1
+│   ├── example
+│   │   ├── example.f90
+│   │   ├── example_fortran.pxd
+│   │   ├── fast.c
+│   │   ├── include
+│   │   │   └── example.h
+│   │   └── __init__.py
+│   ├── PKG-INFO
+│   └── setup.py
+└── example-0.0.1.tar.gz
+
+3 directories, 8 files
+```
+
+Once this gets installed, the following files are present:
+
+```
+$ (cd .. && make inspect-cython-installed)
+...
+
+.
+├── example_fortran.pxd
+├── fast.cpython-36m-x86_64-linux-gnu.so
+├── include
+│   └── example.h
+├── __init__.py
+└── __pycache__
+    └── __init__.cpython-36.pyc
+
+2 directories, 5 files
+```
+
 ## Gotcha
 
 However, if `libraries=['gfortran']` is not specified in `setup.py` when
