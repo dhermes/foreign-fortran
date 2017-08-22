@@ -63,7 +63,7 @@ func main() {
 	fmt.Printf("   [%f, %f],\n", contained[1], contained[5])
 	fmt.Printf("   [%f, %f],\n", contained[2], contained[6])
 	fmt.Printf("   [%f, %f]]\n", contained[3], contained[7])
-	container := example.MakeContainer(contained)
+	container := example.MakeContainer(contained[:])
 	fmt.Println("container = make_container(contained)")
 	fmt.Println("container.Data =")
 	fmt.Printf("  [[%f, %f],\n", container.Data[0], container.Data[4])

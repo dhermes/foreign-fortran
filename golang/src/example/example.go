@@ -74,7 +74,7 @@ func UDFPtr(ptrAsInt *uintptr) {
 	)
 }
 
-func MakeContainer(contained [8]float64) *DataContainer {
+func MakeContainer(contained []float64) *DataContainer {
 	var container C.struct_DataContainer
 	C.make_container(
 		(*C.double)(&contained[0]),
