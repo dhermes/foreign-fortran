@@ -28,6 +28,11 @@ foo_array(
      [18.000000, 0.000000],
      [-2.000000, 8.000000]]
 ------------------------------------------------------------
+ptrAsInt = &madeIt
+ptrAsInt = 842350511456  // 0xc42000c560
+udf_ptr(&ptrAsInt)  // Set memory in ``madeIt``
+&madeIt = *example.UserDefined(3.125000, -10.500000, 101)
+------------------------------------------------------------
 just_print()
  ======== BEGIN FORTRAN ========
  just_print() was called

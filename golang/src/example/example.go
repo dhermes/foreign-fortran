@@ -1,6 +1,9 @@
 package example
 
-import "fmt"
+import (
+	"fmt"
+	"unsafe"
+)
 
 // #include "example.h"
 import "C"
@@ -59,4 +62,10 @@ func FooArray(size *int32, val []float64) []float64 {
 		(*C.double)(&twoVal[0]),
 	)
 	return twoVal
+}
+
+func UDFPtr(ptrAsInt *uintptr) {
+	C.udf_ptr(
+		(*C.intptr_t)(unsafe.Pointer(ptrAsInt)),
+	)
 }

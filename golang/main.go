@@ -4,6 +4,7 @@ import (
 	"example"
 	"fmt"
 	"strings"
+	"unsafe"
 )
 
 var separator = strings.Repeat("-", 60)
@@ -43,6 +44,16 @@ func main() {
 	fmt.Printf("     [%f, %f],\n", twoVal[1], twoVal[5])
 	fmt.Printf("     [%f, %f],\n", twoVal[2], twoVal[6])
 	fmt.Printf("     [%f, %f]]\n", twoVal[3], twoVal[7])
+
+	fmt.Println(separator)
+	// udf_ptr()
+	madeIt := example.UserDefined{}
+	ptrAsInt := uintptr(unsafe.Pointer(&madeIt))
+	example.UDFPtr(&ptrAsInt)
+	fmt.Println("ptrAsInt = &madeIt")
+	fmt.Printf("ptrAsInt = %d  // 0x%x\n", ptrAsInt, ptrAsInt)
+	fmt.Println("udf_ptr(&ptrAsInt)  // Set memory in ``madeIt``")
+	fmt.Printf("&madeIt = %v\n", &madeIt)
 
 	fmt.Println(separator)
 	// just_print()
