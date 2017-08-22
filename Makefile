@@ -112,6 +112,14 @@ inspect-cython-installed: cython-install
 	  -c 'import example, os; print(os.path.dirname(example.__file__))') && \
 	  tree .
 
+cython/use_cimport/wrapper$(EXT_SUFFIX): cython-install cython/use_cimport/setup.py
+	cd cython/use_cimport && \
+	  ../venv/bin/python setup.py build_ext --inplace
+
+wrap-cython: cython/use_cimport/wrapper$(EXT_SUFFIX) cython/use_cimport/check_wrapper.py
+	cd cython/use_cimport && \
+	  ../venv/bin/python check_wrapper.py
+
 run-golang: golang/main.go golang/src/example/example.go c/example.h fortran/example.f90
 	@GOPATH=$(ROOT_DIR)/golang go run golang/main.go
 
@@ -123,6 +131,8 @@ clean:
 	  cython/package/example/example.o \
 	  cython/package/example/fast$(EXT_SUFFIX) \
 	  cython/package/MANIFEST \
+	  cython/use_cimport/wrapper.c \
+	  cython/use_cimport/wrapper$(EXT_SUFFIX) \
 	  f2py/example$(EXT_SUFFIX) \
 	  fortran/example.mod \
 	  fortran/example.o \
@@ -134,8 +144,9 @@ clean:
 	  cython/package/build/ \
 	  cython/package/dist/ \
 	  cython/package/example/__pycache__/ \
+	  cython/use_cimport/build/ \
 	  cython/venv/ \
 	  f2py/__pycache__/ \
 	  python/__pycache__/
 
-.PHONY: all run-fortran run-c run-ctypes run-cffi run-f2py broken-f2py cython-install run-cython broken-cython inspect-cython-sdist inspect-cython-installed run-golang clean
+.PHONY: all run-fortran run-c run-ctypes run-cffi run-f2py broken-f2py cython-install run-cython broken-cython inspect-cython-sdist inspect-cython-installed wrap-cython run-golang clean

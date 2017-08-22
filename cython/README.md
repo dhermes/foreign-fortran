@@ -84,6 +84,28 @@ $ (cd .. && make inspect-cython-installed)
 2 directories, 5 files
 ```
 
+## `cimport`-ing this library
+
+This library provides a `example/example_fortran.pxd` file
+that can be used to `cimport` the library without having to
+worry about the Python layer:
+
+```
+cimport example.example_fortran
+```
+
+Currently `cython/use_cimport/wrapper.pyx` is failing because
+the Fortran library is not (yet) available:
+
+```
+$ (cd .. && make wrap-cython)
+...
+Traceback (most recent call last):
+  File "check_wrapper.py", line 1, in <module>
+    import wrapper
+ImportError: .../foreign-fortran/cython/use_cimport/wrapper....so: undefined symbol: just_print
+```
+
 ## Gotcha
 
 However, if `libraries=['gfortran']` is not specified in `setup.py` when
