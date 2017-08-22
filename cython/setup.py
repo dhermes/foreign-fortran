@@ -63,6 +63,9 @@ def main():
     distutils.core.setup(
         name='Cython Example calling Fortran',
         ext_modules=[cython_extension],
+        package_data = {
+            'example': ['example.pxd'],
+        },
    )
 
 
