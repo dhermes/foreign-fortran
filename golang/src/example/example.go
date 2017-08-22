@@ -15,7 +15,7 @@ type UserDefined struct {
 }
 
 type DataContainer struct {
-	Data [8]float64
+	Data *[8]float64
 }
 
 func (udf *UserDefined) String() string {
@@ -80,6 +80,6 @@ func MakeContainer(contained []float64) *DataContainer {
 		(*C.double)(&contained[0]),
 		&container,
 	)
-	data := *(*[8]float64)(unsafe.Pointer(&container.data))
-	return &DataContainer{data}
+	dataPtr := (*[8]float64)(unsafe.Pointer(&container.data))
+	return &DataContainer{dataPtr}
 }
