@@ -122,6 +122,10 @@ $ (cd .. && make wrap-cython)
  ======== BEGIN FORTRAN ========
  just_print() was called
  ========  END  FORTRAN ========
+>>> example.foo(1.5, 2.5)
+10.875
+>>> wrapper.triple_foo(1.5, 2.5)
+32.625
 ```
 
 Though this still [may not be enough][8].
