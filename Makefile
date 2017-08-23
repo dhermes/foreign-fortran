@@ -157,6 +157,7 @@ clean:
 	  cython/use_cimport/build/ \
 	  cython/venv/ \
 	  f2py/__pycache__/ \
+	  f2py/example$(EXT_SUFFIX).dSYM/ \
 	  python/__pycache__/
 
 .PHONY: all run-fortran run-c run-ctypes run-cffi run-f2py broken-f2py run-cython broken-cython inspect-cython-sdist inspect-cython-installed wrap-cython run-golang clean
