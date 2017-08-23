@@ -1,7 +1,13 @@
+from __future__ import print_function
+from __future__ import unicode_literals
+
 import distutils.ccompiler
 import distutils.core
 import distutils.extension
 import os
+import platform
+import subprocess
+import sys
 
 import numpy.distutils.core
 import numpy.distutils.fcompiler
@@ -19,6 +25,61 @@ LOCAL_LIB = os.path.join('example', '.lib')
 #       because ``compile()`` will create the entire subdirectory
 #       path matching it.
 SOURCE_FILE = os.path.join('example', 'example.f90')
+FORTRAN_LIBRARY_PREFIX = 'libraries: ='
+ERR_MSG = 'Fortran search default library path not found.'
+BAD_PATH = 'Path {} is not a directory.'
+
+
+def fortran_executable(f90_compiler):
+    version_cmd = f90_compiler.version_cmd
+    if len(version_cmd) != 2 or version_cmd[1] != '-dumpversion':
+        raise ValueError(
+            'Unexpected Fortran version command',
+            version_cmd)
+
+    return version_cmd[0]
+
+
+def fortran_search_path(f90_compiler):
+    cmd = (
+        fortran_executable(f90_compiler),
+        '-print-search-dirs',
+    )
+    cmd_output = subprocess.check_output(cmd).decode('utf-8')
+
+    search_lines = cmd_output.strip().split('\n')
+    library_lines = [
+        line[len(FORTRAN_LIBRARY_PREFIX):]
+        for line in search_lines
+        if line.startswith(FORTRAN_LIBRARY_PREFIX)
+    ]
+    if len(library_lines) != 1:
+        print(ERR_MSG, file=sys.stderr)
+        sys.exit(1)
+
+    library_line = library_lines[0]
+    accepted = set(f90_compiler.library_dirs)
+    for part in library_line.split(':'):
+        full_path = os.path.abspath(part)
+
+        if not os.path.exists(full_path):
+            continue
+
+        if not os.path.isdir(full_path):
+            msg = BAD_PATH.format(full_path)
+            print(msg, file=sys.stderr)
+            sys.exit(1)
+
+        accepted.add(full_path)
+
+    return tuple(accepted)
+
+
+def get_library_dirs(f90_compiler):
+    if platform.system() == 'Darwin':
+        return fortran_search_path(f90_compiler)
+    else:
+        return f90_compiler.library_dirs
 
 
 def get_f90_compiler():
@@ -46,10 +107,12 @@ def compile_fortran_obj_file(f90_compiler):
     )
 
     libraries = []
+    library_dirs = []
     if 'IGNORE_LIBRARIES' not in os.environ:
         libraries.extend(f90_compiler.libraries)
+        library_dirs.extend(get_library_dirs(f90_compiler))
 
-    return obj_file, libraries
+    return obj_file, libraries, library_dirs
 
 
 def compile_fortran_so_file(f90_compiler, obj_file):
@@ -67,7 +130,7 @@ def compile_fortran_so_file(f90_compiler, obj_file):
 
 def main():
     f90_compiler = get_f90_compiler()
-    obj_file, libraries = compile_fortran_obj_file(f90_compiler)
+    obj_file, libraries, library_dirs = compile_fortran_obj_file(f90_compiler)
     compile_fortran_so_file(f90_compiler, obj_file)
 
     npy_include_dir = np.get_include()
@@ -79,6 +142,7 @@ def main():
             LOCAL_INCLUDE,
         ],
         libraries=libraries,
+        library_dirs=library_dirs,
         extra_objects=[
             obj_file,
         ],
