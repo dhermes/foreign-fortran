@@ -1,13 +1,14 @@
-CC          = gcc
-FC          = gfortran
-MODULES_DIR = -J
-FORTRAN_LIB = -lgfortran
-PYTHON      = python
-PYTHON_FULL = $(shell $(PYTHON) -c 'import sys; print("python{}.{}".format(*sys.version_info[:2]))')
-PIC         = -shared -fPIC
-F2PY        = f2py
-EXT_SUFFIX  = $(shell $(PYTHON) -c 'import distutils.sysconfig as DS; print(DS.get_config_var("EXT_SUFFIX"))')
-ROOT_DIR    = $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+CC                = gcc
+FC                = gfortran
+PYTHON            = python
+F2PY              = f2py
+MODULES_DIR       = -J
+FORTRAN_LIB       = -lgfortran
+FORTRAN_LIB_PATHS = $(shell $(PYTHON) python/fortran_search_path.py)
+PYTHON_FULL       = $(shell $(PYTHON) -c 'import sys; print("python{}.{}".format(*sys.version_info[:2]))')
+PIC               = -shared -fPIC
+EXT_SUFFIX        = $(shell $(PYTHON) -c 'import distutils.sysconfig as DS; print(DS.get_config_var("EXT_SUFFIX"))')
+ROOT_DIR          = $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 all: fortran_example
 
@@ -35,6 +36,7 @@ c_example: c/example.c c/example.h fortran/example.o
 	  c/example.o \
 	  fortran/example.o \
 	  -o c_example \
+	  $(FORTRAN_LIB_PATHS) \
 	  $(FORTRAN_LIB)
 	# OR: gfortran c/example.o fortran/example.o -o c_example
 
