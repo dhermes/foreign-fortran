@@ -128,7 +128,9 @@ wrap-cython: cython/use_cimport/wrapper$(EXT_SUFFIX) cython/use_cimport/check_wr
 	  ../venv/bin/python check_wrapper.py
 
 run-golang: golang/main.go golang/src/example/example.go c/example.h fortran/example.f90
-	@GOPATH=$(ROOT_DIR)/golang go run golang/main.go
+	@CGO_LDFLAGS="$(FORTRAN_LIB_PATHS)" \
+	  GOPATH=$(ROOT_DIR)/golang \
+	  go run golang/main.go
 
 clean:
 	rm -f \
