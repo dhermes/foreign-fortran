@@ -111,7 +111,7 @@ inspect-cython-sdist: cython/package/dist/example-0.0.1.tar.gz
 	@tar xzf \
 	  cython/package/dist/example-0.0.1.tar.gz \
 	  -C cython/package/dist/
-	@cd cython/package/dist/ && \
+	@cd cython/package/dist/example-0.0.1 && \
 	  tree -a .
 
 inspect-cython-installed: cython/venv/lib/$(PYTHON_FULL)/site-packages/example

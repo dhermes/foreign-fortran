@@ -4,8 +4,8 @@ from __future__ import unicode_literals
 import distutils.ccompiler
 import distutils.core
 import distutils.extension
+import glob
 import os
-import platform
 import subprocess
 import sys
 
@@ -28,6 +28,7 @@ SOURCE_FILE = os.path.join('example', 'example.f90')
 FORTRAN_LIBRARY_PREFIX = 'libraries: ='
 ERR_MSG = 'Fortran search default library path not found.'
 BAD_PATH = 'Path {} is not a directory.'
+MAC_OS_X = 'darwin'
 
 
 def fortran_executable(f90_compiler):
@@ -76,7 +77,7 @@ def fortran_search_path(f90_compiler):
 
 
 def get_library_dirs(f90_compiler):
-    if platform.system() == 'Darwin':
+    if sys.platform == MAC_OS_X:
         return fortran_search_path(f90_compiler)
     else:
         return f90_compiler.library_dirs
@@ -128,6 +129,33 @@ def compile_fortran_so_file(f90_compiler, obj_file):
     )
 
 
+def add_by_glob(pattern, example_files, prefix):
+    for filename in glob.glob(pattern, recursive=True):
+        if os.path.isdir(filename):
+            continue
+
+        # NOTE: We assume but don't check that `_` is the empty
+        #       string (i.e. `filename` starts with the prefix.
+        _, relative_name = filename.split(prefix, 1)
+        example_files.append(relative_name)
+
+
+def get_package_data():
+    example_files = [
+        'example_fortran.pxd',
+    ]
+
+    prefix = 'example' + os.path.sep
+
+    include_glob = os.path.join(LOCAL_INCLUDE, '*.h')
+    add_by_glob(include_glob, example_files, prefix)
+
+    lib_glob = os.path.join(LOCAL_LIB, '**')
+    add_by_glob(lib_glob, example_files, prefix)
+
+    return {'example': example_files}
+
+
 def main():
     f90_compiler = get_f90_compiler()
     obj_file, libraries, library_dirs = compile_fortran_obj_file(f90_compiler)
@@ -156,13 +184,7 @@ def main():
         url='https://github.com/dhermes/foreign-fortran',
         packages=['example'],
         ext_modules=[cython_extension],
-        package_data = {
-            'example': [
-                'example_fortran.pxd',
-                os.path.join('include', '*.h'),
-                os.path.join('.lib', '*.so'),
-            ],
-        },
+        package_data=get_package_data(),
     )
 
 
