@@ -49,19 +49,17 @@ contains the following:
 ```
 $ (cd .. && make inspect-cython-sdist)
 .
-├── example-0.0.1
-│   ├── example
-│   │   ├── example.f90
-│   │   ├── example_fortran.pxd
-│   │   ├── fast.c
-│   │   ├── include
-│   │   │   └── example.h
-│   │   └── __init__.py
-│   ├── PKG-INFO
-│   └── setup.py
-└── example-0.0.1.tar.gz
+├── example
+│   ├── example.f90
+│   ├── example_fortran.pxd
+│   ├── fast.c
+│   ├── include
+│   │   └── example.h
+│   └── __init__.py
+├── PKG-INFO
+└── setup.py
 
-3 directories, 8 files
+2 directories, 7 files
 ```
 
 Once this gets installed, the following files are present:
