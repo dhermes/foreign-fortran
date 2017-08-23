@@ -80,6 +80,30 @@ $ (cd .. && make inspect-cython-installed)
 3 directories, 6 files
 ```
 
+On Mac OS X this is slightly different (using [`tree`][9]):
+
+```
+$ (cd .. && make inspect-cython-installed)
+example
+├── .lib
+│   ├── libexample.dylib
+│   └── libexample.dylib.dSYM
+│       └── Contents
+│           ├── Info.plist
+│           └── Resources
+│               └── DWARF
+│                   └── libexample.dylib
+├── __init__.py
+├── __pycache__
+│   └── __init__.cpython-36.pyc
+├── example_fortran.pxd
+├── fast.cpython-36m-darwin.so
+└── include
+    └── example.h
+
+8 directories, 8 files
+```
+
 ## `cimport`-ing this library
 
 This library provides a `example/example_fortran.pxd` file
@@ -165,3 +189,4 @@ make: *** [broken-cython] Error 1
 [6]: https://maurow.bitbucket.io/notes/calling_fortran_from_c.html
 [7]: http://www.fortran90.org/src/best-practices.html#interfacing-with-c
 [8]: https://stackoverflow.com/q/19123623/1068170
+[9]: https://github.com/campoy/tools/blob/095c53d927c3e146f2a55595663f96c707a1834a/tree/main.go

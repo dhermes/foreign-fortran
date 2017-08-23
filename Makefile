@@ -107,7 +107,7 @@ cython/package/dist/example-0.0.1.tar.gz: cython/venv/lib/$(PYTHON_FULL)/site-pa
 	cd cython/package/ && \
 	  ../venv/bin/python setup.py sdist
 
-inspect-cython-sdist: cython/package/dist/example-0.0.1.tar.gz
+inspect-cython-sdist: cython/package/dist/example-0.0.1.tar.gz cython/package/MANIFEST.in
 	@tar xzf \
 	  cython/package/dist/example-0.0.1.tar.gz \
 	  -C cython/package/dist/
