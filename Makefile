@@ -7,7 +7,7 @@ FORTRAN_LIB       = -lgfortran
 FORTRAN_LIB_PATHS = $(shell $(PYTHON) python/fortran_search_path.py)
 PYTHON_FULL       = $(shell $(PYTHON) -c 'import sys; print("python{}.{}".format(*sys.version_info[:2]))')
 PIC               = -shared -fPIC
-EXT_SUFFIX        = $(shell $(PYTHON) -c 'import distutils.sysconfig as DS; print(DS.get_config_var("EXT_SUFFIX"))')
+EXT_SUFFIX        = $(shell $(PYTHON) -c 'import distutils.sysconfig as DS; print(DS.get_config_var("EXT_SUFFIX") or ".so")')
 ROOT_DIR          = $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 all: fortran_example
@@ -142,11 +142,13 @@ clean:
 	  cython/package/MANIFEST \
 	  cython/use_cimport/wrapper.c \
 	  cython/use_cimport/wrapper$(EXT_SUFFIX) \
+	  f2py/check_ctypes.pyc \
 	  f2py/example$(EXT_SUFFIX) \
 	  fortran/example.mod \
 	  fortran/example.o \
 	  fortran_example \
 	  golang/src/example/example.mod \
+	  python/check_ctypes.pyc \
 	  python/example.so
 	rm -fr \
 	  cython/__pycache__/ \
