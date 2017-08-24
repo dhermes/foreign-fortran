@@ -56,10 +56,17 @@ $ (cd .. && make inspect-cython-sdist)
 │   ├── include
 │   │   └── example.h
 │   └── __init__.py
+├── example.egg-info
+│   ├── dependency_links.txt
+│   ├── PKG-INFO
+│   ├── SOURCES.txt
+│   └── top_level.txt
+├── MANIFEST.in
 ├── PKG-INFO
+├── setup.cfg
 └── setup.py
 
-2 directories, 7 files
+3 directories, 13 files
 ```
 
 Once this gets installed, the following files are present:
