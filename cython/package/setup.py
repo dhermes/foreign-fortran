@@ -1,7 +1,6 @@
 from __future__ import print_function
 
 import distutils.ccompiler
-import distutils.sysconfig
 import os
 import subprocess
 import sys
@@ -30,7 +29,6 @@ MAC_OS_X = 'darwin'
 MAC_OS_LINKER_ERR = 'Unexpected `linker_so` on OS X: {}.'
 MAC_OS_BUNDLE = '-bundle'
 MAC_OS_DYLIB = '-dynamiclib'
-SITE_PACKAGES = distutils.sysconfig.get_python_lib()
 
 
 def fortran_executable(f90_compiler):
@@ -131,13 +129,8 @@ def compile_fortran_so_file(f90_compiler, obj_file):
         # Modify the list in place.
         linker_so[-1] = MAC_OS_DYLIB
 
-        # Set the `install_name` to the final installed location of
-        # the dylib.
-        dylib_path = os.path.join(
-            SITE_PACKAGES,
-            LOCAL_LIB,
-            'libexample.dylib',
-        )
+        # Set the `install_name` relative to an `@rpath`.
+        dylib_path = '@rpath/libexample.dylib'
         linker_args = ['-Wl', '-install_name', dylib_path]
         extra_preargs = [','.join(linker_args)]
 
