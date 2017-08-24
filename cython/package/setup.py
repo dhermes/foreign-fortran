@@ -1,9 +1,6 @@
 from __future__ import print_function
-from __future__ import unicode_literals
 
 import distutils.ccompiler
-import distutils.core
-import distutils.extension
 import distutils.sysconfig
 import os
 import subprocess
@@ -12,6 +9,7 @@ import sys
 import numpy.distutils.core
 import numpy.distutils.fcompiler
 import numpy as np
+import setuptools
 
 
 VERSION = '0.0.1'
@@ -120,25 +118,6 @@ def compile_fortran_obj_file(f90_compiler):
     return obj_file, libraries, library_dirs
 
 
-def _to_str(value):
-    """Convert to `str` type.
-
-    Args:
-        value (unicode): This is a literal from somewhere in this file.
-
-    Returns:
-        str: The value converted to `str` (i.e. `bytes` on Python 2 and
-        `unicode` on Python 3).
-    """
-    # NOTE: This is a work-around for a few bugs in distutils, where
-    #       `str` instances (rather than `basestring`) are required.
-    if isinstance(value, str):
-        return value
-    else:
-        # Since `value` is a literal, we know this must be Python 2.
-        return value.encode('utf-8')
-
-
 def compile_fortran_so_file(f90_compiler, obj_file):
     extra_preargs = None
     if sys.platform == MAC_OS_X:
@@ -167,12 +146,10 @@ def compile_fortran_so_file(f90_compiler, obj_file):
     #       'example'. I.e. I expect the tooling to add `lib` when appropriate
     #       based on the `shared_lib` in the name.
     output_libname = 'libexample'
-
-    output_dir = _to_str(LOCAL_LIB)
     f90_compiler.link_shared_lib(
         objects,
         output_libname,
-        output_dir=output_dir,
+        output_dir=LOCAL_LIB,
         extra_preargs=extra_preargs,
     )
 
@@ -194,7 +171,7 @@ def get_package_data():
     add_directory(LOCAL_INCLUDE, example_files, prefix)
     add_directory(LOCAL_LIB, example_files, prefix)
 
-    return {_to_str('example'): example_files}
+    return {'example': example_files}
 
 
 def main():
@@ -203,11 +180,9 @@ def main():
     compile_fortran_so_file(f90_compiler, obj_file)
 
     npy_include_dir = np.get_include()
-    cython_extension = distutils.extension.Extension(
-        _to_str('example.fast'),
-        [
-            _to_str(os.path.join('example', 'fast.c')),
-        ],
+    cython_extension = setuptools.Extension(
+        'example.fast',
+        [os.path.join('example', 'fast.c')],
         include_dirs=[
             npy_include_dir,
             LOCAL_INCLUDE,
@@ -218,7 +193,7 @@ def main():
             obj_file,
         ],
     )
-    distutils.core.setup(
+    setuptools.setup(
         name='example',
         version=VERSION,
         description='Cython Example calling Fortran',
