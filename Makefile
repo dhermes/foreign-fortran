@@ -136,7 +136,9 @@ clean:
 	rm -f \
 	  c/example.o \
 	  c_example \
+	  cython/check_ctypes.pyc \
 	  cython/package/example.mod \
+	  cython/package/example/__init__.pyc \
 	  cython/package/example/example.o \
 	  cython/package/example/fast$(EXT_SUFFIX) \
 	  cython/package/MANIFEST \
