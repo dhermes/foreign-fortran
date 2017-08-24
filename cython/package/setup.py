@@ -5,7 +5,6 @@ import distutils.ccompiler
 import distutils.core
 import distutils.extension
 import distutils.sysconfig
-import glob
 import os
 import subprocess
 import sys
@@ -121,6 +120,25 @@ def compile_fortran_obj_file(f90_compiler):
     return obj_file, libraries, library_dirs
 
 
+def _to_str(value):
+    """Convert to `str` type.
+
+    Args:
+        value (unicode): This is a literal from somewhere in this file.
+
+    Returns:
+        str: The value converted to `str` (i.e. `bytes` on Python 2 and
+        `unicode` on Python 3).
+    """
+    # NOTE: This is a work-around for a few bugs in distutils, where
+    #       `str` instances (rather than `basestring`) are required.
+    if isinstance(value, str):
+        return value
+    else:
+        # Since `value` is a literal, we know this must be Python 2.
+        return value.encode('utf-8')
+
+
 def compile_fortran_so_file(f90_compiler, obj_file):
     extra_preargs = None
     if sys.platform == MAC_OS_X:
@@ -149,39 +167,34 @@ def compile_fortran_so_file(f90_compiler, obj_file):
     #       'example'. I.e. I expect the tooling to add `lib` when appropriate
     #       based on the `shared_lib` in the name.
     output_libname = 'libexample'
+
+    output_dir = _to_str(LOCAL_LIB)
     f90_compiler.link_shared_lib(
         objects,
         output_libname,
-        output_dir=LOCAL_LIB,
+        output_dir=output_dir,
         extra_preargs=extra_preargs,
     )
 
 
-def add_by_glob(pattern, example_files, prefix):
-    for filename in glob.glob(pattern, recursive=True):
-        if os.path.isdir(filename):
-            continue
-
-        # NOTE: We assume but don't check that `_` is the empty
-        #       string (i.e. `filename` starts with the prefix.
-        _, relative_name = filename.split(prefix, 1)
-        example_files.append(relative_name)
+def add_directory(dir_name, example_files, prefix):
+    for subdirectory, _, filenames in os.walk(dir_name):
+        for filename in filenames:
+            path = os.path.join(subdirectory, filename)
+            # NOTE: We assume but don't check that `_` is the empty
+            #       string (i.e. `filename` starts with the prefix.
+            _, relative_name = path.split(prefix, 1)
+            example_files.append(relative_name)
 
 
 def get_package_data():
-    example_files = [
-        'example_fortran.pxd',
-    ]
+    example_files = ['example_fortran.pxd']
 
     prefix = 'example' + os.path.sep
+    add_directory(LOCAL_INCLUDE, example_files, prefix)
+    add_directory(LOCAL_LIB, example_files, prefix)
 
-    include_glob = os.path.join(LOCAL_INCLUDE, '*.h')
-    add_by_glob(include_glob, example_files, prefix)
-
-    lib_glob = os.path.join(LOCAL_LIB, '**')
-    add_by_glob(lib_glob, example_files, prefix)
-
-    return {'example': example_files}
+    return {_to_str('example'): example_files}
 
 
 def main():
@@ -191,8 +204,10 @@ def main():
 
     npy_include_dir = np.get_include()
     cython_extension = distutils.extension.Extension(
-        'example.fast',
-        [os.path.join('example', 'fast.c')],
+        _to_str('example.fast'),
+        [
+            _to_str(os.path.join('example', 'fast.c')),
+        ],
         include_dirs=[
             npy_include_dir,
             LOCAL_INCLUDE,
