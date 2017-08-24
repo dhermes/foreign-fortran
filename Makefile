@@ -1,4 +1,5 @@
 CC                = gcc
+CXX               = g++
 FC                = gfortran
 PYTHON            = python
 F2PY              = f2py
@@ -42,6 +43,22 @@ c_example: c/example.c c/example.h fortran/example.o
 
 run-c: c_example
 	@./c_example
+
+cpp_example: cpp/example.cpp c/example.h fortran/example.o
+	$(CXX) \
+	  -std=c++11 \
+	  -I c/ \
+	  -c cpp/example.cpp \
+	  -o cpp/example.o
+	$(CXX) \
+	  cpp/example.o \
+	  fortran/example.o \
+	  -o cpp_example \
+	  $(FORTRAN_LIB_PATHS) \
+	  $(FORTRAN_LIB)
+
+run-cpp: cpp_example
+	@./cpp_example
 
 python/example.so: fortran/example.f90
 	$(FC) \
@@ -136,6 +153,8 @@ clean:
 	rm -f \
 	  c/example.o \
 	  c_example \
+	  cpp_example \
+	  cpp/example.o \
 	  cython/check_ctypes.pyc \
 	  cython/package/example.mod \
 	  cython/package/example/__init__.pyc \

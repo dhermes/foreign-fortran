@@ -1,4 +1,9 @@
+#if defined (__cplusplus)
+#include <cstdint>
+extern "C" {
+#else
 #include <stdint.h>
+#endif
 
 struct UserDefined {
   double buzz;
@@ -17,3 +22,7 @@ void make_udf(double *buzz, double *broken, int *how_many, struct UserDefined *q
 void udf_ptr(intptr_t *ptr_as_int);
 void make_container(double *contained, struct DataContainer *container);
 void just_print(void);
+
+#if defined (__cplusplus)
+}
+#endif

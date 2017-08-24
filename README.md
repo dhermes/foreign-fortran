@@ -1,10 +1,11 @@
 # Foreign Fortran
 
-Run the exact same Fortran code with seven different approaches
-from four different programming languages:
+Run the exact same Fortran code with eight different approaches
+from five different programming languages:
 
 - [Fortran][1]
 - [C][2]
+- [C++][8]
 - Python with [`ctypes`][3]
 - Python with [`cffi`][4]
 - Python with [`f2py`][5]
@@ -18,3 +19,4 @@ from four different programming languages:
 [5]: f2py/README.md
 [6]: cython/README.md
 [7]: golang/README.md
+[8]: cpp/README.md
