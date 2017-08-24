@@ -49,21 +49,21 @@ program main
        shape=[4, 2])
   size_ = size(val, 1)
   call foo_array(size_, val, two_val)
-  write (*, "(A)"), "foo_array("
-  write (*, "(A, I1, A)"), "    ", size_, ","
-  write (*, "(A, F8.6, A, F8.6, A)"), "    [[", val(1, 1), ", ", val(1, 2), "],"
-  write (*, "(A, F8.6, A, F8.6, A)"), "     [", val(2, 1), ", ", val(2, 2), "],"
-  write (*, "(A, F8.6, A, F8.6, A)"), "     [", val(3, 1), ", ", val(3, 2), "],"
-  write (*, "(A, F9.6, A, F8.6, A)"), &
+  write (*, "(A)") "foo_array("
+  write (*, "(A, I1, A)") "    ", size_, ","
+  write (*, "(A, F8.6, A, F8.6, A)") "    [[", val(1, 1), ", ", val(1, 2), "],"
+  write (*, "(A, F8.6, A, F8.6, A)") "     [", val(2, 1), ", ", val(2, 2), "],"
+  write (*, "(A, F8.6, A, F8.6, A)") "     [", val(3, 1), ", ", val(3, 2), "],"
+  write (*, "(A, F9.6, A, F8.6, A)") &
        "     [", val(4, 1), ", ", val(4, 2), "]],"
-  write (*, "(A)"), ") ="
-  write (*, "(A, F8.6, A, F8.6, A)"), &
+  write (*, "(A)") ") ="
+  write (*, "(A, F8.6, A, F8.6, A)") &
        "    [[", two_val(1, 1), ", ", two_val(1, 2), "],"
-  write (*, "(A, F8.6, A, F8.6, A)"), &
+  write (*, "(A, F8.6, A, F8.6, A)") &
        "     [", two_val(2, 1), ", ", two_val(2, 2), "],"
-  write (*, "(A, F9.6, A, F8.6, A)"), &
+  write (*, "(A, F9.6, A, F8.6, A)") &
        "     [", two_val(3, 1), ", ", two_val(3, 2), "],"
-  write (*, "(A, F9.6, A, F8.6, A)"), &
+  write (*, "(A, F9.6, A, F8.6, A)") &
        "     [", two_val(4, 1), ", ", two_val(4, 2), "]]"
 
   call print_sep()
@@ -71,19 +71,19 @@ program main
   made_it_ptr = c_loc(made_it)
   ptr_as_int = transfer(made_it_ptr, ptr_as_int)
   call udf_ptr(ptr_as_int)
-  write (*, "(A)"), &
+  write (*, "(A)") &
        "ptr_as_int = c_loc(made_it)  ! &
         &type(c_ptr) / integer(c_intptr_t) / integer(kind=8)"
-  write (*, "(A, I15, A, Z12)"), &
+  write (*, "(A, I15, A, Z12)") &
        "ptr_as_int = ", ptr_as_int, "  ! 0x", ptr_as_int
-  write (*, "(A)"), "udf_ptr(ptr_as_int)  ! Set memory in ``made_it``"
+  write (*, "(A)") "udf_ptr(ptr_as_int)  ! Set memory in ``made_it``"
   write (*, "(A, F8.6, A, F10.6, A, I3, A)") &
        "made_it = UserDefined(", made_it%buzz, ", ", made_it%broken, &
        ", ", made_it%how_many, ")"
 
   call print_sep()
   ! just_print()
-  write (*, "(A)"), "just_print()"
+  write (*, "(A)") "just_print()"
   call just_print()
 
 end program main
