@@ -142,8 +142,8 @@ clean:
 	  cython/package/example/example.o \
 	  cython/package/example/fast$(EXT_SUFFIX) \
 	  cython/package/MANIFEST \
-	  cython/use_cimport/wrapper.c \
 	  cython/use_cimport/wrapper$(EXT_SUFFIX) \
+	  cython/use_cimport/wrapper.c \
 	  f2py/check_ctypes.pyc \
 	  f2py/example$(EXT_SUFFIX) \
 	  fortran/example.mod \
@@ -156,8 +156,9 @@ clean:
 	  cython/__pycache__/ \
 	  cython/package/build/ \
 	  cython/package/dist/ \
-	  cython/package/example/__pycache__/ \
+	  cython/package/example.egg-info/ \
 	  cython/package/example/.lib/ \
+	  cython/package/example/__pycache__/ \
 	  cython/use_cimport/build/ \
 	  cython/venv/ \
 	  f2py/__pycache__/ \
