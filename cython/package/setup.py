@@ -76,11 +76,23 @@ def fortran_search_path(f90_compiler):
     return tuple(accepted)
 
 
+def patch_library_dirs(f90_compiler):
+    if sys.platform != MAC_OS_X:
+        return
+
+    library_dirs = f90_compiler.library_dirs
+    # Update in place.
+    library_dirs[:] = fortran_search_path(f90_compiler)
+
+
 def get_library_dirs(f90_compiler):
-    if sys.platform == MAC_OS_X:
-        return fortran_search_path(f90_compiler)
+    # NOTE: This is a hack to show failure when `libgfortran`
+    #       is not included. (Only for the `Makefile`, not for
+    #       actaul usage.)
+    if 'IGNORE_LIBRARIES' in os.environ:
+        return [], []
     else:
-        return f90_compiler.library_dirs
+        return f90_compiler.libraries, f90_compiler.library_dirs
 
 
 def get_f90_compiler():
@@ -92,6 +104,8 @@ def get_f90_compiler():
     dist = numpy.distutils.core.get_distribution(always=True)
     f90_compiler.customize(dist)
     f90_compiler.verbose = 2
+
+    patch_library_dirs(f90_compiler)
 
     return f90_compiler
 
@@ -107,13 +121,7 @@ def compile_fortran_obj_file(f90_compiler):
         depends=[],
     )
 
-    libraries = []
-    library_dirs = []
-    if 'IGNORE_LIBRARIES' not in os.environ:
-        libraries.extend(f90_compiler.libraries)
-        library_dirs.extend(get_library_dirs(f90_compiler))
-
-    return obj_file, libraries, library_dirs
+    return obj_file
 
 
 def compile_fortran_so_file(f90_compiler, obj_file):
@@ -169,9 +177,10 @@ def get_package_data():
 
 def main():
     f90_compiler = get_f90_compiler()
-    obj_file, libraries, library_dirs = compile_fortran_obj_file(f90_compiler)
+    obj_file = compile_fortran_obj_file(f90_compiler)
     compile_fortran_so_file(f90_compiler, obj_file)
 
+    libraries, library_dirs = get_library_dirs(f90_compiler)
     npy_include_dir = np.get_include()
     cython_extension = setuptools.Extension(
         'example.fast',
