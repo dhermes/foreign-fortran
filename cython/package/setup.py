@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import distutils.ccompiler
 import distutils.core
 import distutils.extension
+import distutils.sysconfig
 import glob
 import os
 import subprocess
@@ -29,6 +30,10 @@ FORTRAN_LIBRARY_PREFIX = 'libraries: ='
 ERR_MSG = 'Fortran search default library path not found.'
 BAD_PATH = 'Path {} is not a directory.'
 MAC_OS_X = 'darwin'
+MAC_OS_LINKER_ERR = 'Unexpected `linker_so` on OS X: {}.'
+MAC_OS_BUNDLE = '-bundle'
+MAC_OS_DYLIB = '-dynamiclib'
+SITE_PACKAGES = distutils.sysconfig.get_python_lib()
 
 
 def fortran_executable(f90_compiler):
@@ -117,6 +122,28 @@ def compile_fortran_obj_file(f90_compiler):
 
 
 def compile_fortran_so_file(f90_compiler, obj_file):
+    extra_preargs = None
+    if sys.platform == MAC_OS_X:
+        linker_so = f90_compiler.linker_so
+        if (linker_so.count(MAC_OS_BUNDLE) != 1 or
+                linker_so[-1] != MAC_OS_BUNDLE):
+            msg = MAC_OS_LINKER_ERR.format(linker_so)
+            print(msg, file=sys.stderr)
+            sys.exit(1)
+
+        # Modify the list in place.
+        linker_so[-1] = MAC_OS_DYLIB
+
+        # Set the `install_name` to the final installed location of
+        # the dylib.
+        dylib_path = os.path.join(
+            SITE_PACKAGES,
+            LOCAL_LIB,
+            'libexample.dylib',
+        )
+        linker_args = ['-Wl', '-install_name', dylib_path]
+        extra_preargs = [','.join(linker_args)]
+
     objects = [obj_file]
     # NOTE: It's unclear why we need to specify 'libexample' rather than
     #       'example'. I.e. I expect the tooling to add `lib` when appropriate
@@ -126,6 +153,7 @@ def compile_fortran_so_file(f90_compiler, obj_file):
         objects,
         output_libname,
         output_dir=LOCAL_LIB,
+        extra_preargs=extra_preargs,
     )
 
 
