@@ -1,0 +1,68 @@
+----------------------------------------
+/usr/local/bin/gfortran \
+  -Wall \
+  -g \
+  -fno-second-underscore \
+  -fPIC \
+  -O3 \
+  -funroll-loops \
+  -c \
+  -c \
+  example/example.f90 \
+  -o \
+  example/example.o
+----------------------------------------
+/usr/local/bin/gfortran \
+  -Wall \
+  -g \
+  -Wall \
+  -g \
+  -undefined \
+  dynamic_lookup \
+  -dynamiclib \
+  -Wl,-install_name,@rpath/libexample.dylib \
+  example/example.o \
+  -L/usr/local/Cellar/gcc/7.2.0/lib/gcc/7 \
+  -L/usr/local/Cellar/gcc/7.2.0/lib/gcc/7/gcc/x86_64-apple-darwin15.6.0/7.2.0 \
+  -lgfortran \
+  -o \
+  example/.lib/libexample.dylib
+----------------------------------------
+clang \
+  -Wno-unused-result \
+  -Wsign-compare \
+  -Wunreachable-code \
+  -DNDEBUG \
+  -g \
+  -fwrapv \
+  -O3 \
+  -Wall \
+  -Wstrict-prototypes \
+  -I${foreign-fortran}/cython/venv/lib/python3.6/site-packages/numpy/core/include \
+  -Iexample/include \
+  -I${HOME}/.pyenv/versions/3.6.2/include/python3.6m \
+  -c \
+  example/fast.c \
+  -o \
+  build/temp.macosx-10.11-x86_64-3.6/example/fast.o
+----------------------------------------
+clang \
+  -bundle \
+  -undefined \
+  dynamic_lookup \
+  -L/usr/local/opt/readline/lib \
+  -L/usr/local/opt/readline/lib \
+  -L${HOME}/.pyenv/versions/3.6.2/openssl/lib \
+  -L${HOME}/.pyenv/versions/3.6.2/lib \
+  -L/usr/local/opt/readline/lib \
+  -L/usr/local/opt/readline/lib \
+  -L${HOME}/.pyenv/versions/3.6.2/openssl/lib \
+  -L${HOME}/.pyenv/versions/3.6.2/lib \
+  build/temp.macosx-10.11-x86_64-3.6/example/fast.o \
+  example/example.o \
+  -L/usr/local/Cellar/gcc/7.2.0/lib/gcc/7 \
+  -L/usr/local/Cellar/gcc/7.2.0/lib/gcc/7/gcc/x86_64-apple-darwin15.6.0/7.2.0 \
+  -lgfortran \
+  -o \
+  build/lib.macosx-10.11-x86_64-3.6/example/fast.cpython-36m-darwin.so
+----------------------------------------

@@ -5,6 +5,7 @@ import os
 import subprocess
 import sys
 
+import numpy.distutils.ccompiler
 import numpy.distutils.core
 import numpy.distutils.fcompiler
 import numpy as np
@@ -29,6 +30,96 @@ MAC_OS_X = 'darwin'
 MAC_OS_LINKER_ERR = 'Unexpected `linker_so` on OS X: {}.'
 MAC_OS_BUNDLE = '-bundle'
 MAC_OS_DYLIB = '-dynamiclib'
+JOURNAL_TEMPLATE = 'journal-{}-{}.{}.txt'
+JOURNAL_SEPARATOR = '-' * 40
+_CONTINUATION = ' \\\n'
+
+
+def journaling_hack():
+    """Capture calls to the system by compilers.
+
+    See: https://github.com/numpy/numpy/blob/v1.13.1/\
+    numpy/distutils/ccompiler.py#L154
+
+    Returns:
+        list: A list (i.e. mutable) that will be updated as
+        ``spawn`` is called.
+    """
+    cmds = []
+
+    def journaled_spawn(self, cmd, display=None):
+        cmds.append(cmd)
+        return numpy.distutils.ccompiler.CCompiler_spawn(
+            self, cmd, display=None)
+
+    numpy.distutils.ccompiler.replace_method(
+        distutils.ccompiler.CCompiler,
+        'spawn',
+        journaled_spawn,
+    )
+
+    return cmds
+
+
+def save_journal(cmds):
+    """Save a "journal" of captured commands.
+
+    This is a **really** nasty hack that relies on this `setup.py`
+    file installing into a "known" virtual environment.
+
+    Does this by inspecting the last entry in `sys.argv` and looking
+    for the sub-path ``/cython/venv/include/`` as a sign for where
+    the "parent" directory is.
+
+    Args:
+        cmds (List[List[str]]): A list of commands.
+    """
+    if not sys.argv:
+        return
+
+    final_arg = sys.argv[-1]
+    # Nasty hack:
+    sub_path = '{0}cython{0}venv{0}include{0}'.format(os.path.sep)
+    index = final_arg.find(sub_path)
+    if index == -1:
+        return
+
+    root_dir = final_arg[:index]
+    filename = JOURNAL_TEMPLATE.format(
+        sys.platform,
+        sys.version_info[0],
+        sys.version_info[1],
+    )
+    path = os.path.join(root_dir, 'cython', filename)
+
+    # Dump the commands to text with nice line continuations
+    # and a visual separator between each command.
+    journal_parts = []
+    journal_parts.append(JOURNAL_SEPARATOR + '\n')
+    for cmd in cmds:
+        if len(cmd) < 2:
+            raise RuntimeError(
+                'command had less than two arguments', cmd)
+        # First argument doesn't need an indent.
+        journal_parts.append(cmd[0] + _CONTINUATION)
+        for arg in cmd[1:-1]:
+            journal_parts.append('  ' + arg + _CONTINUATION)
+        # Last argument doesn't need a continuation.
+        journal_parts.append('  ' + cmd[-1] + '\n')
+
+        journal_parts.append(JOURNAL_SEPARATOR + '\n')
+
+    journal_content = ''.join(journal_parts)
+
+    # Replace the "sensitive" parts of the file.
+    journal_content = journal_content.replace(
+        root_dir, '${foreign-fortran}')
+    home_dir = os.path.expanduser('~')
+    journal_content = journal_content.replace(home_dir, '${HOME}')
+
+    # Write the journal to file.
+    with open(path, 'w') as file_obj:
+        file_obj.write(journal_content)
 
 
 def fortran_executable(f90_compiler):
@@ -73,7 +164,7 @@ def fortran_search_path(f90_compiler):
 
         accepted.add(full_path)
 
-    return tuple(accepted)
+    return sorted(accepted)
 
 
 def patch_library_dirs(f90_compiler):
@@ -176,6 +267,8 @@ def get_package_data():
 
 
 def main():
+    cmds = journaling_hack()
+
     f90_compiler = get_f90_compiler()
     obj_file = compile_fortran_obj_file(f90_compiler)
     compile_fortran_so_file(f90_compiler, obj_file)
@@ -206,6 +299,8 @@ def main():
         ext_modules=[cython_extension],
         package_data=get_package_data(),
     )
+
+    save_journal(cmds)
 
 
 if __name__ == '__main__':
