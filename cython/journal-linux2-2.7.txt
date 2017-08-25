@@ -12,16 +12,10 @@ ${HOME}/.pyenv/shims/gfortran \
   -o \
   example/example.o
 ----------------------------------------
-${HOME}/.pyenv/shims/gfortran \
-  -Wall \
-  -g \
-  -Wall \
-  -g \
-  -shared \
-  example/example.o \
-  -lgfortran \
-  -o \
-  example/.lib/libexample.so
+ar \
+  -cr \
+  example/lib/libexample.a \
+  example/example.o
 ----------------------------------------
 gcc \
   -pthread \

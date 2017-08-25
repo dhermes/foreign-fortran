@@ -79,36 +79,12 @@ $ (cd .. && make inspect-cython-installed)
 ├── include
 │   └── example.h
 ├── __init__.py
-├── .lib
-│   └── libexample.so
+├── lib
+│   └── libexample.a
 └── __pycache__
     └── __init__.cpython-36.pyc
 
 3 directories, 6 files
-```
-
-On Mac OS X this is slightly different (using [`tree`][9]):
-
-```
-$ (cd .. && make inspect-cython-installed)
-example
-├── .lib
-│   ├── libexample.dylib
-│   └── libexample.dylib.dSYM
-│       └── Contents
-│           ├── Info.plist
-│           └── Resources
-│               └── DWARF
-│                   └── libexample.dylib
-├── __init__.py
-├── __pycache__
-│   └── __init__.cpython-36.pyc
-├── example_fortran.pxd
-├── fast.cpython-36m-darwin.so
-└── include
-    └── example.h
-
-8 directories, 8 files
 ```
 
 ## `cimport`-ing this library
@@ -136,9 +112,9 @@ is made available in the `example` package:
 >>>
 >>> lib_dir = example.get_lib()
 >>> lib_dir
-'.../foreign-fortran/cython/venv/lib/python.../site-packages/example/.lib'
+'.../foreign-fortran/cython/venv/lib/python.../site-packages/example/lib'
 >>> os.listdir(lib_dir)
-['libexample.so']
+['libexample.a']
 ```
 
 It's important to use **both** `library_dirs` and `runtime_library_dirs`
@@ -196,4 +172,3 @@ make: *** [broken-cython] Error 1
 [6]: https://maurow.bitbucket.io/notes/calling_fortran_from_c.html
 [7]: http://www.fortran90.org/src/best-practices.html#interfacing-with-c
 [8]: https://stackoverflow.com/q/19123623/1068170
-[9]: https://github.com/campoy/tools/blob/095c53d927c3e146f2a55595663f96c707a1834a/tree/main.go

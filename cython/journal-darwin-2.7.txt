@@ -12,21 +12,10 @@
   -o \
   example/example.o
 ----------------------------------------
-/usr/local/bin/gfortran \
-  -Wall \
-  -g \
-  -Wall \
-  -g \
-  -undefined \
-  dynamic_lookup \
-  -dynamiclib \
-  -Wl,-install_name,@rpath/libexample.dylib \
-  example/example.o \
-  -L/usr/local/Cellar/gcc/7.2.0/lib/gcc/7 \
-  -L/usr/local/Cellar/gcc/7.2.0/lib/gcc/7/gcc/x86_64-apple-darwin15.6.0/7.2.0 \
-  -lgfortran \
-  -o \
-  example/.lib/libexample.dylib
+ar \
+  -cr \
+  example/lib/libexample.a \
+  example/example.o
 ----------------------------------------
 clang \
   -fno-strict-aliasing \

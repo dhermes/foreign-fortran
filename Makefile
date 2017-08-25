@@ -176,7 +176,7 @@ clean:
 	  cython/package/build/ \
 	  cython/package/dist/ \
 	  cython/package/example.egg-info/ \
-	  cython/package/example/.lib/ \
+	  cython/package/example/lib/ \
 	  cython/package/example/__pycache__/ \
 	  cython/use_cimport/build/ \
 	  cython/venv/ \

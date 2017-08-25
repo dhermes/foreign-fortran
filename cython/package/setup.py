@@ -14,7 +14,7 @@ import setuptools
 
 VERSION = '0.0.1'
 LOCAL_INCLUDE = os.path.join('example', 'include')
-LOCAL_LIB = os.path.join('example', '.lib')
+LOCAL_LIB = os.path.join('example', 'lib')
 # NOTE: We prefer the relative path below over the absolute path
 #           source_file = os.path.abspath(os.path.join(
 #               os.path.dirname(__file__),
@@ -215,35 +215,14 @@ def compile_fortran_obj_file(f90_compiler):
     return obj_file
 
 
-def compile_fortran_so_file(f90_compiler, obj_file):
-    extra_preargs = None
-    if sys.platform == MAC_OS_X:
-        linker_so = f90_compiler.linker_so
-        if (linker_so.count(MAC_OS_BUNDLE) != 1 or
-                linker_so[-1] != MAC_OS_BUNDLE):
-            msg = MAC_OS_LINKER_ERR.format(linker_so)
-            print(msg, file=sys.stderr)
-            sys.exit(1)
+def make_fortran_lib(f90_compiler, obj_file):
+    if not os.path.exists(LOCAL_LIB):
+        os.makedirs(LOCAL_LIB)
 
-        # Modify the list in place.
-        linker_so[-1] = MAC_OS_DYLIB
-
-        # Set the `install_name` relative to an `@rpath`.
-        dylib_path = '@rpath/libexample.dylib'
-        linker_args = ['-Wl', '-install_name', dylib_path]
-        extra_preargs = [','.join(linker_args)]
-
-    objects = [obj_file]
-    # NOTE: It's unclear why we need to specify 'libexample' rather than
-    #       'example'. I.e. I expect the tooling to add `lib` when appropriate
-    #       based on the `shared_lib` in the name.
-    output_libname = 'libexample'
-    f90_compiler.link_shared_lib(
-        objects,
-        output_libname,
-        output_dir=LOCAL_LIB,
-        extra_preargs=extra_preargs,
-    )
+    archive_file = os.path.join(LOCAL_LIB, 'libexample.a')
+    c_compiler = f90_compiler.c_compiler
+    cmd = c_compiler.archiver + [archive_file, obj_file]
+    c_compiler.spawn(cmd)
 
 
 def add_directory(dir_name, example_files, prefix):
@@ -271,7 +250,7 @@ def main():
 
     f90_compiler = get_f90_compiler()
     obj_file = compile_fortran_obj_file(f90_compiler)
-    compile_fortran_so_file(f90_compiler, obj_file)
+    make_fortran_lib(f90_compiler, obj_file)
 
     libraries, library_dirs = get_library_dirs(f90_compiler)
     npy_include_dir = np.get_include()
