@@ -20,7 +20,7 @@ int main (void)
   // make_udf()
   double buzz = 1.25, broken = 5.0;
   int how_many = 1337;
-  struct UserDefined quuz;
+  UserDefined quuz;
   make_udf(&buzz, &broken, &how_many, &quuz);
   printf("quuz = make_udf(%f, %f, %d)\n     = UserDefined(%f, %f, %d)\n",
          buzz, broken, how_many,
@@ -46,7 +46,7 @@ int main (void)
 
   print_sep();
   // udf_ptr()
-  struct UserDefined made_it;
+  UserDefined made_it;
   intptr_t ptr_as_int = (intptr_t) (&made_it);
   udf_ptr(&ptr_as_int);
   printf("ptr_as_int = &made_it  // intptr_t / ssize_t / long\n");
@@ -58,7 +58,7 @@ int main (void)
   print_sep();
   // make_container()
   double contained[8] = {0.0, 1.0, 1.0, 3.0, 4.0, 9.0, 2.0, 1.0};
-  struct DataContainer container;
+  DataContainer container;
   printf("contained =\n");
   printf("  [[%f, %f],\n", contained[0], contained[4]);
   printf("   [%f, %f],\n", contained[1], contained[5]);

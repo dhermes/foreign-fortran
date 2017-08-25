@@ -1302,7 +1302,7 @@ static Py_ssize_t __Pyx_minusones[] = {-1, -1, -1, -1, -1, -1, -1, -1};
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
-static PyObject* __pyx_convert__to_py_struct__UserDefined(struct UserDefined s);
+static PyObject* __pyx_convert__to_py_UserDefined(UserDefined s);
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
@@ -1785,7 +1785,7 @@ static PyObject *__pyx_pw_7example_4fast_3make_udf(PyObject *__pyx_self, PyObjec
 }
 
 static PyObject *__pyx_pf_7example_4fast_2make_udf(CYTHON_UNUSED PyObject *__pyx_self, double __pyx_v_buzz, double __pyx_v_broken, int __pyx_v_how_many) {
-  struct UserDefined __pyx_v_made_it;
+  UserDefined __pyx_v_made_it;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -1808,7 +1808,7 @@ static PyObject *__pyx_pf_7example_4fast_2make_udf(CYTHON_UNUSED PyObject *__pyx
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_convert__to_py_struct__UserDefined(__pyx_v_made_it); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __pyx_t_1 = __pyx_convert__to_py_UserDefined(__pyx_v_made_it); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -2134,7 +2134,7 @@ static PyObject *__pyx_pw_7example_4fast_7udf_ptr(PyObject *__pyx_self, CYTHON_U
 }
 
 static PyObject *__pyx_pf_7example_4fast_6udf_ptr(CYTHON_UNUSED PyObject *__pyx_self) {
-  struct UserDefined __pyx_v_made_it;
+  UserDefined __pyx_v_made_it;
   intptr_t __pyx_v_ptr_as_int;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -2167,7 +2167,7 @@ static PyObject *__pyx_pf_7example_4fast_6udf_ptr(CYTHON_UNUSED PyObject *__pyx_
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_convert__to_py_struct__UserDefined(__pyx_v_made_it); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
+  __pyx_t_1 = __pyx_convert__to_py_UserDefined(__pyx_v_made_it); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -6967,7 +6967,7 @@ static void __Pyx_ReleaseBuffer(Py_buffer *view) {
     }
 }
 
-static PyObject* __pyx_convert__to_py_struct__UserDefined(struct UserDefined s) {
+static PyObject* __pyx_convert__to_py_UserDefined(UserDefined s) {
           PyObject* res;
           PyObject* member;
           res = PyDict_New(); if (unlikely(!res)) return NULL;

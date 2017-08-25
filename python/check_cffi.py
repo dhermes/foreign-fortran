@@ -13,15 +13,15 @@ from check_ctypes import UDF_PTR_TEMPLATE
 HERE = os.path.abspath(os.path.dirname(__file__))
 SO_FILE = os.path.join(HERE, 'example.so')
 STRUCT_CDEF = """\
-struct UserDefined {
+typedef struct {
   double buzz;
   double broken;
   int how_many;
-};
+} UserDefined;
 """
 MAKE_UDF_DEF = """\
 void make_udf(double *buzz, double *broken,
-              int *how_many, struct UserDefined *quux);
+              int *how_many, UserDefined *quux);
 """
 
 
@@ -64,7 +64,7 @@ def main():
     how_many = 1337
     how_many_ptr = ffi.new('int *')
     how_many_ptr[0] = how_many
-    quuz_ptr = ffi.new('struct UserDefined *')
+    quuz_ptr = ffi.new('UserDefined *')
     lib_example.make_udf(buzz_ptr, broken_ptr, how_many_ptr, quuz_ptr)
     quuz = quuz_ptr[0]
     msg = 'quuz = make_udf({}, {}, {})\n     = {}'.format(
@@ -94,7 +94,7 @@ def main():
 
     print(SEPARATOR)
     # udf_ptr()
-    made_it_ptr = ffi.new('struct UserDefined *')
+    made_it_ptr = ffi.new('UserDefined *')
     ptr_as_int_ptr = ffi.new('intptr_t *')
     ptr_as_int_ptr[0] = ffi.cast('intptr_t', made_it_ptr)
     lib_example.udf_ptr(ptr_as_int_ptr)

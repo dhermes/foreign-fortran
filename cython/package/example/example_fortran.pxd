@@ -1,12 +1,12 @@
 from libc.stdint cimport intptr_t
 
 cdef extern from "example.h":
-    struct UserDefined:
+    ctypedef struct UserDefined:
         double buzz
         double broken
         int how_many
 
-    struct DataContainer:
+    ctypedef struct DataContainer:
         double data[8]
 
     void foo(double bar, double baz, double *quux)

@@ -27,7 +27,7 @@ int main ()
   // make_udf()
   double buzz = 1.25, broken = 5.0;
   int how_many = 1337;
-  struct UserDefined quuz;
+  UserDefined quuz;
   make_udf(&buzz, &broken, &how_many, &quuz);
   std::cout <<
     "quuz = make_udf(" << buzz << ", " << broken << ", " <<
