@@ -1,0 +1,64 @@
+----------------------------------------
+/usr/local/bin/gfortran \
+  -Wall \
+  -g \
+  -fno-second-underscore \
+  -fPIC \
+  -O3 \
+  -funroll-loops \
+  -c \
+  -c \
+  example/example.f90 \
+  -o \
+  example/example.o
+----------------------------------------
+/usr/local/bin/gfortran \
+  -Wall \
+  -g \
+  -Wall \
+  -g \
+  -undefined \
+  dynamic_lookup \
+  -dynamiclib \
+  -Wl,-install_name,@rpath/libexample.dylib \
+  example/example.o \
+  -L/usr/local/Cellar/gcc/7.2.0/lib/gcc/7 \
+  -L/usr/local/Cellar/gcc/7.2.0/lib/gcc/7/gcc/x86_64-apple-darwin15.6.0/7.2.0 \
+  -lgfortran \
+  -o \
+  example/.lib/libexample.dylib
+----------------------------------------
+clang \
+  -fno-strict-aliasing \
+  -g \
+  -O2 \
+  -DNDEBUG \
+  -g \
+  -fwrapv \
+  -O3 \
+  -Wall \
+  -Wstrict-prototypes \
+  -I${foreign-fortran}/cython/venv/lib/python2.7/site-packages/numpy/core/include \
+  -Iexample/include \
+  -I${HOME}/.pyenv/versions/2.7.13/include/python2.7 \
+  -c \
+  example/fast.c \
+  -o \
+  build/temp.macosx-10.11-x86_64-2.7/example/fast.o
+----------------------------------------
+clang \
+  -bundle \
+  -undefined \
+  dynamic_lookup \
+  -L/usr/local/opt/readline/lib \
+  -L/usr/local/opt/readline/lib \
+  -L${HOME}/.pyenv/versions/2.7.13/openssl/lib \
+  -L${HOME}/.pyenv/versions/2.7.13/lib \
+  build/temp.macosx-10.11-x86_64-2.7/example/fast.o \
+  example/example.o \
+  -L/usr/local/Cellar/gcc/7.2.0/lib/gcc/7 \
+  -L/usr/local/Cellar/gcc/7.2.0/lib/gcc/7/gcc/x86_64-apple-darwin15.6.0/7.2.0 \
+  -lgfortran \
+  -o \
+  build/lib.macosx-10.11-x86_64-2.7/example/fast.so
+----------------------------------------
