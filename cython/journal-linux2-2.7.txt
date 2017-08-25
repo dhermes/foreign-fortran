@@ -1,0 +1,55 @@
+----------------------------------------
+${HOME}/.pyenv/shims/gfortran \
+  -Wall \
+  -g \
+  -fno-second-underscore \
+  -fPIC \
+  -O3 \
+  -funroll-loops \
+  -c \
+  -c \
+  example/example.f90 \
+  -o \
+  example/example.o
+----------------------------------------
+${HOME}/.pyenv/shims/gfortran \
+  -Wall \
+  -g \
+  -Wall \
+  -g \
+  -shared \
+  example/example.o \
+  -lgfortran \
+  -o \
+  example/.lib/libexample.so
+----------------------------------------
+gcc \
+  -pthread \
+  -fno-strict-aliasing \
+  -g \
+  -O2 \
+  -DNDEBUG \
+  -g \
+  -fwrapv \
+  -O3 \
+  -Wall \
+  -Wstrict-prototypes \
+  -fPIC \
+  -I${foreign-fortran}/cython/venv/lib/python2.7/site-packages/numpy/core/include \
+  -Iexample/include \
+  -I${HOME}/.pyenv/versions/2.7.13/include/python2.7 \
+  -c \
+  example/fast.c \
+  -o \
+  build/temp.linux-x86_64-2.7/example/fast.o
+----------------------------------------
+gcc \
+  -pthread \
+  -shared \
+  -L${HOME}/.pyenv/versions/2.7.13/lib \
+  build/temp.linux-x86_64-2.7/example/fast.o \
+  example/example.o \
+  -lgfortran \
+  -o \
+  build/lib.linux-x86_64-2.7/example/fast.so
+----------------------------------------
