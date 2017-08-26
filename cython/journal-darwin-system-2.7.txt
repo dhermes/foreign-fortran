@@ -1,0 +1,78 @@
+----------------------------------------
+/usr/local/bin/gfortran \
+  -Wall \
+  -g \
+  -fno-second-underscore \
+  -arch \
+  x86_64 \
+  -fPIC \
+  -O3 \
+  -funroll-loops \
+  -c \
+  -c \
+  example/example.f90 \
+  -o \
+  example/example.o
+----------------------------------------
+ar \
+  -cr \
+  example/lib/libexample.a \
+  example/example.o
+----------------------------------------
+cc \
+  -fno-strict-aliasing \
+  -fno-common \
+  -dynamic \
+  -arch \
+  i386 \
+  -arch \
+  x86_64 \
+  -g \
+  -Os \
+  -pipe \
+  -fno-common \
+  -fno-strict-aliasing \
+  -fwrapv \
+  -DENABLE_DTRACE \
+  -DMACOSX \
+  -DNDEBUG \
+  -Wall \
+  -Wstrict-prototypes \
+  -Wshorten-64-to-32 \
+  -DNDEBUG \
+  -g \
+  -fwrapv \
+  -Os \
+  -Wall \
+  -Wstrict-prototypes \
+  -DENABLE_DTRACE \
+  -arch \
+  i386 \
+  -arch \
+  x86_64 \
+  -pipe \
+  -I${foreign-fortran}/cython/venv/lib/python2.7/site-packages/numpy/core/include \
+  -Iexample/include \
+  -I/System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 \
+  -c \
+  example/fast.c \
+  -o \
+  build/temp.macosx-10.11-intel-2.7/example/fast.o
+----------------------------------------
+cc \
+  -bundle \
+  -undefined \
+  dynamic_lookup \
+  -arch \
+  i386 \
+  -arch \
+  x86_64 \
+  -Wl,-F. \
+  build/temp.macosx-10.11-intel-2.7/example/fast.o \
+  example/example.o \
+  -L/usr/local/Cellar/gcc/7.2.0/lib/gcc/7 \
+  -L/usr/local/Cellar/gcc/7.2.0/lib/gcc/7/gcc/x86_64-apple-darwin15.6.0/7.2.0 \
+  -lgfortran \
+  -o \
+  build/lib.macosx-10.11-intel-2.7/example/fast.so
+----------------------------------------
