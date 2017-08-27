@@ -216,13 +216,9 @@ def compile_fortran_obj_file(f90_compiler):
 
 
 def make_fortran_lib(f90_compiler, obj_file):
-    if not os.path.exists(LOCAL_LIB):
-        os.makedirs(LOCAL_LIB)
-
-    archive_file = os.path.join(LOCAL_LIB, 'libexample.a')
     c_compiler = f90_compiler.c_compiler
-    cmd = c_compiler.archiver + [archive_file, obj_file]
-    c_compiler.spawn(cmd)
+    c_compiler.create_static_lib(
+        [obj_file], 'example', output_dir=LOCAL_LIB)
 
 
 def add_directory(dir_name, example_files, prefix):

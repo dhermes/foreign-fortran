@@ -19,6 +19,9 @@ ar \
   example/lib/libexample.a \
   example/example.o
 ----------------------------------------
+ranlib \
+  example/lib/libexample.a
+----------------------------------------
 cc \
   -fno-strict-aliasing \
   -fno-common \
