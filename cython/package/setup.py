@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import argparse
 import distutils.ccompiler
 import os
 import subprocess
@@ -62,36 +63,55 @@ def journaling_hack():
     return cmds
 
 
-def save_journal(cmds):
-    """Save a "journal" of captured commands.
+def get_root_dir():
+    """Get directory where ``setup.py`` was invoked.
 
-    This is a **really** nasty hack that relies on this `setup.py`
+    This is a **really** nasty hack that relies on this ``setup.py``
     file installing into a "known" virtual environment.
 
-    Does this by inspecting the last entry in `sys.argv` and looking
+    Does this by inspecting the last entry in ``sys.argv`` and looking
     for the sub-path ``/cython/venv/include/`` as a sign for where
     the "parent" directory is.
 
-    Args:
-        cmds (List[List[str]]): A list of commands.
+    Returns:
+        Optional[str]: The root directory, if it can be
+        determined.
     """
     if not sys.argv:
-        return
+        return None
 
     final_arg = sys.argv[-1]
     # Nasty hack:
     sub_path = '{0}cython{0}venv{0}include{0}'.format(os.path.sep)
     index = final_arg.find(sub_path)
     if index == -1:
+        return None
+
+    return final_arg[:index]
+
+
+def save_journal(cmds, journal=None):
+    """Save a "journal" of captured commands.
+
+    If ``journal`` is not passed, then a filename in the ``cython/``
+    subdirectory of the ``git`` repository is used, including the
+    current platform and the Python version.
+
+    Args:
+        cmds (List[List[str]]): A list of commands.
+        journal (Optional[str]): Filename to save the contents into.
+    """
+    root_dir = get_root_dir()
+    if root_dir is None:
         return
 
-    root_dir = final_arg[:index]
-    filename = JOURNAL_TEMPLATE.format(
-        sys.platform,
-        sys.version_info[0],
-        sys.version_info[1],
-    )
-    path = os.path.join(root_dir, 'cython', filename)
+    if journal is None:
+        filename = JOURNAL_TEMPLATE.format(
+            sys.platform,
+            sys.version_info[0],
+            sys.version_info[1],
+        )
+        journal = os.path.join(root_dir, 'cython', filename)
 
     # Dump the commands to text with nice line continuations
     # and a visual separator between each command.
@@ -119,7 +139,7 @@ def save_journal(cmds):
     journal_content = journal_content.replace(home_dir, '${HOME}')
 
     # Write the journal to file.
-    with open(path, 'w') as file_obj:
+    with open(journal, 'w') as file_obj:
         file_obj.write(journal_content)
 
 
@@ -237,11 +257,28 @@ class BuildFortranThenExt(build_ext.build_ext):
 
     # Will be set at runtime, not import time.
     F90_COMPILER = None
+    JOURNAL = None
 
     @classmethod
     def set_compiler(cls):
         if cls.F90_COMPILER is None:
             cls.F90_COMPILER = get_f90_compiler()
+
+    @classmethod
+    def set_journal(cls):
+        if cls.JOURNAL is not None:
+            return
+
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--journal', help='Journal filename.')
+        args, unknown = parser.parse_known_args()
+
+        if args.journal is None:
+            return
+
+        cls.JOURNAL = args.journal
+        patched_args = [sys.argv[0]] + unknown
+        sys.argv[::] = patched_args
 
     @classmethod
     def get_library_dirs(cls):
@@ -268,11 +305,12 @@ class BuildFortranThenExt(build_ext.build_ext):
         self.copy_tree(LOCAL_LIB, lib_dir)
 
         result = super(BuildFortranThenExt, self).run()
-        save_journal(cmds)
+        save_journal(cmds, journal=self.JOURNAL)
         return result
 
 
 def main():
+    BuildFortranThenExt.set_journal()
     libraries, library_dirs = BuildFortranThenExt.get_library_dirs()
     npy_include_dir = np.get_include()
     cython_extension = setuptools.Extension(
