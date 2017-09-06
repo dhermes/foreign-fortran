@@ -10,6 +10,7 @@ import numpy.distutils.core
 import numpy.distutils.fcompiler
 import numpy as np
 import setuptools
+from setuptools.command import build_ext
 
 
 VERSION = '0.0.1'
@@ -176,16 +177,6 @@ def patch_library_dirs(f90_compiler):
     library_dirs[:] = fortran_search_path(f90_compiler)
 
 
-def get_library_dirs(f90_compiler):
-    # NOTE: This is a hack to show failure when `libgfortran`
-    #       is not included. (Only for the `Makefile`, not for
-    #       actaul usage.)
-    if 'IGNORE_LIBRARIES' in os.environ:
-        return [], []
-    else:
-        return f90_compiler.libraries, f90_compiler.library_dirs
-
-
 def get_f90_compiler():
     c_compiler = distutils.ccompiler.new_compiler()
     c_compiler.verbose = 2
@@ -232,23 +223,55 @@ def add_directory(dir_name, example_files, prefix):
 
 
 def get_package_data():
-    example_files = ['example_fortran.pxd']
+    return {
+        'example': [
+            '*.pxd',
+            os.path.join('include', '*.h'),
+            os.path.join('lib', '*.a'),
+            os.path.join('lib', '*.lib'),
+        ],
+    }
 
-    prefix = 'example' + os.path.sep
-    add_directory(LOCAL_INCLUDE, example_files, prefix)
-    add_directory(LOCAL_LIB, example_files, prefix)
 
-    return {'example': example_files}
+class BuildFortranThenExt(build_ext.build_ext):
+
+    # Will be set at runtime, not import time.
+    F90_COMPILER = None
+
+    @classmethod
+    def set_compiler(cls):
+        if cls.F90_COMPILER is None:
+            cls.F90_COMPILER = get_f90_compiler()
+
+    @classmethod
+    def get_library_dirs(cls):
+        cls.set_compiler()
+
+        # NOTE: This is a hack to show failure when `libgfortran`
+        #       is not included. (Only for the `Makefile`, not for
+        #       actual usage.)
+        if 'IGNORE_LIBRARIES' in os.environ:
+            return [], []
+        else:
+            return cls.F90_COMPILER.libraries, cls.F90_COMPILER.library_dirs
+
+    def run(self):
+        self.set_compiler()
+
+        obj_file = compile_fortran_obj_file(self.F90_COMPILER)
+        make_fortran_lib(self.F90_COMPILER, obj_file)
+        # Copy into the ``build_lib`` directory (which is what will end
+        # up being installed).
+        lib_dir = os.path.join(self.build_lib, LOCAL_LIB)
+        self.copy_tree(LOCAL_LIB, lib_dir)
+
+        return super(BuildFortranThenExt, self).run()
 
 
 def main():
     cmds = journaling_hack()
 
-    f90_compiler = get_f90_compiler()
-    obj_file = compile_fortran_obj_file(f90_compiler)
-    make_fortran_lib(f90_compiler, obj_file)
-
-    libraries, library_dirs = get_library_dirs(f90_compiler)
+    libraries, library_dirs = BuildFortranThenExt.get_library_dirs()
     npy_include_dir = np.get_include()
     cython_extension = setuptools.Extension(
         'example.fast',
@@ -260,7 +283,7 @@ def main():
         libraries=libraries,
         library_dirs=library_dirs,
         extra_objects=[
-            obj_file,
+            os.path.join('example', 'example.o'),
         ],
     )
     setuptools.setup(
@@ -273,6 +296,7 @@ def main():
         packages=['example'],
         ext_modules=[cython_extension],
         package_data=get_package_data(),
+        cmdclass={'build_ext': BuildFortranThenExt},
     )
 
     save_journal(cmds)
