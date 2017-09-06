@@ -258,6 +258,8 @@ class BuildFortranThenExt(build_ext.build_ext):
     def run(self):
         self.set_compiler()
 
+        cmds = journaling_hack()
+
         obj_file = compile_fortran_obj_file(self.F90_COMPILER)
         make_fortran_lib(self.F90_COMPILER, obj_file)
         # Copy into the ``build_lib`` directory (which is what will end
@@ -265,12 +267,12 @@ class BuildFortranThenExt(build_ext.build_ext):
         lib_dir = os.path.join(self.build_lib, LOCAL_LIB)
         self.copy_tree(LOCAL_LIB, lib_dir)
 
-        return super(BuildFortranThenExt, self).run()
+        result = super(BuildFortranThenExt, self).run()
+        save_journal(cmds)
+        return result
 
 
 def main():
-    cmds = journaling_hack()
-
     libraries, library_dirs = BuildFortranThenExt.get_library_dirs()
     npy_include_dir = np.get_include()
     cython_extension = setuptools.Extension(
@@ -298,8 +300,6 @@ def main():
         package_data=get_package_data(),
         cmdclass={'build_ext': BuildFortranThenExt},
     )
-
-    save_journal(cmds)
 
 
 if __name__ == '__main__':
