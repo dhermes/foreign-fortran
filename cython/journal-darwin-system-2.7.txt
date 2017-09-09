@@ -4,6 +4,21 @@
   -g \
   -fno-second-underscore \
   -arch \
+  i386 \
+  -fPIC \
+  -O3 \
+  -funroll-loops \
+  -c \
+  -c \
+  example/example.f90 \
+  -o \
+  ${TEMPDIR_I386}/example.o
+----------------------------------------
+/usr/local/bin/gfortran \
+  -Wall \
+  -g \
+  -fno-second-underscore \
+  -arch \
   x86_64 \
   -fPIC \
   -O3 \
@@ -12,6 +27,13 @@
   -c \
   example/example.f90 \
   -o \
+  ${TEMPDIR_X86_64}/example.o
+----------------------------------------
+lipo \
+  ${TEMPDIR_I386}/example.o \
+  ${TEMPDIR_X86_64}/example.o \
+  -create \
+  -output \
   example/example.o
 ----------------------------------------
 ar \
