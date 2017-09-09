@@ -2,8 +2,10 @@ from __future__ import print_function
 
 import distutils.ccompiler
 import os
+import shutil
 import subprocess
 import sys
+import tempfile
 
 import numpy.distutils.ccompiler
 import numpy.distutils.core
@@ -87,6 +89,75 @@ def patch_library_dirs(f90_compiler):
     library_dirs = f90_compiler.library_dirs
     # Update in place.
     library_dirs[:] = fortran_search_path(f90_compiler)
+
+
+def check_dual_architecture():
+    """Checks if the current Python binary is dual architecture.
+
+    Only relevant on OS X. This uses ``lipo -info`` to check that the
+    executable is a "fat file" with both ``i386`` and ``x86_64``
+    architectures.
+
+    We use ``lipo -info`` rather than ``file`` because ``lipo`` is
+    purpose-built for checking the architecture(s) in a file.
+
+    Returns:
+        bool: Indicating if the Python binary is dual architecture
+        (:data:`True`) or single architecture (:data:`False`).
+    """
+    if sys.platform != MAC_OS_X:
+        return False
+
+    cmd = ('lipo', '-info', sys.executable)
+    cmd_output = subprocess.check_output(cmd).decode('utf-8').strip()
+
+    prefix = 'Architectures in the fat file: {} are: '.format(sys.executable)
+
+    if cmd_output.startswith(prefix):
+        architectures = cmd_output[len(prefix):].split()
+        return 'i386' in architectures and 'x86_64' in architectures
+    else:
+        return False
+
+
+def gfortran_supports_dual_architecture():
+    """Simple check if ``gfortran`` supports dual architecture.
+
+    Only relevant on OS X. By default, the Homebrew ``gfortran`` **does not**
+    support building dual architecture object files. This checks support
+    for this feature by trying to build a very simple Fortran 90 program.
+    """
+    if sys.platform != MAC_OS_X:
+        return False
+
+    temporary_directory = tempfile.mkdtemp(suffix='-fortran')
+    source_name = os.path.join(temporary_directory, 'bar.f90')
+    with open(source_name, 'w') as file_obj:
+        file_obj.writelines([
+            'subroutine bar(x, y)\n',
+            '  integer, intent(in) :: x\n'
+            '  integer, intent(out) :: y\n'
+            '\n'
+            '  y = x + 2\n'
+            '\n'
+            'end subroutine bar\n'
+            '\n',
+        ])
+
+    object_name = os.path.join(temporary_directory, 'bar.o')
+    cmd = (
+        'gfortran',
+        '-arch', 'i386', '-arch', 'x86_64',
+        '-c', source_name,
+        '-o', object_name,
+    )
+
+    cmd_output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+    result = b'arch flags ignored' not in cmd_output
+
+    shutil.rmtree(temporary_directory)
+
+    return result
 
 
 def get_f90_compiler():
