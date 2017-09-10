@@ -31,8 +31,6 @@ ERR_MSG = 'Fortran search default library path not found.'
 BAD_PATH = 'Path {} is not a directory.'
 MAC_OS_X = 'darwin'
 MAC_OS_LINKER_ERR = 'Unexpected `linker_so` on OS X: {}.'
-MAC_OS_BUNDLE = '-bundle'
-MAC_OS_DYLIB = '-dynamiclib'
 JOURNAL_TEMPLATE = 'journal-{}-{}.{}.txt'
 JOURNAL_ENV = 'EXAMPLE_JOURNAL'
 
