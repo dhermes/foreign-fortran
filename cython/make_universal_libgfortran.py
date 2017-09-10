@@ -328,6 +328,8 @@ def combine_dylibs(i386_dylib, x86_64_dylib, universal_dylib):
 
 
 def main():
+    make_root_dir()
+
     x86_64_dir, libgfortran = find_libgfortran()
     i386_dir = get_i386_dir(x86_64_dir, libgfortran)
 
@@ -335,7 +337,6 @@ def main():
     libraries = non_universal_libraries(full_path)
     libquadmath = verify_libraries(full_path, libraries)
 
-    make_root_dir()
     i386_names = copy_arch('i386', i386_dir, libgfortran, libquadmath)
     x86_64_names = copy_arch('x86_64', x86_64_dir, libgfortran, libquadmath)
 
