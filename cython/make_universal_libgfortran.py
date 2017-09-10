@@ -21,6 +21,16 @@ LIBRARY_DIRS_ERR = 'Fortran search default library path not found.'
 
 
 def get_library_dirs():
+    """Get library directories in ``gfortran`` search path.
+
+    Uses the information from ``gfortran -print-search-dirs``.
+
+    If the command line output is not of the expected format, prints
+    an error message and exits the program with a status code of 1.
+
+    Returns:
+        List[str]: Directories in the ``gfortran`` search path.
+    """
     cmd = ('gfortran', '-print-search-dirs')
     cmd_output = subprocess.check_output(cmd).decode('utf-8')
 
@@ -35,6 +45,7 @@ def get_library_dirs():
         sys.exit(1)
 
     library_line = library_lines[0]
+    directories = []
     for part in library_line.split(':'):
         full_path = os.path.abspath(part)
 
@@ -42,22 +53,37 @@ def get_library_dirs():
             continue
 
         if os.path.isdir(full_path):
-            yield full_path
+            directories.append(full_path)
         else:
             msg = 'Path {} is not a directory.'.format(full_path)
             print(msg, file=sys.stderr)
 
+    if directories:
+        print('``gfortran`` library directories:')
+        for directory in directories:
+            print('\t{}'.format(directory))
+    else:
+        print('No ``gfortran`` library directories found.', file=sys.stderr)
+        sys.exit(1)
 
-def get_library_info():
+    return directories
+
+
+def find_libgfortran():
     """Get the directory and name of ``libgfortran``.
+
+    Assumes and checks that this ``libgfortran`` is **only** for
+    ``x86_64``.
+
+    Exits the program with a status code of 1 if:
+
+    * there is more than one (or zero) directories that contain
+      ``libgfortran.dylib``.
+    * the ``libgfortran.dylib`` found is **not** ``x86_64``.
 
     Returns:
         Tuple[str, str]: The directory that contains ``libgfortran`` and the
         full name (with version) of ``libgfortran``.
-
-    Raises:
-        ValueError: If there is more than one (or zero) directories that
-            contain ``libgfortran.dylib``.
     """
     library_dirs = get_library_dirs()
     matches = []
@@ -65,24 +91,60 @@ def get_library_info():
         path = os.path.join(library_dir, LIBGFORTRAN)
         versioned_path = os.path.realpath(path)
         if os.path.exists(versioned_path):
-            matches.append(os.path.split(versioned_path))
+            matches.append(versioned_path)
 
     if len(matches) != 1:
-        raise ValueError('Expected exactly one match', matches)
+        msg = 'Expected exactly one match: {}'.format(', '.join(matches))
+        print(msg, file=sys.stderr)
+        sys.exit(1)
 
-    return matches[0]
+    dylib = matches[0]
+    architectures = get_architectures(dylib)
+    if architectures != ['x86_64']:
+        msg = 'Expected {} for be x86_64 only, not {}.'.format(
+            dylib, ', '.join(architectures))
+        print(msg, file=sys.stderr)
+        sys.exit(1)
+
+    x86_64_dir, libgfortran = os.path.split(dylib)
+    print('Found x86_64 ``libgfortran``:')
+    print('\t{}'.format(dylib))
+    return x86_64_dir, libgfortran
 
 
-def get_i386_dir(x86_64_dir):
+def get_i386_dir(x86_64_dir, libgfortran):
+    """Gets directory containing dynamic libraries targeting ``i386``.
+
+    Exits the program with a status code of 1 if:
+
+    * The expected location of the ``i386`` verison of ``libgfortran``
+      does not exist
+    * t
+
+    Args:
+        x86_64_dir (str): Directory containing ``x86_64`` dynamic libraries.
+        libgfortran (str): The name (not path) of the ``libgfortran`` dynamic
+            library (should include version).
+
+    Returns:
+        str: The directory containing ``i386`` binaries.
+    """
     i386_dir = os.path.join(x86_64_dir, 'i386')
-    dylib = os.path.join(i386_dir, LIBGFORTRAN)
+    dylib = os.path.join(i386_dir, libgfortran)
     if not os.path.exists(dylib):
-        raise ValueError(
-            'Expected location of i386 libgfortran does not exist', dylib)
+        template = 'Expected location of i386 libgfortran does not exist: {}'
+        print(template.format(dylib), file=sys.stderr)
+        sys.exit(1)
 
     architectures = get_architectures(dylib)
     if architectures != ['i386']:
-        raise ValueError('Expected dylib to be for i386', dylib)
+        msg = 'Expected {} for be i386 only, not {}.'.format(
+            dylib, ', '.join(architectures))
+        print(msg, file=sys.stderr)
+        sys.exit(1)
+
+    print('Found directory with ``i386`` dynamic libraries:')
+    print('\t{}'.format(i386_dir))
 
     return i386_dir
 
@@ -266,8 +328,8 @@ def combine_dylibs(i386_dylib, x86_64_dylib, universal_dylib):
 
 
 def main():
-    x86_64_dir, libgfortran = get_library_info()
-    i386_dir = get_i386_dir(x86_64_dir)
+    x86_64_dir, libgfortran = find_libgfortran()
+    i386_dir = get_i386_dir(x86_64_dir, libgfortran)
 
     full_path = os.path.join(x86_64_dir, libgfortran)
     libraries = non_universal_libraries(full_path)
