@@ -8,6 +8,13 @@ void print_sep (void)
   printf("------------------------------------------------------------\n");
 }
 
+int view_knob(void)
+{
+  // This is a stupid back. (We don't bind(c, name='view_knob') because the
+  // ``f2py`` parser falls apart.)
+  return __example_MOD_view_knob();
+}
+
 int main (void)
 {
   print_sep();
@@ -79,6 +86,17 @@ int main (void)
   // just_print()
   printf("just_print()\n");
   just_print();
+
+  print_sep();
+  // "Turn the knob" module constant
+  int knob_value, new_value;
+  knob_value = view_knob();
+  printf("view_knob() = %d\n", knob_value);
+  new_value = 42;
+  turn_knob(&new_value);
+  printf("turn_knob(%d)\n", new_value);
+  knob_value = view_knob();
+  printf("view_knob() = %d\n", knob_value);
 
   return 0;
 }

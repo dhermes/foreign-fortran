@@ -2,7 +2,7 @@ program main
 
   use iso_c_binding, only: c_ptr, c_intptr_t, c_char, c_loc
   use example, only: dp, foo, foo_array, make_udf, udf_ptr, &
-                     just_print, UserDefined
+                     just_print, view_knob, turn_knob, UserDefined
   implicit none
 
   ! For foo()
@@ -85,6 +85,13 @@ program main
   ! just_print()
   write (*, "(A)") "just_print()"
   call just_print()
+
+  call print_sep()
+  ! "Turn the knob" module constant
+  write (*, "(A, I4)") "view_knob() = ", view_knob()
+  call turn_knob(42)
+  write (*, "(A)") "turn_knob(42)"
+  write (*, "(A, I2)") "view_knob() = ", view_knob()
 
 end program main
 

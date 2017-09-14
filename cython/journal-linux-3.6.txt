@@ -1,5 +1,5 @@
 ----------------------------------------
-${HOME}/.pyenv/shims/gfortran \
+/usr/bin/gfortran \
   -Wall \
   -g \
   -fno-second-underscore \

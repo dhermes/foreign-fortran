@@ -75,6 +75,12 @@ def prepare_udf():
     return made_it, ptr_as_int
 
 
+def view_knob(lib_example):
+    # This is a stupid back. (We don't bind(c, name='view_knob') because the
+    # ``f2py`` parser falls apart.)
+    return lib_example.__example_MOD_view_knob()
+
+
 def main():
     print(SEPARATOR)
     lib_example = ctypes.cdll.LoadLibrary(SO_FILE)
@@ -166,6 +172,16 @@ def main():
     # just_print()
     print('just_print()')
     lib_example.just_print()
+
+    print(SEPARATOR)
+    # "Turn the knob" module constant
+    knob = view_knob(lib_example)
+    print('view_knob() = {}'.format(knob))
+    new_value = ctypes.c_int(42)
+    print('turn_knob({})'.format(new_value))
+    lib_example.turn_knob(ctypes.byref(new_value))
+    knob = view_knob(lib_example)
+    print('view_knob() = {}'.format(knob))
 
 
 if __name__ == '__main__':

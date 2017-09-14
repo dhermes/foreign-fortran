@@ -22,6 +22,8 @@ void make_udf(double *buzz, double *broken, int *how_many, UserDefined *quuz);
 void udf_ptr(intptr_t *ptr_as_int);
 void make_container(double *contained, DataContainer *container);
 void just_print(void);
+int __example_MOD_view_knob(void);
+void turn_knob(int *new_value);
 
 #if defined (__cplusplus)
 }

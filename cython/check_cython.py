@@ -53,6 +53,16 @@ def main():
     msg = 'example.get_include() =\n{}'.format(include_dir)
     print(msg)
 
+    print(SEPARATOR)
+    # "Turn the knob" module constant
+    knob = example.view_knob()
+    print('view_knob() = {}'.format(knob))
+    new_value = 42
+    print('turn_knob({})'.format(new_value))
+    example.turn_knob(new_value)
+    knob = example.view_knob()
+    print('view_knob() = {}'.format(knob))
+
 
 if __name__ == '__main__':
     main()

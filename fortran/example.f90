@@ -5,9 +5,10 @@ module example
   implicit none
   private
   public dp, foo, foo_array, foo_by_ref, make_udf, udf_ptr, &
-         just_print, UserDefined
+         just_print, view_knob, turn_knob, UserDefined
 
-  integer, parameter :: dp=kind(0.d0)
+  integer, parameter :: dp = kind(0.d0)
+  integer(c_int) :: KNOB = 1337
 
   type, bind(c) :: UserDefined
      ! sequence NOT NEEDED since bind(c) is used.
@@ -94,5 +95,21 @@ contains
     print *, "========  END  FORTRAN ========"
 
   end subroutine just_print
+
+  ! NOTE: This is missing ``bind(c, name='view_knob')`` because
+  !       the ``f2py`` parser has issues for some reason.
+  pure function view_knob() result(knob_value)
+    integer(c_int) :: knob_value
+
+    knob_value = KNOB
+
+  end function view_knob
+
+  subroutine turn_knob(new_value) bind(c, name='turn_knob')
+    integer(c_int), intent(in) :: new_value
+
+    KNOB = new_value
+
+  end subroutine turn_knob
 
 end module example

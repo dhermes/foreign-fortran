@@ -81,7 +81,7 @@ f2py/example$(EXT_SUFFIX): fortran/example.f90 f2py/.f2py_f2cmap
 	    --opt='-O3' \
 	    -m example \
 	    ../fortran/example.f90 \
-	    skip: make_container
+	    skip: make_container view_knob
 
 run-f2py: f2py/check_f2py.py f2py/example$(EXT_SUFFIX)
 	@$(PYTHON) f2py/check_f2py.py

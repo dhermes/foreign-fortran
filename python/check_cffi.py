@@ -8,6 +8,7 @@ import numpy as np  # 1.13.1
 from check_ctypes import FOO_ARRAY_TEMPLATE
 from check_ctypes import SEPARATOR
 from check_ctypes import UDF_PTR_TEMPLATE
+from check_ctypes import view_knob
 
 
 HERE = os.path.abspath(os.path.dirname(__file__))
@@ -42,6 +43,8 @@ def main():
     ffi.cdef('void foo_array(int *size, double *val, double *two_val);')
     ffi.cdef('void udf_ptr(intptr_t *ptr_as_int);')
     ffi.cdef('void just_print();')
+    ffi.cdef('int __example_MOD_view_knob(void);')
+    ffi.cdef('void turn_knob(int *new_value);')
     lib_example = ffi.dlopen(SO_FILE)
 
     print(SEPARATOR)
@@ -107,6 +110,18 @@ def main():
     # just_print()
     print('just_print()')
     lib_example.just_print()
+
+    print(SEPARATOR)
+    # "Turn the knob" module constant
+    knob = view_knob(lib_example)
+    print('view_knob() = {}'.format(knob))
+    new_value_ptr = ffi.new('int *')
+    new_value = 42
+    new_value_ptr[0] = new_value
+    print('turn_knob({})'.format(new_value))
+    lib_example.turn_knob(new_value_ptr)
+    knob = view_knob(lib_example)
+    print('view_knob() = {}'.format(knob))
 
 
 if __name__ == '__main__':

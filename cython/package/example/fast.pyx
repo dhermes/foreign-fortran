@@ -45,3 +45,11 @@ def udf_ptr():
 
 def just_print():
     example_fortran.just_print()
+
+
+def view_knob():
+    return example_fortran.view_knob()
+
+
+def turn_knob(int new_value):
+    example_fortran.turn_knob(&new_value)
