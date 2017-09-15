@@ -39,6 +39,10 @@ just_print()
 ------------------------------------------------------------
 example.get_include() =
 .../foreign-fortran/cython/venv/lib/python.../site-packages/example/include
+------------------------------------------------------------
+view_knob() = 1337
+turn_knob(42)
+view_knob() = 42
 ```
 
 ## `sdist` and installed files
@@ -117,9 +121,7 @@ is made available in the `example` package:
 ['libexample.a']
 ```
 
-It's important to use **both** `library_dirs` and `runtime_library_dirs`
-(e.g. in `cython/use_cimport/setup.py`) to make the library available
-at import time:
+See `cython/use_cimport/setup.py` for an example of how to wrap:
 
 ```
 $ (cd .. && make wrap-cython)
@@ -133,8 +135,6 @@ $ (cd .. && make wrap-cython)
 32.625
 ```
 
-Though this still [may not be enough][8].
-
 ## Gotcha
 
 However, if `libraries=['gfortran']` is not specified in `setup.py` when
@@ -147,11 +147,13 @@ cd cython/ && \
   IGNORE_LIBRARIES=true python setup.py build_ext --inplace && \
   python -c 'import example'
 running build_ext
-skipping 'example.c' Cython extension (up-to-date)
+...
 Traceback (most recent call last):
   File "<string>", line 1, in <module>
-ImportError: .../cython/example...so: undefined symbol: _gfortran_transfer_character_write
-Makefile:93: recipe for target 'broken-cython' failed
+  File ".../cython/package/example/__init__.py", line 5, in <module>
+    from example import fast
+ImportError: .../cython/package/example/fast...so: undefined symbol: _gfortran_transfer_character_write
+Makefile:119: recipe for target 'broken-cython' failed
 make: *** [broken-cython] Error 1
 ```
 
@@ -171,4 +173,3 @@ make: *** [broken-cython] Error 1
 [5]: https://maurow.bitbucket.io/notes/calling_fortran_from_python.html
 [6]: https://maurow.bitbucket.io/notes/calling_fortran_from_c.html
 [7]: http://www.fortran90.org/src/best-practices.html#interfacing-with-c
-[8]: https://stackoverflow.com/q/19123623/1068170

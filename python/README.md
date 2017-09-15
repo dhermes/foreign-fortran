@@ -59,6 +59,10 @@ just_print()
  ======== BEGIN FORTRAN ========
  just_print() was called
  ========  END  FORTRAN ========
+------------------------------------------------------------
+view_knob() = 1337
+turn_knob(c_int(42))
+view_knob() = 42
 ```
 
 ## `cffi`
@@ -92,6 +96,10 @@ just_print()
  ======== BEGIN FORTRAN ========
  just_print() was called
  ========  END  FORTRAN ========
+------------------------------------------------------------
+view_knob() = 1337
+turn_knob(42)
+view_knob() = 42
 ```
 
 [1]: https://docs.python.org/3/library/ctypes.html

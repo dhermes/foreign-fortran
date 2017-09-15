@@ -30,6 +30,10 @@ just_print()
  ======== BEGIN FORTRAN ========
  just_print() was called
  ========  END  FORTRAN ========
+------------------------------------------------------------
+view_knob() = 1337
+turn_knob(42)
+view_knob() = 42
 ```
 
 ## References
