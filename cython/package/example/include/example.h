@@ -5,13 +5,13 @@ extern "C" {
 #include <stdint.h>
 #endif
 
-typedef struct {
+typedef struct UserDefined {
   double buzz;
   double broken;
   int how_many;
 } UserDefined;
 
-typedef struct {
+typedef struct DataContainer {
   double data[8];
 } DataContainer;
 
