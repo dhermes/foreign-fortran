@@ -81,4 +81,14 @@ func main() {
 	// just_print()
 	fmt.Println("just_print()")
 	example.JustPrint()
+
+	fmt.Println(separator)
+	// "Turn the knob" module constant
+	knobValue := example.ViewKnob()
+	fmt.Printf("view_knob() = %d\n", knobValue)
+	newValue := int32(42)
+	example.TurnKnob(&newValue)
+	fmt.Printf("turn_knob(%d)\n", newValue)
+	knobValue = example.ViewKnob()
+	fmt.Printf("view_knob() = %d\n", knobValue)
 }

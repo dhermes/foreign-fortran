@@ -83,3 +83,16 @@ func MakeContainer(contained []float64) *DataContainer {
 	dataPtr := (*[8]float64)(unsafe.Pointer(&container.data))
 	return &DataContainer{dataPtr}
 }
+
+func ViewKnob() int32 {
+	// This is a stupid back. (We don't bind(c, name='view_knob') because
+	// the ``f2py`` parser falls apart.)
+	knobValue := C.__example_MOD_view_knob()
+	return (int32)(knobValue)
+}
+
+func TurnKnob(newValue *int32) {
+	C.turn_knob(
+		(*C.int)(newValue),
+	)
+}
