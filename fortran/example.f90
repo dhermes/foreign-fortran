@@ -1,11 +1,12 @@
 module example
 
-  use iso_c_binding, only: c_double, c_int, c_ptr, c_intptr_t, &
-                           c_char, c_f_pointer
+  use, intrinsic :: iso_c_binding, only: &
+       c_double, c_int, c_ptr, c_intptr_t, c_char, c_f_pointer
   implicit none
   private
-  public dp, foo, foo_array, foo_by_ref, make_udf, udf_ptr, &
-         just_print, view_knob, turn_knob, UserDefined
+  public &
+       dp, foo, foo_array, foo_by_ref, make_udf, udf_ptr, just_print, &
+       view_knob, turn_knob, UserDefined, bar
 
   integer, parameter :: dp = kind(0.d0)
   integer(c_int) :: KNOB = 1337
