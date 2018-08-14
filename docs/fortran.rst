@@ -6,7 +6,7 @@ This is the most vanilla example of all. We are simply
 calling the Fortran ``example`` module from a Fortran program.
 
 The module is only "foreign" in the sense that we only
-interact with the  `shared object <module.html#build>`__ file ``example.o``
+interact with the  `object <module.html#build>`__ file ``example.o``
 when creating the executable ``fortran_example``:
 
 .. code-block:: console

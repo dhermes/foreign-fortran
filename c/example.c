@@ -3,20 +3,17 @@
 
 #include "example.h"
 
-void print_sep (void)
-{
+void print_sep(void) {
   printf("------------------------------------------------------------\n");
 }
 
-int view_knob(void)
-{
-  // This is a stupid back. (We don't bind(c, name='view_knob') because the
-  // ``f2py`` parser falls apart.)
+int view_knob(void) {
+  // This is a stupid hack. (We don't bind(c, name='view_knob')
+  // because the ``f2py`` parser fails on that input.)
   return __example_MOD_view_knob();
 }
 
-int main (void)
-{
+int main(void) {
   print_sep();
   // foo()
   double bar = 1.0, baz = 16.0, quux;
@@ -29,9 +26,8 @@ int main (void)
   int how_many = 1337;
   UserDefined quuz;
   make_udf(&buzz, &broken, &how_many, &quuz);
-  printf("quuz = make_udf(%f, %f, %d)\n     = UserDefined(%f, %f, %d)\n",
-         buzz, broken, how_many,
-         quuz.buzz, quuz.broken, quuz.how_many);
+  printf("quuz = make_udf(%f, %f, %d)\n     = UserDefined(%f, %f, %d)\n", buzz,
+         broken, how_many, quuz.buzz, quuz.broken, quuz.how_many);
 
   print_sep();
   // foo_array()
@@ -54,13 +50,15 @@ int main (void)
   print_sep();
   // udf_ptr()
   UserDefined made_it;
-  intptr_t ptr_as_int = (intptr_t) (&made_it);
+  intptr_t ptr_as_int = (intptr_t)(&made_it);
   udf_ptr(&ptr_as_int);
-  printf("ptr_as_int = &made_it  // intptr_t / ssize_t / long\n");
-  printf("ptr_as_int = %ld  // %p\n", ptr_as_int, ptr_as_int);
+  printf("ptr_as_int = &made_it  // intptr_t\n");
+  printf("                       // ssize_t\n");
+  printf("                       // long\n");
+  printf("ptr_as_int = %ld  // %p\n", ptr_as_int, (void*)ptr_as_int);
   printf("udf_ptr(ptr_as_int)  // Set memory in ``made_it``\n");
-  printf("made_it = UserDefined(%f, %f, %d)\n",
-         made_it.buzz, made_it.broken, made_it.how_many);
+  printf("made_it = UserDefined(%f, %f, %d)\n", made_it.buzz, made_it.broken,
+         made_it.how_many);
 
   print_sep();
   // make_container()
@@ -78,9 +76,11 @@ int main (void)
   printf("   [%f, %f],\n", container.data[1], container.data[5]);
   printf("   [%f, %f],\n", container.data[2], container.data[6]);
   printf("   [%f, %f]]\n", container.data[3], container.data[7]);
-  printf("&contained      = %ld  // %p\n", contained, contained);
-  printf("&container      = %ld  // %p\n", &container, &container);
-  printf("&container.data = %ld  // %p\n", container.data, container.data);
+  printf("&contained      = %ld  // %p\n", (intptr_t)contained,
+         (void*)contained);
+  printf("&container      = %ld  // %p\n", (intptr_t)&container, &container);
+  printf("&container.data = %ld  // %p\n", (intptr_t)container.data,
+         container.data);
 
   print_sep();
   // just_print()
