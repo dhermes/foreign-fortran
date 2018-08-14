@@ -2,8 +2,8 @@ program main
 
   use, intrinsic :: iso_c_binding, only: c_ptr, c_intptr_t, c_char, c_loc
   use example, only: &
-       dp, foo, foo_array, make_udf, udf_ptr, just_print, view_knob, &
-       turn_knob, UserDefined
+       dp, foo, foo_array, make_udf, udf_ptr, just_print, &
+       view_knob, turn_knob, UserDefined
   implicit none
 
   ! For foo()

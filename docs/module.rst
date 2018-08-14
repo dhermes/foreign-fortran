@@ -154,8 +154,11 @@ exposed and unmangled, hence each acts as a C ``struct``.
 
 .. c:function:: void udf_ptr(intptr_t *ptr_as_int)
 
-   A related way to smuggle data for use with ``f2py`` is to cast a pointer
-   to the user defined type into an integer and return the integer:
+   A related way to smuggle data for use with ``f2py`` is to allocate
+   memory for the struct and then pass a pointer to that memory
+   as an opaque integer. Once this is done, the Fortran subroutine
+   can convert the integer into a Fortran ``pointer`` and then
+   write to the memory location owned by the foreign caller:
 
    **Fortran Implementation:**
 
@@ -170,11 +173,11 @@ exposed and unmangled, hence each acts as a C ``struct``.
       :language: c
       :lines: 24
 
-   This approach is problematic because it forces the Fortran function
-   to handle allocation of memory for the object. If instead the caller
-   were responsible for the memory, then cleanup would be handled in the
-   correct place, but instead the object may be allocated on the stack
-   and the memory location re-used by subsequent calls to the subroutine.
+   This approach is problematic because it is so brittle. The memory
+   must be handled by the caller rather than by Fortran directly.
+   If the subroutine were responsible for the memory, the object would
+   likely be allocated on the stack and the memory location re-used by
+   subsequent calls to the subroutine.
 
 .. c:function:: void make_container(double *contained, \
                                     DataContainer *container)

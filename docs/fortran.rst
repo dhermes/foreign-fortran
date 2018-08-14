@@ -36,7 +36,8 @@ the executable
      at (1): No such file or directory
    compilation terminated.
 
-Finally, we run ``fortran_example``:
+Finally, we run ``fortran_example`` to verify the behavior of
+several procedures in the public interface:
 
 .. code-block:: console
 
@@ -73,3 +74,15 @@ Finally, we run ``fortran_example``:
    view_knob() = 1337
    turn_knob(42)
    view_knob() = 42
+
+Using the shared library is as simple as declaring the public
+symbols used:
+
+.. literalinclude:: ../fortran/main.f90
+   :language: fortran
+   :dedent: 2
+   :lines: 4-6
+
+Notice that the ``view_knob()`` subroutine is in the public
+**Fortran** interface even though it doesn't have a bound
+name in the ABI.
