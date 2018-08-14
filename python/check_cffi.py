@@ -2,8 +2,8 @@ from __future__ import print_function
 
 import os
 
-import cffi  # 1.10.0
-import numpy as np  # 1.13.1
+import cffi  # 1.11.5
+import numpy as np  # 1.15.0
 
 from check_ctypes import FOO_ARRAY_TEMPLATE
 from check_ctypes import SEPARATOR
@@ -13,21 +13,11 @@ from check_ctypes import view_knob
 
 HERE = os.path.dirname(__file__)
 SO_FILE = os.path.abspath(os.path.join(HERE, "..", "fortran", "example.so"))
-STRUCT_CDEF = """\
-typedef struct {
-  double buzz;
-  double broken;
-  int how_many;
-} UserDefined;
-"""
-MAKE_UDF_DEF = """\
-void make_udf(double *buzz, double *broken,
-              int *how_many, UserDefined *quux);
-"""
 
 
 def numpy_pointer(array, ffi):
-    assert array.dtype == np.float64
+    if array.dtype != np.float64:
+        raise TypeError("Unexpected data type", array.dtype)
     return ffi.cast("double *", array.ctypes.data)
 
 
@@ -38,8 +28,17 @@ def udf_str(udf):
 def main():
     ffi = cffi.FFI()
     ffi.cdef("void foo(double bar, double baz, double *quux);")
-    ffi.cdef(STRUCT_CDEF)
-    ffi.cdef(MAKE_UDF_DEF)
+    ffi.cdef(
+        "typedef struct UserDefined {\n"
+        "  double buzz;\n"
+        "  double broken;\n"
+        "  int how_many;\n"
+        "} UserDefined;"
+    )
+    ffi.cdef(
+        "void make_udf(double *buzz, double *broken,\n"
+        "              int *how_many, UserDefined *quux);"
+    )
     ffi.cdef("void foo_array(int *size, double *val, double *two_val);")
     ffi.cdef("void udf_ptr(intptr_t *ptr_as_int);")
     ffi.cdef("void just_print();")

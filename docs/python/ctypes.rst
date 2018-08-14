@@ -2,8 +2,8 @@
 ``ctypes``
 ##########
 
-This example interacts with the  `shared object <module.html#build>`__ file
-``fortran/example.so``. This shared object file can be loaded directly
+This example interacts with the  `shared object <../module.html#shared-object>`__
+file ``fortran/example.so``. This shared object file can be loaded directly
 
 .. code-block:: python
 

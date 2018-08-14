@@ -3,8 +3,8 @@ from __future__ import print_function
 import ctypes
 import os
 
-import cffi  # 1.10.0
-import numpy as np  # 1.13.1
+import cffi  # 1.11.5
+import numpy as np  # 1.15.0
 
 
 HERE = os.path.dirname(__file__)

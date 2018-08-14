@@ -7,6 +7,10 @@ of Fortran features. Many of them are exported with unmangled
 names (via ``bind(c)``) so the ABI can be used in a predictable way
 independent of the compiler or platform.
 
+****************
+Public Interface
+****************
+
 .. c:var:: int KNOB
 
    The first public symbol is a mutable global:
@@ -220,11 +224,11 @@ exposed and unmangled, hence each acts as a C ``struct``.
       :language: c
       :lines: 22
 
-.. _build:
+.. _object-file:
 
-*****
-Build
-*****
+***********
+Object File
+***********
 
 For some foreign usage of ``example``, we'll directly use a compiled
 object file. To create ``example.o``:
@@ -235,6 +239,12 @@ object file. To create ``example.o``:
    >   -J fortran/ \
    >   -c fortran/example.f90 \
    >   -o fortran/example.o
+
+.. _shared-object:
+
+*************
+Shared Object
+*************
 
 It's more common for foreign usage of native code to be done via a
 shared object file:

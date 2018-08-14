@@ -2,7 +2,7 @@
 C
 #
 
-This example interacts with the  `object <module.html#build>`__ file
+This example interacts with the  `object <module.html#object-file>`__ file
 ``fortran/example.o`` when creating the executable ``c_example``. Since
 the example will use :c:func:`just_print`, it relies on ``libgfortran``
 so we link against it (potentially having used ``gfortran -print-search-dirs``
