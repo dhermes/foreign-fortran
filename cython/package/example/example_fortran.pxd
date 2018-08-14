@@ -16,7 +16,7 @@ cdef extern from "example.h":
     void udf_ptr(intptr_t *ptr_as_int)
     void make_container(double *contained, DataContainer *container)
     void just_print()
-    # This is a stupid back. (We don't bind(c, name='view_knob') because the
-    # ``f2py`` parser falls apart.)
+    # This is a stupid hack. (We don't bind(c, name='view_knob')
+    # because the ``f2py`` parser fails on that input.)
     int view_knob "__example_MOD_view_knob" ()
     void turn_knob(int *new_value)

@@ -74,8 +74,8 @@ def prepare_udf():
 
 
 def view_knob(lib_example):
-    # This is a stupid back. (We don't bind(c, name='view_knob') because the
-    # ``f2py`` parser falls apart.)
+    # This is a stupid hack. (We don't bind(c, name='view_knob')
+    # because the ``f2py`` parser fails on that input.)
     return lib_example.__example_MOD_view_knob()
 
 

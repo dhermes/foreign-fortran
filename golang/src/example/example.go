@@ -85,8 +85,8 @@ func MakeContainer(contained []float64) *DataContainer {
 }
 
 func ViewKnob() int32 {
-	// This is a stupid back. (We don't bind(c, name='view_knob') because
-	// the ``f2py`` parser falls apart.)
+	// This is a stupid hack. (We don't bind(c, name='view_knob')
+	// because the ``f2py`` parser fails on that input.)
 	knobValue := C.__example_MOD_view_knob()
 	return (int32)(knobValue)
 }

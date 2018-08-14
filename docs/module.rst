@@ -134,7 +134,8 @@ exposed and unmangled, hence each acts as a C ``struct``.
    The next subroutine creates an instance of the :c:type:`UserDefined` data type,
    but **smuggles** the result out as raw bytes. The total size is
    ``size(buzz) + size(broken) + size(how_many) = 2 c_double + c_int``. This
-   is 24 bytes on most platforms.
+   is 20 bytes on most platforms, but as a struct it gets padded to 24 due to
+   word size.
 
    **Fortran Implementation:**
 
@@ -244,7 +245,20 @@ References
 * The ``sphinx-fortran`` `project`_ was started to provide ``autodoc``
   capabilities for Fortran libraries, but it is not actively maintained
   (as of this writing, August 2018)
+* The `AutoAPI`_ redesign of ``autodoc`` will hopefully mature into a
+  capable way of documenting Fortran code (and code from other languages)
+  using Sphinx
+* The `FORD`_ (FORtran Documentation) project is a modern way to generate
+  documentation for Fortran code, though it is "Yet Another" documentation
+  generator (`example documentation`_)
+* The ``breathe`` project / library seeks to be a `bridge`_ Python XML-based
+  doxygen and Sphinx, though in practice the formatting of doxygen produced
+  documentation is not in line with typical Sphinx documentation
 
 .. _Examples: http://www.mathcs.emory.edu/~cheung/Courses/561/Syllabus/6-Fortran/struct.html
 .. _question: https://stackoverflow.com/q/8557244
 .. _project: https://sphinx-fortran.readthedocs.io/en/latest/
+.. _AutoAPI: http://sphinx-autoapi.readthedocs.io/en/latest/
+.. _FORD: https://github.com/Fortran-FOSS-Programmers/ford
+.. _example documentation: https://jacobwilliams.github.io/json-fortran/
+.. _bridge: https://github.com/michaeljones/breathe
