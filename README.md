@@ -1,5 +1,7 @@
 # Foreign Fortran
 
+[![Documentation Status](https://readthedocs.org/projects/foreign-fortran/badge/?version=latest)](https://foreign-fortran.readthedocs.io)
+
 Run the exact same Fortran code with eight different approaches
 from five different programming languages:
 
@@ -12,11 +14,11 @@ from five different programming languages:
 - [Cython][6]
 - [Go (Golang)][7]
 
-[1]: fortran/README.md
-[2]: c/README.md
-[3]: python/README.md#ctypes
+[1]: https://foreign-fortran.readthedocs.io/en/latest/fortran.html
+[2]: https://foreign-fortran.readthedocs.io/en/latest/c.html
+[3]: https://foreign-fortran.readthedocs.io/en/latest/python/ctypes.html
 [4]: python/README.md#cffi
 [5]: f2py/README.md
 [6]: cython/README.md
-[7]: golang/README.md
-[8]: cpp/README.md
+[7]: https://foreign-fortran.readthedocs.io/en/latest/golang.html
+[8]: https://foreign-fortran.readthedocs.io/en/latest/cpp.html
