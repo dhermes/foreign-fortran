@@ -14,7 +14,7 @@ to determine where it is located):
    >   c/example.c \
    >   fortran/example.o \
    >   -o c_example \
-   >   -L/usr/lib/x86_64-linux-gnu \
+   >   -L/usr/lib/gcc/x86_64-linux-gnu/5 \
    >   -L/usr/lib/x86_64-linux-gnu \
    >   -lgfortran
 
