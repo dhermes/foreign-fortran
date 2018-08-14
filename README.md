@@ -6,6 +6,7 @@
 
 This is a Sphinx project (i.e. documentation focused rather than code
 focused). The goal is to explain different scenarios where a Fortran
-shared library can be called from other programming languages
+shared library can be called from other programming languages.
+See [documentation][1] for examples in action.
 
 [1]: https://foreign-fortran.readthedocs.io
