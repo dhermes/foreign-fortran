@@ -34,7 +34,7 @@ independent of the compiler or platform.
 
    .. literalinclude:: ../c/example.h
       :language: c
-      :lines: 28
+      :lines: 24
 
    As noted in the remark, the ``view_knob()`` getter also does not have a
    bound name because of the way a ``function`` (vs. a ``subroutine``) is
@@ -77,7 +77,7 @@ exposed and unmangled, hence each acts as a C ``struct``.
 
    .. literalinclude:: ../c/example.h
       :language: c
-      :lines: 14-16
+      :lines: 14
 
    .. c:var:: double[8] data
 
@@ -97,7 +97,7 @@ exposed and unmangled, hence each acts as a C ``struct``.
 
    .. literalinclude:: ../c/example.h
       :language: c
-      :lines: 18
+      :lines: 16
 
    It accepts the inputs by value. Since pass-by-reference is the default
    behavior, an equivalent method is provided (though not as part of the
@@ -124,7 +124,7 @@ exposed and unmangled, hence each acts as a C ``struct``.
 
    .. literalinclude:: ../c/example.h
       :language: c
-      :lines: 20
+      :lines: 18
 
 .. c:function:: void make_udf(double *buzz, \
                               double *broken, \
@@ -148,7 +148,7 @@ exposed and unmangled, hence each acts as a C ``struct``.
 
    .. literalinclude:: ../c/example.h
       :language: c
-      :lines: 21-23
+      :lines: 19
 
    This concept of "data smuggling" is necessary for the use of user defined
    types with ``f2py``, since it has no support for them.
@@ -172,7 +172,7 @@ exposed and unmangled, hence each acts as a C ``struct``.
 
    .. literalinclude:: ../c/example.h
       :language: c
-      :lines: 24
+      :lines: 20
 
    This approach is problematic because it is so brittle. The memory
    must be handled by the caller rather than by Fortran directly.
@@ -199,7 +199,7 @@ exposed and unmangled, hence each acts as a C ``struct``.
 
    .. literalinclude:: ../c/example.h
       :language: c
-      :lines: 25
+      :lines: 21
 
 .. c:function:: void just_print(void)
 
@@ -218,7 +218,7 @@ exposed and unmangled, hence each acts as a C ``struct``.
 
    .. literalinclude:: ../c/example.h
       :language: c
-      :lines: 26
+      :lines: 22
 
 .. _build:
 
