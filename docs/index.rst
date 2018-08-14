@@ -1,20 +1,16 @@
-.. Foreign Fortran documentation master file, created by
-   sphinx-quickstart on Mon Aug 13 19:59:47 2018.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+###############
+Foreign Fortran
+###############
 
-Welcome to Foreign Fortran's documentation!
-===========================================
+We'll build a shared library in Fortran (90 and later) and show
+eight different ways to use the library from five different
+programming languages:
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   fortran
+   c
+   cpp
+   python/index
+   golang
