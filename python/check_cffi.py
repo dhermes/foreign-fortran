@@ -11,8 +11,8 @@ from check_ctypes import UDF_PTR_TEMPLATE
 from check_ctypes import view_knob
 
 
-HERE = os.path.abspath(os.path.dirname(__file__))
-SO_FILE = os.path.join(HERE, "example.so")
+HERE = os.path.dirname(__file__)
+SO_FILE = os.path.abspath(os.path.join(HERE, "..", "fortran", "example.so"))
 STRUCT_CDEF = """\
 typedef struct {
   double buzz;

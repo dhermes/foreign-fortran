@@ -236,6 +236,25 @@ object file. To create ``example.o``:
    >   -c fortran/example.f90 \
    >   -o fortran/example.o
 
+It's more common for foreign usage of native code to be done via a
+shared object file:
+
+.. code-block:: console
+
+   $ gfortran \
+   >   -shared -fPIC \
+   >   -J fortran/ \
+   >   fortran/example.f90 \
+   >   -o fortran/example.so
+
+Here, we manually build a "position independent" shared library in the
+same directory as the source. However, in many cases, native code comes
+with an installer that puts the library in a standard place, e.g. a
+symlink to ``libatlas`` can be found in ``/usr/lib/libatlas.so``. Shared
+object files are typically named ``lib{pkg}.so`` so that they can be
+included by the compiler with ``-l{pkg}``. The compiler uses a default list of
+"search directories" when finding such shared libraries.
+
 **********
 References
 **********

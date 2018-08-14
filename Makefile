@@ -60,17 +60,17 @@ cpp_example: cpp/example.cpp c/example.h fortran/example.o
 run-cpp: cpp_example
 	@./cpp_example
 
-python/example.so: fortran/example.f90
+fortran/example.so: fortran/example.f90
 	$(FC) \
 	  $(PIC) \
 	  $(MODULES_DIR) fortran/ \
 	  fortran/example.f90 \
-	  -o python/example.so
+	  -o fortran/example.so
 
-run-ctypes: python/check_ctypes.py python/example.so
+run-ctypes: python/check_ctypes.py fortran/example.so
 	@$(PYTHON) python/check_ctypes.py
 
-run-cffi: python/check_cffi.py python/example.so
+run-cffi: python/check_cffi.py fortran/example.so
 	@$(PYTHON) python/check_cffi.py
 
 f2py/example$(EXT_SUFFIX): fortran/example.f90 f2py/.f2py_f2cmap
@@ -167,10 +167,10 @@ clean:
 	  f2py/example$(EXT_SUFFIX) \
 	  fortran/example.mod \
 	  fortran/example.o \
+	  fortran/example.so \
 	  fortran_example \
 	  golang/src/example/example.mod \
-	  python/check_ctypes.pyc \
-	  python/example.so
+	  python/check_ctypes.pyc
 	rm -fr \
 	  cython/__pycache__/ \
 	  cython/package/build/ \

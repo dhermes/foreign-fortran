@@ -7,8 +7,8 @@ import cffi  # 1.10.0
 import numpy as np  # 1.13.1
 
 
-HERE = os.path.abspath(os.path.dirname(__file__))
-SO_FILE = os.path.join(HERE, "example.so")
+HERE = os.path.dirname(__file__)
+SO_FILE = os.path.abspath(os.path.join(HERE, "..", "fortran", "example.so"))
 SEPARATOR = "-" * 60
 MAKE_UDF_TEMPLATE = """\
 quuz = make_udf({}, {}, {})
@@ -38,7 +38,8 @@ class UserDefined(ctypes.Structure):
 
     def __repr__(self):
         template = (
-            "UserDefined(buzz={self.buzz}, broken={self.broken}, "
+            "UserDefined(buzz={self.buzz}, "
+            "broken={self.broken}, "
             "how_many={self.how_many})"
         )
         return template.format(self=self)
@@ -57,9 +58,12 @@ def numpy_pointer(array):
     return array.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
 
 
-def verify_pointer_size():
-    ffi = cffi.FFI()
-    assert ffi.sizeof("intptr_t") == ffi.sizeof("ssize_t")
+def get_intptr_t(verify=True):
+    if verify:
+        ffi = cffi.FFI()
+        if ffi.sizeof("intptr_t") != ffi.sizeof("ssize_t"):
+            raise ValueError("Unexpected size of ``intptr_t``.")
+
     # NOTE: On many platforms, ``ctypes.c_ssize_t is ctypes.c_long``.
     return ctypes.c_ssize_t
 
@@ -67,9 +71,8 @@ def verify_pointer_size():
 def prepare_udf():
     made_it = UserDefined()
     raw_pointer = ctypes.cast(ctypes.pointer(made_it), ctypes.c_void_p)
-    # Make sure it's "OK" to use a ``long`` here.
-    ptr_type = verify_pointer_size()
-    ptr_as_int = ptr_type(raw_pointer.value)
+    intptr_t = get_intptr_t()
+    ptr_as_int = intptr_t(raw_pointer.value)
     return made_it, ptr_as_int
 
 
@@ -80,9 +83,7 @@ def view_knob(lib_example):
 
 
 def main():
-    print(SEPARATOR)
     lib_example = ctypes.cdll.LoadLibrary(SO_FILE)
-    print(lib_example)
 
     print(SEPARATOR)
     # foo()
@@ -110,7 +111,7 @@ def main():
     quuz_address = ctypes.addressof(quuz)
     print("address(quuz) = {0}  # 0x{0:x}".format(quuz_address))
     alt_quuz = UserDefined.from_address(quuz_address)
-    print("*address(quuz) = {}".format(alt_quuz))
+    print("*address(quuz) =\n    {}".format(alt_quuz))
 
     print(SEPARATOR)
     # foo_array()
@@ -134,7 +135,7 @@ def main():
     print(msg, end="")
     print("needsfree(made_it) = {}".format(bool(made_it._b_needsfree_)))
     alt_made_it = UserDefined.from_address(ptr_as_int.value)
-    print("*ptr_as_int = {}".format(alt_made_it))
+    print("*ptr_as_int =\n    {}".format(alt_made_it))
 
     print(SEPARATOR)
     # make_container()
