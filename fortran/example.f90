@@ -6,7 +6,7 @@ module example
   private
   public &
        dp, foo, foo_array, foo_by_ref, make_udf, udf_ptr, just_print, &
-       view_knob, turn_knob, UserDefined, bar
+       view_knob, turn_knob, UserDefined
 
   integer, parameter :: dp = kind(0.d0)
   integer(c_int) :: KNOB = 1337
