@@ -15,9 +15,9 @@ import setuptools
 from setuptools.command import build_ext
 
 
-VERSION = '0.0.1'
-LOCAL_INCLUDE = os.path.join('example', 'include')
-LOCAL_LIB = os.path.join('example', 'lib')
+VERSION = "0.0.1"
+LOCAL_INCLUDE = os.path.join("example", "include")
+LOCAL_LIB = os.path.join("example", "lib")
 # NOTE: We prefer the relative path below over the absolute path
 #           source_file = os.path.abspath(os.path.join(
 #               os.path.dirname(__file__),
@@ -25,36 +25,31 @@ LOCAL_LIB = os.path.join('example', 'lib')
 #           ))
 #       because ``compile()`` will create the entire subdirectory
 #       path matching it.
-SOURCE_FILE = os.path.join('example', 'example.f90')
-FORTRAN_LIBRARY_PREFIX = 'libraries: ='
-ERR_MSG = 'Fortran search default library path not found.'
-BAD_PATH = 'Path {} is not a directory.'
-MAC_OS_X = 'darwin'
-MAC_OS_LINKER_ERR = 'Unexpected `linker_so` on OS X: {}.'
-JOURNAL_TEMPLATE = 'journal-{}-{}.{}.txt'
-JOURNAL_ENV = 'EXAMPLE_JOURNAL'
+SOURCE_FILE = os.path.join("example", "example.f90")
+FORTRAN_LIBRARY_PREFIX = "libraries: ="
+ERR_MSG = "Fortran search default library path not found."
+BAD_PATH = "Path {} is not a directory."
+MAC_OS_X = "darwin"
+MAC_OS_LINKER_ERR = "Unexpected `linker_so` on OS X: {}."
+JOURNAL_TEMPLATE = "journal-{}-{}.{}.txt"
+JOURNAL_ENV = "EXAMPLE_JOURNAL"
 
 
 def fortran_executable(f90_compiler):
     version_cmd = f90_compiler.version_cmd
-    if len(version_cmd) != 2 or version_cmd[1] != '-dumpversion':
-        raise ValueError(
-            'Unexpected Fortran version command',
-            version_cmd)
+    if len(version_cmd) != 2 or version_cmd[1] != "-dumpversion":
+        raise ValueError("Unexpected Fortran version command", version_cmd)
 
     return version_cmd[0]
 
 
 def fortran_search_path(f90_compiler):
-    cmd = (
-        fortran_executable(f90_compiler),
-        '-print-search-dirs',
-    )
-    cmd_output = subprocess.check_output(cmd).decode('utf-8')
+    cmd = (fortran_executable(f90_compiler), "-print-search-dirs")
+    cmd_output = subprocess.check_output(cmd).decode("utf-8")
 
-    search_lines = cmd_output.strip().split('\n')
+    search_lines = cmd_output.strip().split("\n")
     library_lines = [
-        line[len(FORTRAN_LIBRARY_PREFIX):]
+        line[len(FORTRAN_LIBRARY_PREFIX) :]
         for line in search_lines
         if line.startswith(FORTRAN_LIBRARY_PREFIX)
     ]
@@ -64,7 +59,7 @@ def fortran_search_path(f90_compiler):
 
     library_line = library_lines[0]
     accepted = set(f90_compiler.library_dirs)
-    for part in library_line.split(':'):
+    for part in library_line.split(":"):
         full_path = os.path.abspath(part)
 
         if not os.path.exists(full_path):
@@ -107,7 +102,7 @@ def patch_library_dirs(f90_compiler):
     if not isinstance(f90_compiler, gnu.Gnu95FCompiler):
         return
 
-    gfortran_lib = os.environ.get('GFORTRAN_LIB')
+    gfortran_lib = os.environ.get("GFORTRAN_LIB")
     library_dirs = f90_compiler.library_dirs
 
     # Update in place.
@@ -138,14 +133,14 @@ def check_dual_architecture():
     if sys.platform != MAC_OS_X:
         return False
 
-    cmd = ('lipo', '-info', sys.executable)
-    cmd_output = subprocess.check_output(cmd).decode('utf-8').strip()
+    cmd = ("lipo", "-info", sys.executable)
+    cmd_output = subprocess.check_output(cmd).decode("utf-8").strip()
 
-    prefix = 'Architectures in the fat file: {} are: '.format(sys.executable)
+    prefix = "Architectures in the fat file: {} are: ".format(sys.executable)
 
     if cmd_output.startswith(prefix):
-        architectures = cmd_output[len(prefix):].split()
-        return 'i386' in architectures and 'x86_64' in architectures
+        architectures = cmd_output[len(prefix) :].split()
+        return "i386" in architectures and "x86_64" in architectures
     else:
         return False
 
@@ -160,30 +155,37 @@ def gfortran_supports_dual_architecture():
     if sys.platform != MAC_OS_X:
         return False
 
-    temporary_directory = tempfile.mkdtemp(suffix='-fortran')
-    source_name = os.path.join(temporary_directory, 'bar.f90')
-    with open(source_name, 'w') as file_obj:
-        file_obj.writelines([
-            'subroutine bar(x, y)\n',
-            '  integer, intent(in) :: x\n',
-            '  integer, intent(out) :: y\n',
-            '\n',
-            '  y = x + 2\n',
-            '\n',
-            'end subroutine bar\n',
-            '\n',
-        ])
+    temporary_directory = tempfile.mkdtemp(suffix="-fortran")
+    source_name = os.path.join(temporary_directory, "bar.f90")
+    with open(source_name, "w") as file_obj:
+        file_obj.writelines(
+            [
+                "subroutine bar(x, y)\n",
+                "  integer, intent(in) :: x\n",
+                "  integer, intent(out) :: y\n",
+                "\n",
+                "  y = x + 2\n",
+                "\n",
+                "end subroutine bar\n",
+                "\n",
+            ]
+        )
 
-    object_name = os.path.join(temporary_directory, 'bar.o')
+    object_name = os.path.join(temporary_directory, "bar.o")
     cmd = (
-        'gfortran',
-        '-arch', 'i386', '-arch', 'x86_64',
-        '-c', source_name,
-        '-o', object_name,
+        "gfortran",
+        "-arch",
+        "i386",
+        "-arch",
+        "x86_64",
+        "-c",
+        source_name,
+        "-o",
+        object_name,
     )
 
     cmd_output = subprocess.check_output(cmd, stderr=subprocess.STDOUT)
-    result = b'arch flags ignored' not in cmd_output
+    result = b"arch flags ignored" not in cmd_output
 
     shutil.rmtree(temporary_directory)
 
@@ -246,24 +248,27 @@ class _DualArchitectureCompile(object):
         from numpy.distutils.fcompiler import gnu
 
         if not isinstance(self.compiler_cmd, list):
-            raise TypeError('Expected a list', self.compiler_cmd)
+            raise TypeError("Expected a list", self.compiler_cmd)
 
         if not isinstance(self.f90_compiler, gnu.Gnu95FCompiler):
-            raise TypeError('Expected a Gnu95FCompiler', self.f90_compiler)
+            raise TypeError("Expected a Gnu95FCompiler", self.f90_compiler)
 
-        if self.compiler_cmd.count('-arch') != 1:
+        if self.compiler_cmd.count("-arch") != 1:
             raise ValueError(
-                'Did not find exactly one "-arch" in', self.compiler_cmd)
+                'Did not find exactly one "-arch" in', self.compiler_cmd
+            )
 
-        arch_index = self.compiler_cmd.index('-arch') + 1
+        arch_index = self.compiler_cmd.index("-arch") + 1
         if arch_index == len(self.compiler_cmd):
             raise ValueError(
-                'There is no architecture specified in', self.compiler_cmd)
+                "There is no architecture specified in", self.compiler_cmd
+            )
 
         arch_value = self.compiler_cmd[arch_index]
-        if arch_value not in ('i386', 'x86_64'):
+        if arch_value not in ("i386", "x86_64"):
             raise ValueError(
-                'Unexpected architecture', arch_value, 'in', self.compiler_cmd)
+                "Unexpected architecture", arch_value, "in", self.compiler_cmd
+            )
 
         self.arch_index = arch_index
         self.arch_value = arch_value
@@ -305,24 +310,26 @@ class _DualArchitectureCompile(object):
         obj_name = os.path.basename(obj)
 
         # Create a directory and compile an object targeting i386.
-        i386_dir = tempfile.mkdtemp(suffix='-i386')
+        i386_dir = tempfile.mkdtemp(suffix="-i386")
         i386_obj = os.path.join(i386_dir, obj_name)
-        self._set_architecture('i386')
+        self._set_architecture("i386")
         self.original_compile(
-            i386_obj, src, ext, cc_args, extra_postargs, pp_opts)
+            i386_obj, src, ext, cc_args, extra_postargs, pp_opts
+        )
 
         # Create a directory and compile an object targeting x86_64.
-        x86_64_dir = tempfile.mkdtemp(suffix='-x86_64')
+        x86_64_dir = tempfile.mkdtemp(suffix="-x86_64")
         x86_64_obj = os.path.join(x86_64_dir, obj_name)
-        self._set_architecture('x86_64')
+        self._set_architecture("x86_64")
         self.original_compile(
-            x86_64_obj, src, ext, cc_args, extra_postargs, pp_opts)
+            x86_64_obj, src, ext, cc_args, extra_postargs, pp_opts
+        )
 
         # Restore the compiler back to how it was before we modified it.
         self._restore_architecture()
 
         # Use ``lipo`` to combine the object files into a universal.
-        lipo_cmd = ('lipo', i386_obj, x86_64_obj, '-create', '-output', obj)
+        lipo_cmd = ("lipo", i386_obj, x86_64_obj, "-create", "-output", obj)
         self.f90_compiler.spawn(lipo_cmd)
 
         # Clean up the temporary directories.
@@ -372,7 +379,8 @@ def get_f90_compiler():
     c_compiler.verbose = 2
 
     f90_compiler = numpy.distutils.fcompiler.new_fcompiler(
-        requiref90=True, c_compiler=c_compiler)
+        requiref90=True, c_compiler=c_compiler
+    )
     dist = numpy.distutils.core.get_distribution(always=True)
     f90_compiler.customize(dist)
     f90_compiler.verbose = 2
@@ -399,8 +407,7 @@ def compile_fortran_obj_file(f90_compiler):
 
 def make_fortran_lib(f90_compiler, obj_file):
     c_compiler = f90_compiler.c_compiler
-    c_compiler.create_static_lib(
-        [obj_file], 'example', output_dir=LOCAL_LIB)
+    c_compiler.create_static_lib([obj_file], "example", output_dir=LOCAL_LIB)
 
 
 def add_directory(dir_name, example_files, prefix):
@@ -415,12 +422,12 @@ def add_directory(dir_name, example_files, prefix):
 
 def get_package_data():
     return {
-        'example': [
-            '*.pxd',
-            os.path.join('include', '*.h'),
-            os.path.join('lib', '*.a'),
-            os.path.join('lib', '*.lib'),
-        ],
+        "example": [
+            "*.pxd",
+            os.path.join("include", "*.h"),
+            os.path.join("lib", "*.a"),
+            os.path.join("lib", "*.lib"),
+        ]
     }
 
 
@@ -448,7 +455,7 @@ class BuildFortranThenExt(build_ext.build_ext):
         # NOTE: This is a hack to show failure when `libgfortran`
         #       is not included. (Only for the `Makefile`, not for
         #       actual usage.)
-        if 'IGNORE_LIBRARIES' in os.environ:
+        if "IGNORE_LIBRARIES" in os.environ:
             return [], []
         else:
             return cls.F90_COMPILER.libraries, cls.F90_COMPILER.library_dirs
@@ -473,7 +480,7 @@ class BuildFortranThenExt(build_ext.build_ext):
 
         final_arg = sys.argv[-1]
         # Nasty hack:
-        sub_path = '{0}cython{0}venv{0}include{0}'.format(os.path.sep)
+        sub_path = "{0}cython{0}venv{0}include{0}".format(os.path.sep)
         index = final_arg.find(sub_path)
         if index == -1:
             return None
@@ -488,11 +495,9 @@ class BuildFortranThenExt(build_ext.build_ext):
 
         if journal is None:
             filename = JOURNAL_TEMPLATE.format(
-                sys.platform,
-                sys.version_info[0],
-                sys.version_info[1],
+                sys.platform, sys.version_info[0], sys.version_info[1]
             )
-            journal = os.path.join(self.root_dir, 'cython', filename)
+            journal = os.path.join(self.root_dir, "cython", filename)
 
         return journal
 
@@ -512,39 +517,38 @@ class BuildFortranThenExt(build_ext.build_ext):
         def journaled_spawn(patched_self, cmd, display=None):
             self.commands.append(cmd)
             return numpy.distutils.ccompiler.CCompiler_spawn(
-                patched_self, cmd, display=None)
+                patched_self, cmd, display=None
+            )
 
         numpy.distutils.ccompiler.replace_method(
-            distutils.ccompiler.CCompiler,
-            'spawn',
-            journaled_spawn,
+            distutils.ccompiler.CCompiler, "spawn", journaled_spawn
         )
 
     @staticmethod
     def _command_to_text(command):
         # NOTE: This assumes, but doesn't check that the command has 3
         #       or more arguments.
-        first_line = '{} \\'
-        middle_line = '  {} \\'
-        last_line = '  {}'
+        first_line = "{} \\"
+        middle_line = "  {} \\"
+        last_line = "  {}"
 
         parts = [first_line.format(command[0])]
         for argument in command[1:-1]:
             parts.append(middle_line.format(argument))
         parts.append(last_line.format(command[-1]))
 
-        return '\n'.join(parts)
+        return "\n".join(parts)
 
     def _commands_to_text(self):
-        separator = '-' * 40
+        separator = "-" * 40
 
         parts = [separator]
         for command in self.commands:
             command_text = self._command_to_text(command)
             parts.extend([command_text, separator])
 
-        parts.append('')  # Trailing newline in file.
-        return '\n'.join(parts)
+        parts.append("")  # Trailing newline in file.
+        return "\n".join(parts)
 
     def save_journal(self):
         """Save journaled commands to file.
@@ -556,12 +560,11 @@ class BuildFortranThenExt(build_ext.build_ext):
 
         as_text = self._commands_to_text()
         # Replace the "sensitive" parts of the file.
-        as_text = as_text.replace(
-            self.root_dir, '${foreign-fortran}')
-        home_dir = os.path.expanduser('~')
-        as_text = as_text.replace(home_dir, '${HOME}')
+        as_text = as_text.replace(self.root_dir, "${foreign-fortran}")
+        home_dir = os.path.expanduser("~")
+        as_text = as_text.replace(home_dir, "${HOME}")
 
-        with open(self.journal_file, 'w') as file_obj:
+        with open(self.journal_file, "w") as file_obj:
             file_obj.write(as_text)
 
     def run(self):
@@ -584,31 +587,26 @@ def main():
     libraries, library_dirs = BuildFortranThenExt.get_library_dirs()
     npy_include_dir = np.get_include()
     cython_extension = setuptools.Extension(
-        'example.fast',
-        [os.path.join('example', 'fast.c')],
-        include_dirs=[
-            npy_include_dir,
-            LOCAL_INCLUDE,
-        ],
+        "example.fast",
+        [os.path.join("example", "fast.c")],
+        include_dirs=[npy_include_dir, LOCAL_INCLUDE],
         libraries=libraries,
         library_dirs=library_dirs,
-        extra_objects=[
-            os.path.join('example', 'example.o'),
-        ],
+        extra_objects=[os.path.join("example", "example.o")],
     )
     setuptools.setup(
-        name='example',
+        name="example",
         version=VERSION,
-        description='Cython Example calling Fortran',
-        author='Danny Hermes',
-        author_email='daniel.j.hermes@gmail.com',
-        url='https://github.com/dhermes/foreign-fortran',
-        packages=['example'],
+        description="Cython Example calling Fortran",
+        author="Danny Hermes",
+        author_email="daniel.j.hermes@gmail.com",
+        url="https://github.com/dhermes/foreign-fortran",
+        packages=["example"],
         ext_modules=[cython_extension],
         package_data=get_package_data(),
-        cmdclass={'build_ext': BuildFortranThenExt},
+        cmdclass={"build_ext": BuildFortranThenExt},
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

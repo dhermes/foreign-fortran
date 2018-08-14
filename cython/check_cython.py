@@ -13,7 +13,7 @@ def main():
     bar = 1.0
     baz = 16.0
     quux = example.foo(bar, baz)
-    print('quux = foo({}, {}) = {}'.format(bar, baz, quux))
+    print("quux = foo({}, {}) = {}".format(bar, baz, quux))
 
     print(SEPARATOR)
     # make_udf()
@@ -22,47 +22,42 @@ def main():
     how_many = 1337
     quuz = example.make_udf(buzz, broken, how_many)
     msg = MAKE_UDF_TEMPLATE.format(buzz, broken, how_many, quuz)
-    print(msg, end='')
+    print(msg, end="")
 
     print(SEPARATOR)
     # foo_array()
-    val = np.asfortranarray([
-        [ 3.0, 4.5 ],
-        [ 1.0, 1.25],
-        [ 9.0, 0.0 ],
-        [-1.0, 4.0 ],
-    ])
+    val = np.asfortranarray([[3.0, 4.5], [1.0, 1.25], [9.0, 0.0], [-1.0, 4.0]])
     two_val = example.foo_array(val)
-    print('val =\n{}'.format(val))
-    print('two_val = foo_array(val)')
-    print('two_val =\n{}'.format(two_val))
+    print("val =\n{}".format(val))
+    print("two_val = foo_array(val)")
+    print("two_val =\n{}".format(two_val))
 
     print(SEPARATOR)
     # udf_ptr()
     made_it = example.udf_ptr()
-    print('made_it = udf_ptr()\n        = {}'.format(made_it))
+    print("made_it = udf_ptr()\n        = {}".format(made_it))
 
     print(SEPARATOR)
     # just_print()
-    print('just_print()')
+    print("just_print()")
     example.just_print()
 
     print(SEPARATOR)
     # get_include()
     include_dir = example.get_include()
-    msg = 'example.get_include() =\n{}'.format(include_dir)
+    msg = "example.get_include() =\n{}".format(include_dir)
     print(msg)
 
     print(SEPARATOR)
     # "Turn the knob" module constant
     knob = example.view_knob()
-    print('view_knob() = {}'.format(knob))
+    print("view_knob() = {}".format(knob))
     new_value = 42
-    print('turn_knob({})'.format(new_value))
+    print("turn_knob({})".format(new_value))
     example.turn_knob(new_value)
     knob = example.view_knob()
-    print('view_knob() = {}'.format(knob))
+    print("view_knob() = {}".format(knob))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

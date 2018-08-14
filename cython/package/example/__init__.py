@@ -5,8 +5,8 @@ import sys
 from example import fast
 
 
-_MAC_OS_X = 'darwin'
-_FORTRAN_LIBRARY_PREFIX = 'libraries: ='
+_MAC_OS_X = "darwin"
+_FORTRAN_LIBRARY_PREFIX = "libraries: ="
 PACKAGE_ROOT = os.path.abspath(os.path.dirname(__file__))
 
 
@@ -20,11 +20,11 @@ turn_knob = fast.turn_knob
 
 
 def get_include():
-    return os.path.join(PACKAGE_ROOT, 'include')
+    return os.path.join(PACKAGE_ROOT, "include")
 
 
 def get_lib():
-    return os.path.join(PACKAGE_ROOT, 'lib')
+    return os.path.join(PACKAGE_ROOT, "lib")
 
 
 def _add_gfortran(libraries, library_dirs):
@@ -41,19 +41,19 @@ def _add_gfortran(libraries, library_dirs):
     ``just_print()`` subroutine uses some of the standard library,
     e.g. ``_gfortran_st_write``.
     """
-    libraries.append('gfortran')
+    libraries.append("gfortran")
 
     # NOTE: This is essentially the same as ``fortran_search_path``
     #       in ``setup.py``.
     if sys.platform != _MAC_OS_X:
         return
 
-    cmd = ('gfortran', '-print-search-dirs')
-    cmd_output = subprocess.check_output(cmd).decode('utf-8')
+    cmd = ("gfortran", "-print-search-dirs")
+    cmd_output = subprocess.check_output(cmd).decode("utf-8")
 
-    search_lines = cmd_output.strip().split('\n')
+    search_lines = cmd_output.strip().split("\n")
     library_lines = [
-        line[len(_FORTRAN_LIBRARY_PREFIX):]
+        line[len(_FORTRAN_LIBRARY_PREFIX) :]
         for line in search_lines
         if line.startswith(_FORTRAN_LIBRARY_PREFIX)
     ]
@@ -63,7 +63,7 @@ def _add_gfortran(libraries, library_dirs):
 
     library_line = library_lines[0]
     accepted = set()
-    for part in library_line.split(':'):
+    for part in library_line.split(":"):
         full_path = os.path.abspath(part)
 
         if not os.path.exists(full_path):
@@ -76,9 +76,8 @@ def _add_gfortran(libraries, library_dirs):
 
 
 def get_extension_keywords(
-        include_dirs=None,
-        libraries=None,
-        library_dirs=None):
+    include_dirs=None, libraries=None, library_dirs=None
+):
     """Get keyword arguments for a ``setuptools.Extension``.
 
     This way, an extension can be created that depends on the shared library
@@ -116,12 +115,12 @@ def get_extension_keywords(
     example_lib = get_lib()
 
     include_dirs.append(example_include)
-    libraries.append('example')
+    libraries.append("example")
     library_dirs.append(example_lib)
     _add_gfortran(libraries, library_dirs)
 
     return {
-        'include_dirs': include_dirs,
-        'libraries': libraries,
-        'library_dirs': library_dirs,
+        "include_dirs": include_dirs,
+        "libraries": libraries,
+        "library_dirs": library_dirs,
     }

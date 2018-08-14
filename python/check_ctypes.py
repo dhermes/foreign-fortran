@@ -8,8 +8,8 @@ import numpy as np  # 1.13.1
 
 
 HERE = os.path.abspath(os.path.dirname(__file__))
-SO_FILE = os.path.join(HERE, 'example.so')
-SEPARATOR = '-' * 60
+SO_FILE = os.path.join(HERE, "example.so")
+SEPARATOR = "-" * 60
 MAKE_UDF_TEMPLATE = """\
 quuz = make_udf({}, {}, {})
      = {}
@@ -31,27 +31,26 @@ two_val =
 
 class UserDefined(ctypes.Structure):
     _fields_ = [
-        ('buzz', ctypes.c_double),
-        ('broken', ctypes.c_double),
-        ('how_many', ctypes.c_int),
+        ("buzz", ctypes.c_double),
+        ("broken", ctypes.c_double),
+        ("how_many", ctypes.c_int),
     ]
 
     def __repr__(self):
         template = (
-            'UserDefined(buzz={self.buzz}, broken={self.broken}, '
-            'how_many={self.how_many})')
+            "UserDefined(buzz={self.buzz}, broken={self.broken}, "
+            "how_many={self.how_many})"
+        )
         return template.format(self=self)
 
 
 class DataContainer(ctypes.Structure):
-    _fields_ = [
-        ('data_', ctypes.c_double * 8),
-    ]
+    _fields_ = [("data_", ctypes.c_double * 8)]
 
     @property
     def data(self):
         result = np.ctypeslib.as_array(self.data_)
-        return result.reshape((4, 2), order='F')
+        return result.reshape((4, 2), order="F")
 
 
 def numpy_pointer(array):
@@ -60,15 +59,14 @@ def numpy_pointer(array):
 
 def verify_pointer_size():
     ffi = cffi.FFI()
-    assert ffi.sizeof('intptr_t') == ffi.sizeof('ssize_t')
+    assert ffi.sizeof("intptr_t") == ffi.sizeof("ssize_t")
     # NOTE: On many platforms, ``ctypes.c_ssize_t is ctypes.c_long``.
     return ctypes.c_ssize_t
 
 
 def prepare_udf():
     made_it = UserDefined()
-    raw_pointer = ctypes.cast(
-        ctypes.pointer(made_it), ctypes.c_void_p)
+    raw_pointer = ctypes.cast(ctypes.pointer(made_it), ctypes.c_void_p)
     # Make sure it's "OK" to use a ``long`` here.
     ptr_type = verify_pointer_size()
     ptr_as_int = ptr_type(raw_pointer.value)
@@ -92,7 +90,7 @@ def main():
     baz = ctypes.c_double(16.0)
     quux = ctypes.c_double()
     lib_example.foo(bar, baz, ctypes.byref(quux))
-    print('quux = foo({}, {}) = {}'.format(bar, baz, quux))
+    print("quux = foo({}, {}) = {}".format(bar, baz, quux))
 
     print(SEPARATOR)
     # make_udf()
@@ -107,82 +105,74 @@ def main():
         ctypes.byref(quuz),
     )
     msg = MAKE_UDF_TEMPLATE.format(buzz, broken, how_many, quuz)
-    print(msg, end='')
-    print('needsfree(quuz) = {}'.format(bool(quuz._b_needsfree_)))
+    print(msg, end="")
+    print("needsfree(quuz) = {}".format(bool(quuz._b_needsfree_)))
     quuz_address = ctypes.addressof(quuz)
-    print('address(quuz) = {0}  # 0x{0:x}'.format(quuz_address))
+    print("address(quuz) = {0}  # 0x{0:x}".format(quuz_address))
     alt_quuz = UserDefined.from_address(quuz_address)
-    print('*address(quuz) = {}'.format(alt_quuz))
+    print("*address(quuz) = {}".format(alt_quuz))
 
     print(SEPARATOR)
     # foo_array()
-    val = np.asfortranarray([
-        [ 3.0, 4.5 ],
-        [ 1.0, 1.25],
-        [ 9.0, 0.0 ],
-        [-1.0, 4.0 ],
-    ])
+    val = np.asfortranarray([[3.0, 4.5], [1.0, 1.25], [9.0, 0.0], [-1.0, 4.0]])
     shape = val.shape
-    two_val = np.empty(shape, order='F')
+    two_val = np.empty(shape, order="F")
     size, _ = shape
 
     size = ctypes.c_int(size)
     lib_example.foo_array(
-        ctypes.byref(size),
-        numpy_pointer(val),
-        numpy_pointer(two_val),
+        ctypes.byref(size), numpy_pointer(val), numpy_pointer(two_val)
     )
     msg = FOO_ARRAY_TEMPLATE.format(val, size, two_val)
-    print(msg, end='')
+    print(msg, end="")
 
     print(SEPARATOR)
     # udf_ptr()
     made_it, ptr_as_int = prepare_udf()
     lib_example.udf_ptr(ctypes.byref(ptr_as_int))
     msg = UDF_PTR_TEMPLATE.format(ptr_as_int, ptr_as_int.value, made_it)
-    print(msg, end='')
-    print('needsfree(made_it) = {}'.format(bool(made_it._b_needsfree_)))
+    print(msg, end="")
+    print("needsfree(made_it) = {}".format(bool(made_it._b_needsfree_)))
     alt_made_it = UserDefined.from_address(ptr_as_int.value)
-    print('*ptr_as_int = {}'.format(alt_made_it))
+    print("*ptr_as_int = {}".format(alt_made_it))
 
     print(SEPARATOR)
     # make_container()
-    contained = np.asfortranarray([
-        [0.0, 4.0],
-        [1.0, 9.0],
-        [1.0, 2.0],
-        [3.0, 1.0],
-    ])
+    contained = np.asfortranarray(
+        [[0.0, 4.0], [1.0, 9.0], [1.0, 2.0], [3.0, 1.0]]
+    )
     container = DataContainer()
     lib_example.make_container(
-        numpy_pointer(contained),
-        ctypes.byref(container),
+        numpy_pointer(contained), ctypes.byref(container)
     )
-    print('contained =\n{}'.format(contained))
-    print('container = make_container(contained)')
-    print('container.data =\n{}'.format(container.data))
-    print('address(contained)      = {0}  # 0x{0:x}'.format(
-        contained.ctypes.data))
+    print("contained =\n{}".format(contained))
+    print("container = make_container(contained)")
+    print("container.data =\n{}".format(container.data))
+    print(
+        "address(contained)      = {0}  # 0x{0:x}".format(
+            contained.ctypes.data
+        )
+    )
     addr1 = ctypes.addressof(container)
-    print('address(container)      = {0}  # 0x{0:x}'.format(addr1))
+    print("address(container)      = {0}  # 0x{0:x}".format(addr1))
     addr2 = ctypes.addressof(container.data_)
-    print('address(container.data) = {0}  # 0x{0:x}'.format(addr2))
+    print("address(container.data) = {0}  # 0x{0:x}".format(addr2))
 
     print(SEPARATOR)
     # just_print()
-    print('just_print()')
+    print("just_print()")
     lib_example.just_print()
 
     print(SEPARATOR)
     # "Turn the knob" module constant
     knob = view_knob(lib_example)
-    print('view_knob() = {}'.format(knob))
+    print("view_knob() = {}".format(knob))
     new_value = ctypes.c_int(42)
-    print('turn_knob({})'.format(new_value))
+    print("turn_knob({})".format(new_value))
     lib_example.turn_knob(ctypes.byref(new_value))
     knob = view_knob(lib_example)
-    print('view_knob() = {}'.format(knob))
+    print("view_knob() = {}".format(knob))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -6,19 +6,19 @@ import subprocess
 import sys
 
 
-LIBRARY_PREFIX = 'libraries: ='
-ERR_MSG = 'Fortran search default library path not found.'
-BAD_PATH = 'Path {} is not a directory.'
+LIBRARY_PREFIX = "libraries: ="
+ERR_MSG = "Fortran search default library path not found."
+BAD_PATH = "Path {} is not a directory."
 
 
 def main():
-    cmd = ('gfortran', '-print-search-dirs')
+    cmd = ("gfortran", "-print-search-dirs")
     cmd_output = subprocess.check_output(cmd)
-    cmd_output = cmd_output.decode('utf-8')
+    cmd_output = cmd_output.decode("utf-8")
 
-    search_lines = cmd_output.strip().split('\n')
+    search_lines = cmd_output.strip().split("\n")
     library_lines = [
-        line[len(LIBRARY_PREFIX):]
+        line[len(LIBRARY_PREFIX) :]
         for line in search_lines
         if line.startswith(LIBRARY_PREFIX)
     ]
@@ -28,7 +28,7 @@ def main():
 
     library_line = library_lines[0]
     accepted = []
-    for part in library_line.split(':'):
+    for part in library_line.split(":"):
         full_path = os.path.abspath(part)
 
         if not os.path.exists(full_path):
@@ -39,10 +39,10 @@ def main():
             print(msg, file=sys.stderr)
             sys.exit(1)
 
-        accepted.append('-L' + full_path)
+        accepted.append("-L" + full_path)
 
-    print(' '.join(accepted))
+    print(" ".join(accepted))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

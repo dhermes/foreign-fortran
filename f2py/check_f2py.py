@@ -19,30 +19,33 @@ two_val =
 
 
 def np_to_udf(arr):
-    assert arr.dtype == np.dtype('S1')
+    assert arr.dtype == np.dtype("S1")
     address = arr.ctypes.data
     return UserDefined.from_address(address)
 
 
 def main():
     print(SEPARATOR)
-    print('example: {}'.format(example))
+    print("example: {}".format(example))
     example_ns = example.example
     exported_names = [
-        name for name in dir(example_ns)
-        if not (name.startswith('__') and name.endswith('__'))
+        name
+        for name in dir(example_ns)
+        if not (name.startswith("__") and name.endswith("__"))
     ]
-    print('dir(example.example): {}'.format(', '.join(exported_names)))
+    print("dir(example.example): {}".format(", ".join(exported_names)))
 
     print(SEPARATOR)
     # foo()
     bar = 1.0
     baz = 16.0
-    msg_foo = 'foo       ({}, {}) = {}'.format(
-        bar, baz, example_ns.foo(bar, baz))
+    msg_foo = "foo       ({}, {}) = {}".format(
+        bar, baz, example_ns.foo(bar, baz)
+    )
     print(msg_foo)
-    msg_foo_by_ref = 'foo_by_ref({}, {}) = {}'.format(
-        bar, baz, example_ns.foo_by_ref(bar, baz))
+    msg_foo_by_ref = "foo_by_ref({}, {}) = {}".format(
+        bar, baz, example_ns.foo_by_ref(bar, baz)
+    )
     print(msg_foo_by_ref)
 
     print(SEPARATOR)
@@ -53,16 +56,11 @@ def main():
     quuz_as_bytes = example_ns.make_udf(buzz, broken, how_many)
     quuz = np_to_udf(quuz_as_bytes)
     msg = MAKE_UDF_TEMPLATE.format(buzz, broken, how_many, quuz)
-    print(msg, end='')
+    print(msg, end="")
 
     print(SEPARATOR)
     # foo_array()
-    val = np.asfortranarray([
-        [ 3.0, 4.5 ],
-        [ 1.0, 1.25],
-        [ 9.0, 0.0 ],
-        [-1.0, 4.0 ],
-    ])
+    val = np.asfortranarray([[3.0, 4.5], [1.0, 1.25], [9.0, 0.0], [-1.0, 4.0]])
     two_val = example_ns.foo_array(val)
     print(MSG_FOO_ARRAY.format(val, two_val))
 
@@ -72,13 +70,13 @@ def main():
     ptr_as_int = ptr_as_int.value
     example_ns.udf_ptr(ptr_as_int)
     msg = UDF_PTR_TEMPLATE.format(ptr_as_int, ptr_as_int, made_it)
-    print(msg, end='')
+    print(msg, end="")
 
     print(SEPARATOR)
     # just_print()
-    print('just_print()')
+    print("just_print()")
     example_ns.just_print()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
