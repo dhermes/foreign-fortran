@@ -78,7 +78,7 @@ Output
 
 .. code-block:: console
 
-   $ python/check_ctypes.py
+   $ python python/check_ctypes.py
    ------------------------------------------------------------
    quux = foo(c_double(1.0), c_double(16.0)) = c_double(61.0)
    ------------------------------------------------------------
